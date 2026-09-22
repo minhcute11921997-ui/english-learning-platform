@@ -1,0 +1,42 @@
+{
+  "name": "english-learning-tools",
+  "version": "1.0.0",
+  "description": "Development tools for English Learning Web App",
+  "private": true,
+  "scripts": {
+    "scaffold": "node dev/scaffolder.js",
+    "test-api": "node dev/api-tester.js",
+    "db:reset": "node dev/db-reset.js --seed",
+    "env:check": "node dev/env-checker.js",
+    "security:audit": "node security/audit.js",
+    "security:full": "node security/audit.js && node security/sql-injection-check.js ../server/src && node security/xss-check.js ../client/src",
+    "ui:palette": "node ui/color-palette.js",
+    "ui:a11y": "node ui/a11y-check.js",
+    "ui:lighthouse": "node ui/lighthouse-audit.js",
+    "graphics:optimize": "node graphics/image-optimizer.js ../client/public/images",
+    "graphics:favicon": "node graphics/favicon-generator.js",
+    "content:vocab": "node content/vocab-generator.js",
+    "content:reading": "node content/reading-generator.js",
+    "content:import": "node content/csv-importer.js",
+    "content:seed": "node content/seed-data-builder.js --all",
+    "content:validate": "node content/content-validator.js",
+    "quality:bundle": "node quality/bundle-analyzer.js",
+    "quality:perf": "node quality/perf-benchmark.js",
+    "quality:docs": "node quality/api-doc-generator.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "chalk": "^5.3.0",
+    "cli-table3": "^0.6.5",
+    "commander": "^12.1.0",
+    "csv-parse": "^5.5.0",
+    "dotenv": "^16.4.0",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.4.0",
+    "inquirer": "^9.3.0",
+    "lighthouse": "^12.0.0",
+    "ora": "^8.0.0",
+    "sharp": "^0.33.0",
+    "puppeteer": "^22.0.0"
+  }
+}
