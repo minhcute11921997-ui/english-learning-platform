@@ -69,10 +69,18 @@ class RecommendationService {
 
     for (const topic of allTopics) {
       const vocabCount = await Vocabulary.count({ where: { topic_id: topic.id } });
-      const learnedCount = await UserVocabProgress.count({
-        where: { user_id: userId },
-        include: [{ model: Vocabulary, as: 'vocabulary', where: { topic_id: topic.id } }]
+
+      // Fix: Sequelize count() không support include đúng cách, dùng findAll với include thay thế
+      const vocabIdsInTopic = await Vocabulary.findAll({
+        where: { topic_id: topic.id },
+        attributes: ['id']
       });
+      const vocabIds = vocabIdsInTopic.map((v) => v.id);
+      const learnedCount = vocabIds.length > 0
+        ? await UserVocabProgress.count({
+            where: { user_id: userId, vocabulary_id: vocabIds }
+          })
+        : 0;
 
       topicProgress.push({
         topicId: topic.id,

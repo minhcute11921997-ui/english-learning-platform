@@ -9,11 +9,37 @@ import { HiCheckCircle, HiXCircle, HiAcademicCap, HiArrowRight } from 'react-ico
 export default function AssessmentPage() {
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('assessment_draft_answers');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState(null);
   const navigate = useNavigate();
+
+  // Lưu nháp câu trả lời vào sessionStorage để tránh mất bài khi F5/reload
+  useEffect(() => {
+    if (!result && Object.keys(answers).length > 0) {
+      sessionStorage.setItem('assessment_draft_answers', JSON.stringify(answers));
+    }
+  }, [answers, result]);
+
+  // Cảnh báo người dùng trước khi đóng tab/reload khi đang làm bài
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (!result && Object.keys(answers).length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [answers, result]);
 
   useEffect(() => {
     loadQuestions();
@@ -32,10 +58,10 @@ export default function AssessmentPage() {
   };
 
   const handleSelectOption = (optIndex) => {
-    setAnswers({
-      ...answers,
+    setAnswers((prev) => ({
+      ...prev,
       [currentIndex]: optIndex
-    });
+    }));
   };
 
   const handleNext = () => {
@@ -65,6 +91,7 @@ export default function AssessmentPage() {
     try {
       setIsSubmitting(true);
       const res = await assessmentApi.submitAssessment(formatted);
+      sessionStorage.removeItem('assessment_draft_answers');
       setResult(res.data);
       toast.success('Đã hoàn thành bài kiểm tra đầu vào!');
     } catch (err) {
@@ -167,7 +194,7 @@ export default function AssessmentPage() {
   }
 
   const currentQ = questions[currentIndex];
-  const progressPercent = Math.round(((currentIndex + 1) / questions.length) * 100);
+  const progressPercent = questions.length > 0 ? Math.round(((currentIndex + 1) / questions.length) * 100) : 0;
 
   return (
     <div className="max-w-2xl mx-auto py-8">

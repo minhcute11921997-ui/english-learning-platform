@@ -19,10 +19,36 @@ export default function ExercisePage() {
   const [topic, setTopic] = useState(null);
   const [exercises, setExercises] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(`exercise_draft_${id}`);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [results, setResults] = useState(null);
+
+  // Lưu nháp câu trả lời vào sessionStorage để tránh mất bài khi reload
+  useEffect(() => {
+    if (!results && Object.keys(answers).length > 0) {
+      sessionStorage.setItem(`exercise_draft_${id}`, JSON.stringify(answers));
+    }
+  }, [answers, results, id]);
+
+  // Cảnh báo người dùng khi reload hoặc rời trang lúc đang làm bài
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (!results && Object.keys(answers).length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [answers, results]);
 
   useEffect(() => {
     loadData();
@@ -37,7 +63,6 @@ export default function ExercisePage() {
       ]);
       setTopic(tRes.data);
       setExercises(eRes.data || []);
-      setAnswers({});
       setResults(null);
       setCurrentIndex(0);
     } catch (err) {
@@ -48,10 +73,10 @@ export default function ExercisePage() {
   };
 
   const handleSelectOption = (optIdx) => {
-    setAnswers({
-      ...answers,
+    setAnswers((prev) => ({
+      ...prev,
       [currentIndex]: optIdx
-    });
+    }));
   };
 
   const handleNext = () => {
@@ -80,6 +105,7 @@ export default function ExercisePage() {
     try {
       setIsSubmitting(true);
       const res = await exerciseApi.submitVocabExercises(formatted);
+      sessionStorage.removeItem(`exercise_draft_${id}`);
       setResults({
         ...res.data,
         detail: exercises.map((ex, idx) => ({
@@ -123,7 +149,15 @@ export default function ExercisePage() {
           </div>
 
           <div className="flex justify-center gap-3">
-            <Button variant="secondary" onClick={loadData} className="gap-2">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                sessionStorage.removeItem(`exercise_draft_${id}`);
+                setAnswers({});
+                loadData();
+              }}
+              className="gap-2"
+            >
               <HiRefresh /> Làm lại bài mới
             </Button>
             <Button onClick={() => navigate(`/topics/${id}`)}>
@@ -174,7 +208,18 @@ export default function ExercisePage() {
   }
 
   const currentQ = exercises[currentIndex];
-  const progressPercent = Math.round(((currentIndex + 1) / exercises.length) * 100);
+  const progressPercent = exercises.length > 0 ? Math.round(((currentIndex + 1) / exercises.length) * 100) : 0;
+
+  if (exercises.length === 0) {
+    return (
+      <div className="max-w-2xl mx-auto py-12 text-center card space-y-4">
+        <p className="text-gray-600">Chưa có bài tập nào cho chủ đề này.</p>
+        <Link to={`/topics/${id}`} className="btn btn-primary inline-flex items-center gap-1.5">
+          <HiArrowLeft /> Quay lại chủ đề
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 py-6">
@@ -267,9 +312,8 @@ export default function ExercisePage() {
             variant="success"
             onClick={handleSubmit}
             isLoading={isSubmitting}
-            disabled={Object.keys(answers).length < exercises.length}
           >
-            Nộp bài làm
+            Nộp bài ({Object.keys(answers).length}/{exercises.length} câu)
           </Button>
         )}
       </div>

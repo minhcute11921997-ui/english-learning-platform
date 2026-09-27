@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import useAuthStore from './stores/authStore';
 import MainLayout from './components/layout/MainLayout';
 import AuthLayout from './components/layout/AuthLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -35,6 +36,12 @@ import CommunitySubmitPage from './pages/community/CommunitySubmitPage';
 
 // Admin Page
 import AdminPage from './pages/admin/AdminPage';
+
+function RootRedirect() {
+  const { isAuthenticated, isLoading } = useAuthStore();
+  if (isLoading) return null;
+  return <Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />;
+}
 
 const router = createBrowserRouter([
   // Public auth routes
@@ -92,7 +99,7 @@ const router = createBrowserRouter([
   // Default redirect
   {
     path: '/',
-    element: <Navigate to="/dashboard" replace />
+    element: <RootRedirect />
   },
   {
     path: '*',

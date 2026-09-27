@@ -1,0 +1,19 @@
+Nội dung chính của đồ án / khoá luận
+
+Khảo sát nhu cầu học tiếng Anh cơ bản của học sinh và người mới bắt đầu; phân tích yêu cầu và thiết kế hệ thống.
+
+Xây dựng chức năng quản lý tài khoản, đánh giá kiến thức đầu vào và thiết lập mục tiêu học tập.
+
+Xây dựng chức năng học từ vựng theo chủ đề thông qua hình ảnh, ví dụ, flashcard và bài tập củng cố.
+
+Áp dụng thuật toán ôn tập ngắt quãng để điều chỉnh lịch ôn từ vựng dựa trên kết quả và lịch sử học tập của từng người dùng.
+
+Xây dựng chức năng luyện đọc hiểu với các đoạn văn ngắn, câu hỏi trắc nghiệm, chấm điểm và giải thích đáp án; đề xuất nội dung học phù hợp với kết quả học tập.
+
+Xây dựng chức năng tạo nhóm học và tham gia nhóm bằng mã mời. Chủ nhóm có thể biên soạn, chia sẻ bộ từ vựng và bài đọc kèm câu hỏi theo biểu mẫu; thành viên học, làm bài và xem kết quả.
+
+Kết hợp nội dung học trong nhóm với lịch ôn tập cá nhân hóa; cho phép chủ nhóm theo dõi tiến độ hoàn thành của thành viên.
+
+Xây dựng chức năng thống kê tiến độ học tập và quản trị người dùng, từ vựng, bài đọc, câu hỏi.
+
+Triển khai, kiểm thử và đánh giá hệ thống thông qua thử nghiệm với người dùng.

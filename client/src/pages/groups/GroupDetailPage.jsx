@@ -14,8 +14,7 @@ import {
   HiClipboardCopy,
   HiCheck,
   HiTrash,
-  HiArrowLeft,
-  HiVolumeUp
+  HiArrowLeft
 } from 'react-icons/hi';
 
 export default function GroupDetailPage() {
@@ -59,7 +58,7 @@ export default function GroupDetailPage() {
   const loadAvailableContent = async () => {
     try {
       const [vRes, rRes] = await Promise.all([
-        vocabApi.search(''),
+        vocabApi.search('', { limit: 200 }),
         readingApi.getAll({ limit: 100 })
       ]);
       setAllVocabs(vRes.data || []);

@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 const config = require('../config/app');
+const { User } = require('../models');
 
 /**
  * Middleware xác thực JWT token
@@ -21,9 +22,20 @@ const authenticate = catchAsync(async (req, res, next) => {
   // 2) Verify token
   const decoded = jwt.verify(token, config.jwt.secret);
 
-  // 3) Kiểm tra user còn tồn tại không (sẽ implement sau khi có model)
-  // Tạm thời gán decoded vào req.user
-  req.user = decoded;
+  // 3) Kiểm tra user còn tồn tại và chưa bị khóa
+  const user = await User.findByPk(decoded.id, {
+    attributes: ['id', 'username', 'email', 'role', 'is_active', 'full_name', 'initial_level', 'learning_goal', 'avatar_url']
+  });
+
+  if (!user) {
+    return next(new AppError('Người dùng không còn tồn tại.', 401));
+  }
+
+  if (!user.is_active) {
+    return next(new AppError('Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.', 403));
+  }
+
+  req.user = user.toJSON();
 
   next();
 });

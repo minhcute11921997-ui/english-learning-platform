@@ -3,11 +3,13 @@ const { body } = require('express-validator');
 const authController = require('../controllers/auth.controller');
 const { authenticate } = require('../middleware/auth');
 const validate = require('../middleware/validate');
+const { authLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
 
 router.post(
   '/register',
+  authLimiter,
   [
     body('username').trim().isLength({ min: 3, max: 50 }).withMessage('Tên đăng nhập phải từ 3-50 ký tự'),
     body('email').isEmail().withMessage('Email không hợp lệ'),
@@ -20,6 +22,7 @@ router.post(
 
 router.post(
   '/login',
+  authLimiter,
   [
     body('email').isEmail().withMessage('Email không hợp lệ'),
     body('password').notEmpty().withMessage('Vui lòng nhập mật khẩu'),

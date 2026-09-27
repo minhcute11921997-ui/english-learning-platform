@@ -78,7 +78,8 @@ const getVocabExercises = catchAsync(async (req, res) => {
       // Fill-in-the-blank using example sentence
       let sentence = target.example_sentence;
       if (sentence && sentence.toLowerCase().includes(target.word.toLowerCase())) {
-        const regex = new RegExp(`\\b${target.word}\\b`, 'gi');
+        const escapedWord = target.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
         const blankSentence = sentence.replace(regex, '______');
         const options = shuffle([
           target.word,
@@ -136,7 +137,7 @@ const submitVocabExercises = catchAsync(async (req, res) => {
   return ApiResponse.success(res, {
     total: results.length,
     correct: correctCount,
-    percentage: Math.round((correctCount / results.length) * 100)
+    percentage: results.length > 0 ? Math.round((correctCount / results.length) * 100) : 0
   }, 'Đã chấm điểm và cập nhật tiến độ ôn tập');
 });
 

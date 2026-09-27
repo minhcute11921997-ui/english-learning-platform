@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const { User } = require('../models');
 const ApiResponse = require('../utils/apiResponse');
 const catchAsync = require('../utils/catchAsync');
@@ -45,11 +47,29 @@ const uploadAvatar = catchAsync(async (req, res) => {
     throw new AppError('Vui lòng chọn một file ảnh để tải lên.', 400);
   }
   const avatarUrl = `/uploads/${req.file.filename}`;
-  const user = await User.findByPk(req.user.id);
-  user.avatar_url = avatarUrl;
-  await user.save();
 
-  return ApiResponse.success(res, { avatar_url: avatarUrl }, 'Tải ảnh đại diện thành công');
+  try {
+    const user = await User.findByPk(req.user.id);
+    if (!user) throw new AppError('Không tìm thấy người dùng.', 404);
+
+    const oldAvatar = user.avatar_url;
+    user.avatar_url = avatarUrl;
+    await user.save();
+
+    // Xóa ảnh cũ nếu là ảnh tự upload trước đó
+    if (oldAvatar && oldAvatar.startsWith('/uploads/')) {
+      const oldPath = path.join(__dirname, '../../uploads', path.basename(oldAvatar));
+      fs.unlink(oldPath, () => {});
+    }
+
+    return ApiResponse.success(res, { avatar_url: avatarUrl }, 'Tải ảnh đại diện thành công');
+  } catch (err) {
+    // Nếu xảy ra lỗi giữa chừng, xóa file vừa upload để tránh file rác
+    if (req.file && req.file.path) {
+      fs.unlink(req.file.path, () => {});
+    }
+    throw err;
+  }
 });
 
 module.exports = {

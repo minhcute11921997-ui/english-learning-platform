@@ -1,4 +1,5 @@
-const { Reading, Question, Topic, UserReadingAttempt, UserAnswer } = require('../models');
+const { Reading, Question, Topic, UserReadingAttempt, UserAnswer, sequelize } = require('../models');
+const { Op } = require('sequelize');
 const RecommendationService = require('../services/recommendation.service');
 const ApiResponse = require('../utils/apiResponse');
 const catchAsync = require('../utils/catchAsync');
@@ -12,9 +13,9 @@ const getAllReadings = catchAsync(async (req, res) => {
   if (topic_id) where.topic_id = topic_id;
   if (difficulty) where.difficulty = difficulty;
   if (search) {
-    where[require('sequelize').Op.or] = [
-      { title: { [require('sequelize').Op.like]: `%${search}%` } },
-      { title_vi: { [require('sequelize').Op.like]: `%${search}%` } }
+    where[Op.or] = [
+      { title: { [Op.like]: `%${search}%` } },
+      { title_vi: { [Op.like]: `%${search}%` } }
     ];
   }
 
@@ -131,23 +132,26 @@ const submitReadingAttempt = catchAsync(async (req, res) => {
     }
   }
 
-  // Tạo UserReadingAttempt
-  const attempt = await UserReadingAttempt.create({
-    user_id: userId,
-    reading_id: parseInt(id),
-    score,
-    total_questions,
-    time_spent_seconds,
-    attempted_at: new Date()
-  });
+  // Tạo UserReadingAttempt và UserAnswer trong một transaction để đảm bảo toàn vẹn dữ liệu
+  const attempt = await sequelize.transaction(async (t) => {
+    const newAttempt = await UserReadingAttempt.create({
+      user_id: userId,
+      reading_id: parseInt(id),
+      score,
+      total_questions,
+      time_spent_seconds,
+      attempted_at: new Date()
+    }, { transaction: t });
 
-  // Lưu từng UserAnswer
-  for (const ua of userAnswersData) {
-    await UserAnswer.create({
-      attempt_id: attempt.id,
-      ...ua
-    });
-  }
+    for (const ua of userAnswersData) {
+      await UserAnswer.create({
+        attempt_id: newAttempt.id,
+        ...ua
+      }, { transaction: t });
+    }
+
+    return newAttempt;
+  });
 
   return ApiResponse.created(
     res,
@@ -155,7 +159,7 @@ const submitReadingAttempt = catchAsync(async (req, res) => {
       attempt_id: attempt.id,
       score,
       total_questions,
-      percentage: Math.round((score / total_questions) * 100),
+      percentage: total_questions > 0 ? Math.round((score / total_questions) * 100) : 0,
       time_spent_seconds,
       results: detailedResults
     },

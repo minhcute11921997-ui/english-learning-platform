@@ -17,16 +17,18 @@ const getAllTopics = catchAsync(async (req, res) => {
 
     let learnedCount = 0;
     if (userId) {
-      learnedCount = await UserVocabProgress.count({
-        where: { user_id: userId },
-        include: [
-          {
-            model: Vocabulary,
-            as: 'vocabulary',
-            where: { topic_id: topic.id, is_approved: true }
-          }
-        ]
+      // Fix: Sequelize count() không support include/join đúng cách
+      // Lấy vocab IDs của topic trước, sau đó count progress theo IDs đó
+      const vocabsInTopic = await Vocabulary.findAll({
+        where: { topic_id: topic.id, is_approved: true },
+        attributes: ['id']
       });
+      const vocabIds = vocabsInTopic.map((v) => v.id);
+      if (vocabIds.length > 0) {
+        learnedCount = await UserVocabProgress.count({
+          where: { user_id: userId, vocabulary_id: vocabIds }
+        });
+      }
     }
 
     result.push({

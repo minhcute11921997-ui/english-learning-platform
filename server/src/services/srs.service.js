@@ -1,4 +1,4 @@
-const { UserVocabProgress, ReviewSchedule, Vocabulary, Topic } = require('../models');
+const { UserVocabProgress, ReviewSchedule, Vocabulary, Topic, sequelize } = require('../models');
 const { Op } = require('sequelize');
 
 class SrsService {
@@ -24,7 +24,7 @@ class SrsService {
       } else if (repetition_count === 1) {
         interval_days = 6;
       } else {
-        interval_days = Math.round(interval_days * ease_factor);
+        interval_days = Math.min(Math.round(interval_days * ease_factor), 365);
       }
       repetition_count += 1;
     } else {
@@ -88,28 +88,27 @@ class SrsService {
     progress.next_review_at = sm2Result.next_review_at;
     progress.status = sm2Result.status;
 
-    await progress.save();
+    await sequelize.transaction(async (t) => {
+      await progress.save({ transaction: t });
 
-    // Đánh dấu lịch ôn tập hiện tại là đã hoàn thành
-    await ReviewSchedule.update(
-      { is_completed: true },
-      {
+      // Đánh dấu lịch ôn tập cũ là đã hoàn thành và dọn dẹp các mục cũ không cần thiết
+      await ReviewSchedule.destroy({
         where: {
           user_id: userId,
-          vocabulary_id: vocabularyId,
-          is_completed: false
-        }
-      }
-    );
+          vocabulary_id: vocabularyId
+        },
+        transaction: t
+      });
 
-    // Lên lịch ôn tập tiếp theo
-    await ReviewSchedule.create({
-      user_id: userId,
-      vocabulary_id: vocabularyId,
-      scheduled_at: sm2Result.next_review_at,
-      is_completed: false,
-      source,
-      group_vocab_set_id: groupVocabSetId
+      // Lên lịch ôn tập tiếp theo
+      await ReviewSchedule.create({
+        user_id: userId,
+        vocabulary_id: vocabularyId,
+        scheduled_at: sm2Result.next_review_at,
+        is_completed: false,
+        source,
+        group_vocab_set_id: groupVocabSetId
+      }, { transaction: t });
     });
 
     return progress;

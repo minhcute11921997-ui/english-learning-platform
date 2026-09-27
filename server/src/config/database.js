@@ -8,7 +8,7 @@ module.exports = {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 3306,
     dialect: 'mysql',
-    logging: console.log,
+    logging: process.env.DB_LOGGING === 'true' ? console.log : false,
     define: {
       timestamps: true,
       underscored: true,
@@ -16,10 +16,11 @@ module.exports = {
       collate: 'utf8mb4_unicode_ci'
     },
     pool: {
-      max: 10,
-      min: 0,
+      max: parseInt(process.env.DB_POOL_MAX) || 25,
+      min: parseInt(process.env.DB_POOL_MIN) || 2,
       acquire: 30000,
-      idle: 10000
+      idle: 10000,
+      evict: 1000
     }
   },
   test: {

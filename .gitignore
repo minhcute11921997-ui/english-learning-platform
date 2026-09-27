@@ -24,3 +24,12 @@ server/uploads/*
 # OS
 .DS_Store
 Thumbs.db
+
+# Test & Coverage
+coverage/
+server/coverage/
+*.lcov
+
+# Temporary / Output
+tools/output/
+

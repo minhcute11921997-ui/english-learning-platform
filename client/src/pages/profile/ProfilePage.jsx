@@ -5,7 +5,7 @@ import { userApi, statsApi } from '../../api/services';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import { HiUser, HiKey, HiFlag, HiChartPie, HiCheckCircle } from 'react-icons/hi';
+import { HiUser, HiKey, HiFlag } from 'react-icons/hi';
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuthStore();

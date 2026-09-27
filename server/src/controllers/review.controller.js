@@ -21,17 +21,18 @@ const getUpcomingReviews = catchAsync(async (req, res) => {
 
 const answerReview = catchAsync(async (req, res) => {
   const userId = req.user.id;
-  const { vocabId } = req.params;
+  const vocabId = parseInt(req.params.vocabId);
   const { quality, source, group_vocab_set_id } = req.body;
 
-  if (quality === undefined || quality < 0 || quality > 5) {
-    throw new AppError('Điểm chất lượng (quality) phải từ 0 đến 5.', 400);
+  const q = Number(quality);
+  if (isNaN(q) || q < 0 || q > 5) {
+    throw new AppError('Điểm chất lượng (quality) phải là số từ 0 đến 5.', 400);
   }
 
   const updatedProgress = await SrsService.recordReviewAnswer(
     userId,
     vocabId,
-    quality,
+    q,
     source || 'personal',
     group_vocab_set_id || null
   );

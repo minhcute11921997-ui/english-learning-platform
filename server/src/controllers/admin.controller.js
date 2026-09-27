@@ -5,7 +5,8 @@ const {
   Question,
   CommunityPost,
   Topic,
-  VocabExample
+  VocabExample,
+  sequelize
 } = require('../models');
 const { Op } = require('sequelize');
 const ApiResponse = require('../utils/apiResponse');
@@ -30,6 +31,7 @@ const getUsers = catchAsync(async (req, res) => {
 
   const { rows: users, count: total } = await User.findAndCountAll({
     where,
+    attributes: { exclude: ['password_hash'] },
     limit: parseInt(limit),
     offset: parseInt(offset),
     order: [['created_at', 'DESC']]
@@ -129,31 +131,35 @@ const deleteVocabulary = catchAsync(async (req, res) => {
 const createReading = catchAsync(async (req, res) => {
   const { topic_id, title, title_vi, content, content_vi, difficulty, questions = [] } = req.body;
 
-  const reading = await Reading.create({
-    topic_id,
-    title,
-    title_vi,
-    content,
-    content_vi,
-    difficulty: difficulty || 'easy',
-    word_count: content ? content.split(/\s+/).length : 0,
-    estimated_time_minutes: Math.ceil((content ? content.split(/\s+/).length : 0) / 40),
-    source_type: 'system',
-    is_approved: true
-  });
+  const reading = await sequelize.transaction(async (t) => {
+    const newReading = await Reading.create({
+      topic_id,
+      title,
+      title_vi,
+      content,
+      content_vi,
+      difficulty: difficulty || 'easy',
+      word_count: content ? content.split(/\s+/).length : 0,
+      estimated_time_minutes: Math.ceil((content ? content.split(/\s+/).length : 0) / 40),
+      source_type: 'system',
+      is_approved: true
+    }, { transaction: t });
 
-  for (let i = 0; i < questions.length; i++) {
-    const q = questions[i];
-    await Question.create({
-      reading_id: reading.id,
-      question_text: q.question_text,
-      question_text_vi: q.question_text_vi,
-      options: q.options,
-      correct_option: q.correct_option,
-      explanation_vi: q.explanation_vi,
-      display_order: i
-    });
-  }
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i];
+      await Question.create({
+        reading_id: newReading.id,
+        question_text: q.question_text,
+        question_text_vi: q.question_text_vi,
+        options: q.options,
+        correct_option: q.correct_option,
+        explanation_vi: q.explanation_vi,
+        display_order: i
+      }, { transaction: t });
+    }
+
+    return newReading;
+  });
 
   return ApiResponse.created(res, reading, 'Tạo bài đọc mới thành công');
 });

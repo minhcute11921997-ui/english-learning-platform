@@ -1,4 +1,4 @@
-const { LevelAssessment, User } = require('../models');
+const { LevelAssessment, User, sequelize } = require('../models');
 const { placementQuestionsData } = require('../seeders/index');
 const ApiResponse = require('../utils/apiResponse');
 const catchAsync = require('../utils/catchAsync');
@@ -61,20 +61,24 @@ const submitAssessment = catchAsync(async (req, res) => {
     result_level = 'beginner';
   }
 
-  const assessment = await LevelAssessment.create({
-    user_id: req.user.id,
-    score,
-    total_questions,
-    result_level,
-    answers_detail: answersDetail,
-    taken_at: new Date()
-  });
+  const assessment = await sequelize.transaction(async (t) => {
+    const newAssessment = await LevelAssessment.create({
+      user_id: req.user.id,
+      score,
+      total_questions,
+      result_level,
+      answers_detail: answersDetail,
+      taken_at: new Date()
+    }, { transaction: t });
 
-  // Cập nhật initial_level cho User
-  await User.update(
-    { initial_level: levelScorePercent },
-    { where: { id: req.user.id } }
-  );
+    // Cập nhật initial_level cho User
+    await User.update(
+      { initial_level: levelScorePercent },
+      { where: { id: req.user.id }, transaction: t }
+    );
+
+    return newAssessment;
+  });
 
   return ApiResponse.created(res, {
     assessment_id: assessment.id,

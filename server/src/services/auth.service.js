@@ -84,6 +84,8 @@ class AuthService {
       const tokens = this.generateTokens(user);
       return { user, ...tokens };
     } catch (err) {
+      // Nếu là operational error (như tài khoản bị khóa), rethrow để giữ nguyên message
+      if (err.isOperational) throw err;
       throw new AppError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.', 401);
     }
   }

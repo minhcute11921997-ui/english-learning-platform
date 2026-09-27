@@ -22,7 +22,16 @@ for (const project of projects) {
   console.log(`\n📋 Auditing ${project.name} (${project.path}):`);
   try {
     const cmd = shouldFix ? 'npm audit fix' : 'npm audit --json';
-    const result = execSync(cmd, { cwd: project.path, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+    let result = '';
+    try {
+      result = execSync(cmd, { cwd: project.path, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+    } catch (err) {
+      if (err.stdout) {
+        result = err.stdout;
+      } else {
+        throw err;
+      }
+    }
     if (!shouldFix) {
       try {
         const audit = JSON.parse(result);
@@ -44,7 +53,7 @@ for (const project of projects) {
       console.log('  ✅ Audit fix completed');
     }
   } catch (error) {
-    console.log(`  ℹ️  Skipped (no package.json or node_modules)`);
+    console.log(`  ℹ️  Skipped (${error.message || 'error running audit'})`);
   }
 }
 

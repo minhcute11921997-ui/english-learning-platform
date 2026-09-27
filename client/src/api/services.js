@@ -25,7 +25,7 @@ export const vocabApi = {
   getByTopic: (topicId, params) => api.get(`/vocabularies/topic/${topicId}`, { params }),
   getById: (id) => api.get(`/vocabularies/${id}`),
   markAsLearned: (id) => api.post(`/vocabularies/${id}/learn`),
-  search: (q) => api.get('/vocabularies/search', { params: { q } })
+  search: (q, params = {}) => api.get('/vocabularies/search', { params: { q, ...params } })
 };
 
 export const exerciseApi = {

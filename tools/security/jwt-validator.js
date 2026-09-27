@@ -38,8 +38,10 @@ const checks = [
   {
     name: 'Auth middleware exists',
     check: () => {
-      const p = path.resolve(__dirname, '../../server/src/middlewares/auth.middleware.js');
-      if (fs.existsSync(p)) {
+      const p1 = path.resolve(__dirname, '../../server/src/middleware/auth.js');
+      const p2 = path.resolve(__dirname, '../../server/src/middlewares/auth.middleware.js');
+      const p = fs.existsSync(p1) ? p1 : (fs.existsSync(p2) ? p2 : null);
+      if (p) {
         const content = fs.readFileSync(p, 'utf-8');
         if (content.includes('verify')) return { status: 'pass', msg: 'Auth middleware with verify found ✓' };
         return { status: 'warn', msg: 'Auth middleware exists but may not verify tokens' };

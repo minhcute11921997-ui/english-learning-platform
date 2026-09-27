@@ -1,4 +1,4 @@
-const { CommunityPost, User, Vocabulary, Reading, Topic } = require('../models');
+const { CommunityPost, User } = require('../models');
 const ApiResponse = require('../utils/apiResponse');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');

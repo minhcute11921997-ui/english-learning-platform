@@ -48,6 +48,7 @@ const getMyProgress = catchAsync(async (req, res) => {
     learnedCount,
     masteredCount,
     dueTodayCount,
+    completedReadingsCount,
     readingAttempts
   ] = await Promise.all([
     UserVocabProgress.count({ where: { user_id: userId } }),
@@ -58,14 +59,17 @@ const getMyProgress = catchAsync(async (req, res) => {
         next_review_at: { [Op.lte]: now }
       }
     }),
+    // Fix: Dùng COUNT DISTINCT thay vì load toàn bộ data vào memory
+    UserReadingAttempt.count({
+      where: { user_id: userId },
+      distinct: true,
+      col: 'reading_id'
+    }),
     UserReadingAttempt.findAll({
       where: { user_id: userId },
-      attributes: ['reading_id', 'score', 'total_questions', 'attempted_at']
+      attributes: ['score', 'total_questions']
     })
   ]);
-
-  const completedReadingIds = new Set(readingAttempts.map((a) => a.reading_id));
-  const completedReadingsCount = completedReadingIds.size;
 
   let totalReadingScore = 0;
   let totalReadingQuestions = 0;

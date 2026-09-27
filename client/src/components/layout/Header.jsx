@@ -55,8 +55,8 @@ export default function Header() {
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                <Link to="/login" className="btn-secondary text-sm">Đăng nhập</Link>
-                <Link to="/register" className="btn-primary text-sm">Đăng ký</Link>
+                <Link to="/login" className="btn btn-secondary text-sm">Đăng nhập</Link>
+                <Link to="/register" className="btn btn-primary text-sm">Đăng ký</Link>
               </div>
             )}
 

@@ -138,12 +138,12 @@ export default function FlashcardPage() {
       <div className="w-full bg-gray-200 rounded-full h-1.5">
         <div
           className="bg-primary-600 h-1.5 rounded-full transition-all duration-300"
-          style={{ width: `${Math.round(((currentIndex + 1) / vocabs.length) * 100)}%` }}
+          style={{ width: `${vocabs.length > 0 ? Math.round(((currentIndex + 1) / vocabs.length) * 100) : 0}%` }}
         />
       </div>
 
       {/* 3D Flip Flashcard */}
-      {current && (
+      {current ? (
         <div
           className="perspective-1000 min-h-[380px] cursor-pointer"
           onClick={() => setIsFlipped(!isFlipped)}
@@ -201,17 +201,23 @@ export default function FlashcardPage() {
             </div>
           </div>
         </div>
+      ) : (
+        <div className="card text-center py-12">
+          <p className="text-gray-500">Chưa có từ vựng nào trong chủ đề này.</p>
+        </div>
       )}
 
       {/* Navigation buttons */}
-      <div className="flex justify-between items-center pt-2">
-        <Button variant="secondary" onClick={handlePrev} className="gap-2">
-          <HiArrowLeft /> Từ trước
-        </Button>
-        <Button onClick={handleNext} className="gap-2">
-          Từ tiếp theo <HiArrowRight />
-        </Button>
-      </div>
+      {vocabs.length > 0 && (
+        <div className="flex justify-between items-center pt-2">
+          <Button variant="secondary" onClick={handlePrev} className="gap-2">
+            <HiArrowLeft /> Từ trước
+          </Button>
+          <Button onClick={handleNext} className="gap-2">
+            Từ tiếp theo <HiArrowRight />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

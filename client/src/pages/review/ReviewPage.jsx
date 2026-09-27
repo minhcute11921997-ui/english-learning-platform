@@ -7,10 +7,7 @@ import {
   HiVolumeUp,
   HiClock,
   HiCheckCircle,
-  HiAcademicCap,
-  HiLightningBolt,
-  HiCalendar,
-  HiSparkles
+  HiCalendar
 } from 'react-icons/hi';
 
 export default function ReviewPage() {
@@ -58,7 +55,7 @@ export default function ReviewPage() {
 
   const handleAnswer = async (quality) => {
     const current = dueWords[currentIndex];
-    if (!current) return;
+    if (!current?.vocabulary) return;
 
     try {
       setIsSubmitting(true);

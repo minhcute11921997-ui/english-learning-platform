@@ -9,7 +9,8 @@ const {
   Reading,
   UserVocabProgress,
   UserReadingAttempt,
-  ReviewSchedule
+  ReviewSchedule,
+  sequelize
 } = require('../models');
 const ApiResponse = require('../utils/apiResponse');
 const catchAsync = require('../utils/catchAsync');
@@ -20,17 +21,21 @@ const createGroup = catchAsync(async (req, res) => {
   const { name, description } = req.body;
   const ownerId = req.user.id;
 
-  const group = await Group.create({
-    owner_id: ownerId,
-    name,
-    description
-  });
+  const group = await sequelize.transaction(async (t) => {
+    const newGroup = await Group.create({
+      owner_id: ownerId,
+      name,
+      description
+    }, { transaction: t });
 
-  // Tự động thêm owner vào danh sách thành viên
-  await GroupMember.create({
-    group_id: group.id,
-    user_id: ownerId,
-    role: 'owner'
+    // Tự động thêm owner vào danh sách thành viên
+    await GroupMember.create({
+      group_id: newGroup.id,
+      user_id: ownerId,
+      role: 'owner'
+    }, { transaction: t });
+
+    return newGroup;
   });
 
   return ApiResponse.created(res, group, 'Tạo nhóm học tập thành công');
@@ -190,7 +195,7 @@ const removeMember = catchAsync(async (req, res) => {
   }
 
   await GroupMember.destroy({
-    where: { group_id: id, user_id: userId }
+    where: { group_id: parseInt(id), user_id: parseInt(userId) }
   });
 
   return ApiResponse.success(res, null, 'Đã xóa thành viên khỏi nhóm');
@@ -239,21 +244,25 @@ const createGroupVocabSet = catchAsync(async (req, res) => {
     throw new AppError('Chỉ chủ nhóm mới có quyền tạo bộ từ vựng.', 403);
   }
 
-  const vocabSet = await GroupVocabSet.create({
-    group_id: parseInt(id),
-    created_by: req.user.id,
-    title,
-    description,
-    is_published: false
-  });
+  const vocabSet = await sequelize.transaction(async (t) => {
+    const newVocabSet = await GroupVocabSet.create({
+      group_id: parseInt(id),
+      created_by: req.user.id,
+      title,
+      description,
+      is_published: false
+    }, { transaction: t });
 
-  for (let i = 0; i < vocabulary_ids.length; i++) {
-    await GroupVocabItem.create({
-      vocab_set_id: vocabSet.id,
-      vocabulary_id: vocabulary_ids[i],
-      display_order: i
-    });
-  }
+    for (let i = 0; i < vocabulary_ids.length; i++) {
+      await GroupVocabItem.create({
+        vocab_set_id: newVocabSet.id,
+        vocabulary_id: vocabulary_ids[i],
+        display_order: i
+      }, { transaction: t });
+    }
+
+    return newVocabSet;
+  });
 
   return ApiResponse.created(res, vocabSet, 'Tạo bộ từ vựng nhóm thành công');
 });
@@ -261,37 +270,48 @@ const createGroupVocabSet = catchAsync(async (req, res) => {
 // Phát hành bộ từ vựng cho thành viên và đẩy vào lịch ôn tập
 const publishGroupVocabSet = catchAsync(async (req, res) => {
   const { id, setId } = req.params;
+
+  // Kiểm tra quyền chủ nhóm
+  const group = await Group.findByPk(id);
+  if (!group) throw new AppError('Không tìm thấy nhóm.', 404);
+  if (group.owner_id !== req.user.id) {
+    throw new AppError('Chỉ chủ nhóm mới có quyền phát hành bộ từ vựng.', 403);
+  }
+
   const vocabSet = await GroupVocabSet.findOne({
-    where: { id: setId, group_id: id },
+    where: { id: parseInt(setId), group_id: parseInt(id) },
     include: [{ model: GroupVocabItem, as: 'items' }]
   });
 
   if (!vocabSet) throw new AppError('Không tìm thấy bộ từ vựng.', 404);
 
-  vocabSet.is_published = true;
-  await vocabSet.save();
+  await sequelize.transaction(async (t) => {
+    vocabSet.is_published = true;
+    await vocabSet.save({ transaction: t });
 
-  // Đẩy từ vựng vào lịch ôn tập của toàn bộ thành viên nhóm
-  const members = await GroupMember.findAll({ where: { group_id: id } });
-  for (const member of members) {
-    for (const item of vocabSet.items) {
-      await ReviewSchedule.findOrCreate({
-        where: {
-          user_id: member.user_id,
-          vocabulary_id: item.vocabulary_id,
-          group_vocab_set_id: vocabSet.id
-        },
-        defaults: {
-          user_id: member.user_id,
-          vocabulary_id: item.vocabulary_id,
-          scheduled_at: new Date(),
-          is_completed: false,
-          source: 'group',
-          group_vocab_set_id: vocabSet.id
-        }
-      });
+    // Đẩy từ vựng vào lịch ôn tập của toàn bộ thành viên nhóm
+    const members = await GroupMember.findAll({ where: { group_id: parseInt(id) }, transaction: t });
+    for (const member of members) {
+      for (const item of vocabSet.items) {
+        await ReviewSchedule.findOrCreate({
+          where: {
+            user_id: member.user_id,
+            vocabulary_id: item.vocabulary_id,
+            group_vocab_set_id: vocabSet.id
+          },
+          defaults: {
+            user_id: member.user_id,
+            vocabulary_id: item.vocabulary_id,
+            scheduled_at: new Date(),
+            is_completed: false,
+            source: 'group',
+            group_vocab_set_id: vocabSet.id
+          },
+          transaction: t
+        });
+      }
     }
-  }
+  });
 
   return ApiResponse.success(res, vocabSet, 'Đã phát hành bộ từ vựng cho nhóm');
 });
@@ -301,14 +321,23 @@ const addGroupReading = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { reading_id } = req.body;
 
-  const reading = await Reading.findByPk(reading_id);
+  // Kiểm tra quyền: chỉ chủ nhóm mới được giao bài đọc
+  const group = await Group.findByPk(id);
+  if (!group) throw new AppError('Không tìm thấy nhóm.', 404);
+  if (group.owner_id !== req.user.id) {
+    throw new AppError('Chỉ chủ nhóm mới có quyền giao bài đọc cho nhóm.', 403);
+  }
+
+  const rId = parseInt(reading_id);
+  const gId = parseInt(id);
+  const reading = await Reading.findByPk(rId);
   if (!reading) throw new AppError('Không tìm thấy bài đọc.', 404);
 
   const [readingSet] = await GroupReadingSet.findOrCreate({
-    where: { group_id: id, reading_id },
+    where: { group_id: gId, reading_id: rId },
     defaults: {
-      group_id: parseInt(id),
-      reading_id,
+      group_id: gId,
+      reading_id: rId,
       created_by: req.user.id,
       is_published: true
     }

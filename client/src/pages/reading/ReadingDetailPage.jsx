@@ -19,11 +19,37 @@ export default function ReadingDetailPage() {
   const navigate = useNavigate();
   const [reading, setReading] = useState(null);
   const [showVietnamese, setShowVietnamese] = useState(false);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(`reading_draft_${id}`);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [results, setResults] = useState(null);
   const [startTime] = useState(Date.now());
+
+  // Lưu nháp câu trả lời vào sessionStorage để tránh mất bài khi F5/reload
+  useEffect(() => {
+    if (!results && Object.keys(answers).length > 0) {
+      sessionStorage.setItem(`reading_draft_${id}`, JSON.stringify(answers));
+    }
+  }, [answers, results, id]);
+
+  // Cảnh báo người dùng khi reload hoặc rời trang lúc đang làm bài
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (!results && Object.keys(answers).length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [answers, results]);
 
   useEffect(() => {
     loadReading();
@@ -34,7 +60,6 @@ export default function ReadingDetailPage() {
       setIsLoading(true);
       const res = await readingApi.getById(id);
       setReading(res.data);
-      setAnswers({});
       setResults(null);
     } catch (err) {
       toast.error(err.message || 'Không thể tải bài đọc');
@@ -44,10 +69,10 @@ export default function ReadingDetailPage() {
   };
 
   const handleSelectOption = (qId, optIdx) => {
-    setAnswers({
-      ...answers,
+    setAnswers((prev) => ({
+      ...prev,
       [qId]: optIdx
-    });
+    }));
   };
 
   const handleSubmit = async () => {
@@ -71,6 +96,7 @@ export default function ReadingDetailPage() {
         answers: formattedAnswers,
         time_spent_seconds: timeSpent
       });
+      sessionStorage.removeItem(`reading_draft_${id}`);
       setResults(res.data);
       toast.success('Đã nộp bài làm thành công!');
     } catch (err) {
@@ -160,7 +186,14 @@ export default function ReadingDetailPage() {
             Thời gian hoàn thành: {results.time_spent_seconds} giây
           </p>
           <div className="pt-2 flex justify-center gap-3">
-            <Button onClick={loadReading} variant="secondary">
+            <Button
+              onClick={() => {
+                sessionStorage.removeItem(`reading_draft_${id}`);
+                setAnswers({});
+                loadReading();
+              }}
+              variant="secondary"
+            >
               Làm lại bài này
             </Button>
             <Button onClick={() => navigate('/readings')}>
