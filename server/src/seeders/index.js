@@ -866,6 +866,9 @@ const usersData = [
 async function seed() {
   console.log('🌱 Starting comprehensive database seeding...');
 
+  // Tự động tạo bảng nếu chưa có
+  await sequelize.sync();
+
   // 1. Topics
   console.log('📌 Seeding 7 Topics...');
   for (const topic of topicsData) {

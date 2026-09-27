@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # 1. Cơ sở dữ liệu MySQL 8.0
+  mysql:
+    image: mysql:8.0
+    container_name: englearn_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: english_learning
+      MYSQL_USER: englearn_user
+      MYSQL_PASSWORD: englearn_pass
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -prootpassword || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+    networks:
+      - englearn_net
+
+  # 2. Backend API (Node.js Express + Sequelize)
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: englearn_server
+    restart: always
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: english_learning
+      DB_USER: englearn_user
+      DB_PASSWORD: englearn_pass
+      JWT_SECRET: englearn_jwt_secret_key_production_2026_super_secure
+      JWT_REFRESH_SECRET: englearn_jwt_refresh_secret_key_production_2026_super_secure
+      CLIENT_URL: http://localhost
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    volumes:
+      - server_uploads:/app/uploads
+    networks:
+      - englearn_net
+
+  # 3. Frontend Client (React + Nginx Reverse Proxy)
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: englearn_client
+    restart: always
+    depends_on:
+      - server
+    ports:
+      - "80:80"
+      - "5173:80"
+    networks:
+      - englearn_net
+
+volumes:
+  mysql_data:
+    driver: local
+  server_uploads:
+    driver: local
+
+networks:
+  englearn_net:
+    driver: bridge
