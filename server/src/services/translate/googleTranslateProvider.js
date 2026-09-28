@@ -1,17 +1,19 @@
 /**
  * Google Translate Provider
  * Gọi Google Translate Web API (unofficial) với cơ chế thử nhiều client.
- * Fallback sang MyMemory nếu Google Translate không phản hồi.
+ * Nếu tất cả client đều thất bại → throw lỗi (không dùng fallback chất lượng thấp).
  */
 
 /**
- * Gọi Google Translate với nhiều client thử lần lượt
+ * Gọi Google Translate với nhiều client thử lần lượt.
+ *
  * @param {string} text - Văn bản cần dịch
  * @param {string} sl - Ngôn ngữ nguồn ('auto', 'en', 'vi', ...)
  * @param {string} tl - Ngôn ngữ đích ('vi', 'en', ...)
- * @returns {Promise<{translated: string, detectedLang: string, dictionary: Array}>}
+ * @returns {Promise<{translated: string, detectedLang: string, dictionary: Array, provider: string}>}
+ * @throws {Error} Khi tất cả client đều thất bại
  */
-async function fetchGoogleTranslate(text, sl = 'auto', tl = 'vi') {
+async function translate(text, sl = 'auto', tl = 'vi') {
   const clients = ['dict-chrome-ex', 'gtx'];
   let lastError = null;
 
@@ -42,46 +44,7 @@ async function fetchGoogleTranslate(text, sl = 'auto', tl = 'vi') {
     }
   }
 
-  throw lastError || new Error('Google Translate failed');
-}
-
-/**
- * Fallback: Dịch qua MyMemory API (free, giới hạn 5000 ký tự/ngày)
- * @param {string} text
- * @param {string} sl
- * @param {string} tl
- */
-async function fetchMyMemory(text, sl = 'en', tl = 'vi') {
-  const s = sl === 'auto' ? 'en' : sl;
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${s}|${tl}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('MyMemory API error');
-  const data = await res.json();
-  const translated = data.responseData?.translatedText || '';
-  return {
-    translated,
-    detectedLang: s,
-    dictionary: [],
-    provider: 'mymemory'
-  };
-}
-
-/**
- * Hàm dịch chính của provider này:
- * Google Translate → (nếu lỗi) → MyMemory
- *
- * @param {string} text
- * @param {string} sl
- * @param {string} tl
- * @returns {Promise<{translated: string, detectedLang: string, dictionary: Array, provider: string}>}
- */
-async function translate(text, sl = 'auto', tl = 'vi') {
-  try {
-    return await fetchGoogleTranslate(text, sl, tl);
-  } catch (err) {
-    console.warn('[GoogleTranslateProvider] Google Translate unavailable, trying MyMemory:', err.message);
-    return await fetchMyMemory(text, sl, tl);
-  }
+  throw lastError || new Error('Google Translate không khả dụng');
 }
 
 module.exports = { translate, name: 'google' };
