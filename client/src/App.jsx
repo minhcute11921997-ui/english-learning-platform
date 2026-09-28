@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import Router from './Router';
 import useAuthStore from './stores/authStore';
 import ErrorBoundary from './components/common/ErrorBoundary';
+import SelectionTranslator from './components/common/SelectionTranslator';
 
 export default function App() {
   const { checkAuth } = useAuthStore();
@@ -14,6 +15,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <Router />
+      <SelectionTranslator />
       <Toaster
         position="top-right"
         toastOptions={{

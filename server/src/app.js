@@ -23,8 +23,18 @@ app.use(compression());
 app.use(helmet());
 app.disable('x-powered-by');
 
+const allowedOrigins = [
+  config.clientUrl,
+  'http://localhost',
+  'http://localhost:80',
+  'http://localhost:5173',
+  'http://localhost:8080'
+].filter(Boolean);
+
 app.use(cors({
-  origin: config.clientUrl,
+  origin: config.env === 'production'
+    ? (origin, cb) => cb(null, !origin || allowedOrigins.includes(origin))
+    : true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 1. Cơ sở dữ liệu MySQL 8.0
   mysql:
@@ -13,7 +11,7 @@ services:
       MYSQL_PASSWORD: englearn_pass
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -42,7 +40,7 @@ services:
       DB_PASSWORD: englearn_pass
       JWT_SECRET: englearn_jwt_secret_key_production_2026_super_secure
       JWT_REFRESH_SECRET: englearn_jwt_refresh_secret_key_production_2026_super_secure
-      CLIENT_URL: http://localhost
+      CLIENT_URL: http://localhost:5173
     depends_on:
       mysql:
         condition: service_healthy
@@ -63,8 +61,8 @@ services:
     depends_on:
       - server
     ports:
-      - "80:80"
       - "5173:80"
+      - "8080:80"
     networks:
       - englearn_net
 

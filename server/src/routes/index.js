@@ -12,6 +12,7 @@ const groupRoutes = require('./group.routes');
 const communityRoutes = require('./community.routes');
 const adminRoutes = require('./admin.routes');
 const statsRoutes = require('./stats.routes');
+const translateRoutes = require('./translate.routes');
 
 const router = express.Router();
 
@@ -27,5 +28,6 @@ router.use('/groups', groupRoutes);
 router.use('/community', communityRoutes);
 router.use('/admin', adminRoutes);
 router.use('/stats', statsRoutes);
+router.use('/translate', translateRoutes);
 
 module.exports = router;
