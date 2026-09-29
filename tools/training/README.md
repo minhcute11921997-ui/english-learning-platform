@@ -116,10 +116,11 @@ tools/training/
 │   └── processed/             ← Dữ liệu đã format xong
 ├── scripts/
 │   ├── 01_download_datasets.py
-│   ├── 02_export_db.py        ← Chạy trên máy có MySQL
+│   ├── 02_export_db.js            ← Chạy trên máy có MySQL
 │   ├── 03_format_dataset.py
 │   ├── 04_train.py
-│   ├── 05_evaluate.py
+│   ├── 05_evaluate.py             ← Đánh giá BLEU + chrF++
+│   ├── 05b_llm_judge.py           ← Đánh giá bằng Gemini AI (khuyến nghị)
 │   └── 06_merge_and_export.py
 └── configs/
     └── training_config.yaml
@@ -214,6 +215,8 @@ tools/training/models/vi-en-translator-v1/
 
 ## Bước 4: Đánh giá Model
 
+### 4.1 Đánh giá tự động (BLEU + chrF++)
+
 ```bash
 conda activate vi-en-translate
 python tools/training/scripts/05_evaluate.py
@@ -237,6 +240,73 @@ VI→EN:
   Expected: "I like learning English"
   Got:      "I like learning English"  ✓
 ```
+
+### 4.2 Đánh giá bằng AI — LLM-as-a-Judge ⭐ Khuyến nghị
+
+> Thay vì ngồi chấm điểm thủ công từng câu, dùng **Gemini API chấm điểm tự động**
+> cho hàng trăm bản dịch — nhanh, nhất quán, không tốn công người.
+
+**Cách hoạt động:**
+1. Script cho model fine-tune dịch ~200 câu test
+2. Gửi từng cặp `(câu gốc + bản dịch)` cho Gemini API
+3. Gemini chấm điểm 1–5 và giải thích lý do
+4. Tổng hợp báo cáo tự động
+
+**Lấy Gemini API key (miễn phí):**
+1. Vào https://aistudio.google.com
+2. Nhấn **"Get API key"** → tạo key mới
+3. Copy key
+
+**Cài thư viện & chạy:**
+```bash
+conda activate vi-en-translate
+pip install google-generativeai
+
+# Đặt API key
+set GEMINI_API_KEY=your-api-key-here        # Windows CMD
+# $env:GEMINI_API_KEY="your-api-key-here"   # Windows PowerShell
+# export GEMINI_API_KEY=your-api-key         # Linux/Mac
+
+python tools/training/scripts/05b_llm_judge.py
+```
+
+**Output mẫu:**
+```
+=== LLM-as-a-Judge Report ===
+Chấm 200 câu test bằng Gemini gemini-2.0-flash...
+
+📊 Kết quả tổng hợp:
+  Điểm trung bình:   4.1 / 5.0
+  Đạt điểm >= 4:     78%  (156/200 câu)
+  Cần cải thiện:     22%  (44/200 câu)
+
+🔴 Lỗi phổ biến nhất:
+  - Thành ngữ / idiom:  12 câu sai
+  - Từ đa nghĩa:         8 câu sai
+  - Sắc thái trang trọng: 5 câu sai
+
+🔴 Ví dụ câu kém nhất:
+  [EN→VI] "kick the bucket" → "đá cái xô"  (☆1)
+           Lý do: Sai thành ngữ, phải dịch là "qua đời / mất"
+
+  [VI→EN] "cậu bé" → "boy"  (☆2)
+           Lý do: Đúng nhưng thiếu sắc thái, "young boy" tự nhiên hơn
+
+✅ Ví dụ câu tốt nhất:
+  [EN→VI] "apple" → "quả táo / trái táo"  (☆5)
+  [VI→EN] "Tôi yêu Việt Nam" → "I love Vietnam"  (☆5)
+
+💾 Báo cáo đầy đủ: tools/training/data/eval_report.json
+```
+
+**Đọc kết quả & quyết định:**
+
+| Điểm TB | Hành động |
+|---|---|
+| < 3.0 / 5 | ❌ Cần train thêm epoch hoặc cải thiện data |
+| 3.0 – 3.5 / 5 | ⚠️ Xem phần "Lỗi phổ biến" → bổ sung data cho các lỗi đó |
+| 3.5 – 4.0 / 5 | ✅ Tốt, có thể deploy thử nghiệm |
+| > 4.0 / 5 | 🎉 Rất tốt — deploy chính thức |
 
 ---
 
