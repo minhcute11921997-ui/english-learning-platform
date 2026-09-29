@@ -1,0 +1,84 @@
+# Training configuration cho fine-tune Gemma 3 4B → Vi-En Translator
+# File: tools/training/configs/training_config.yaml
+
+# ===========================================================
+# MODEL
+# ===========================================================
+base_model: "google/gemma-3-4b-it"
+output_dir: "./tools/training/models/vi-en-translator-v1"
+
+# ===========================================================
+# QUANTIZATION (QLoRA — 4-bit để chạy vừa RTX 3060 12GB)
+# ===========================================================
+load_in_4bit: true
+bnb_4bit_quant_type: "nf4"           # NF4 tốt hơn FP4 cho fine-tune
+bnb_4bit_compute_dtype: "bfloat16"   # BF16 ổn định hơn FP16
+bnb_4bit_use_double_quant: true      # Tiết kiệm thêm ~0.4 bit/param
+
+# ===========================================================
+# LoRA PARAMETERS
+# ===========================================================
+lora_r: 16                            # Rank: 16 là cân bằng tốt
+lora_alpha: 32                        # alpha = 2 * r thường tốt
+lora_dropout: 0.05
+# Các module cần train trong Gemma:
+lora_target_modules:
+  - "q_proj"
+  - "k_proj"
+  - "v_proj"
+  - "o_proj"
+  - "gate_proj"
+  - "up_proj"
+  - "down_proj"
+
+# ===========================================================
+# TRAINING HYPERPARAMETERS
+# ===========================================================
+num_train_epochs: 3
+per_device_train_batch_size: 4        # Giảm xuống 2 nếu OOM
+gradient_accumulation_steps: 4       # effective batch = 16
+learning_rate: 2.0e-4
+warmup_ratio: 0.03
+lr_scheduler_type: "cosine"
+weight_decay: 0.001
+max_grad_norm: 1.0
+
+# ===========================================================
+# SEQUENCE LENGTH
+# ===========================================================
+max_seq_length: 256                   # Câu dịch thường ngắn
+# Tăng lên 512 nếu muốn hỗ trợ câu dài hơn (cần thêm VRAM)
+
+# ===========================================================
+# DATA
+# ===========================================================
+train_file: "./tools/training/data/processed/train.jsonl"
+val_file: "./tools/training/data/processed/validation.jsonl"
+test_file: "./tools/training/data/processed/test.jsonl"
+dataset_text_field: "messages"
+
+# ===========================================================
+# LOGGING & SAVING
+# ===========================================================
+logging_steps: 50
+eval_steps: 500
+save_steps: 500
+save_total_limit: 3                   # Giữ 3 checkpoint gần nhất
+load_best_model_at_end: true
+metric_for_best_model: "eval_loss"
+greater_is_better: false
+
+# ===========================================================
+# OPTIMIZATION
+# ===========================================================
+optim: "paged_adamw_8bit"            # Tiết kiệm VRAM
+fp16: false
+bf16: true                            # RTX 30xx hỗ trợ BF16
+dataloader_num_workers: 2
+group_by_length: true                 # Tăng tốc bằng cách gom câu cùng độ dài
+
+# ===========================================================
+# MISC
+# ===========================================================
+seed: 42
+report_to: "none"                     # Đổi thành "wandb" nếu muốn theo dõi online
