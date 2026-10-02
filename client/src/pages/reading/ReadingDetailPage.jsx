@@ -10,8 +10,7 @@ import {
   HiXCircle,
   HiTranslate,
   HiClock,
-  HiBookOpen,
-  HiSparkles
+  HiBookOpen
 } from 'react-icons/hi';
 
 export default function ReadingDetailPage() {
@@ -19,14 +18,6 @@ export default function ReadingDetailPage() {
   const navigate = useNavigate();
   const [reading, setReading] = useState(null);
   const [showVietnamese, setShowVietnamese] = useState(false);
-  const [translatedQuestions, setTranslatedQuestions] = useState({});
-
-  const toggleQuestionTranslate = (qId) => {
-    setTranslatedQuestions((prev) => ({
-      ...prev,
-      [qId]: !prev[qId]
-    }));
-  };
   const [answers, setAnswers] = useState(() => {
     try {
       const saved = sessionStorage.getItem(`reading_draft_${id}`);
@@ -227,7 +218,7 @@ export default function ReadingDetailPage() {
                     <p className="font-bold text-gray-900">
                       Câu {idx + 1}: {q.question_text}
                     </p>
-                    {(showVietnamese || translatedQuestions[q.question_id]) && q.question_text_vi && (
+                    {showVietnamese && q.question_text_vi && (
                       <p className="text-xs text-[#195646] bg-[#F0F7F4] px-2.5 py-1 rounded-lg mt-1.5 inline-block border border-[#D7E9E1]">
                         🇻🇳 {q.question_text_vi}
                       </p>
@@ -235,17 +226,6 @@ export default function ReadingDetailPage() {
                   </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    {q.question_text_vi && (
-                      <button
-                        type="button"
-                        onClick={() => toggleQuestionTranslate(q.question_id)}
-                        className="text-xs text-[#6C726E] hover:text-[#195646] hover:bg-[#F2EFE8] px-2 py-1 rounded-md border border-[#E0DACE] transition-colors whitespace-nowrap flex items-center gap-1 cursor-pointer"
-                        title="Bật/tắt dịch câu hỏi này"
-                      >
-                        <HiTranslate className="w-3 h-3" />
-                        <span>{translatedQuestions[q.question_id] || showVietnamese ? 'Ẩn dịch' : 'Dịch câu hỏi'}</span>
-                      </button>
-                    )}
                     {q.is_correct ? (
                       <span className="flex items-center gap-1 text-sm font-semibold text-green-600">
                         <HiCheckCircle className="w-5 h-5" /> Đúng
@@ -287,27 +267,14 @@ export default function ReadingDetailPage() {
           <div className="space-y-6">
             {reading.questions?.map((q, idx) => (
               <div key={q.id} className="card p-6 border space-y-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="font-bold text-gray-900">
-                      Câu {idx + 1}: {q.question_text}
+                <div>
+                  <p className="font-bold text-gray-900">
+                    Câu {idx + 1}: {q.question_text}
+                  </p>
+                  {showVietnamese && q.question_text_vi && (
+                    <p className="text-xs text-[#195646] bg-[#F0F7F4] px-2.5 py-1 rounded-lg mt-1.5 inline-block border border-[#D7E9E1]">
+                      🇻🇳 {q.question_text_vi}
                     </p>
-                    {(showVietnamese || translatedQuestions[q.id]) && q.question_text_vi && (
-                      <p className="text-xs text-[#195646] bg-[#F0F7F4] px-2.5 py-1 rounded-lg mt-1.5 inline-block border border-[#D7E9E1]">
-                        🇻🇳 {q.question_text_vi}
-                      </p>
-                    )}
-                  </div>
-                  {q.question_text_vi && (
-                    <button
-                      type="button"
-                      onClick={() => toggleQuestionTranslate(q.id)}
-                      className="text-xs text-[#6C726E] hover:text-[#195646] hover:bg-[#F2EFE8] px-2.5 py-1 rounded-lg border border-[#E0DACE] transition-colors whitespace-nowrap flex items-center gap-1 cursor-pointer flex-shrink-0"
-                      title="Bật/tắt dịch câu hỏi này"
-                    >
-                      <HiTranslate className="w-3.5 h-3.5" />
-                      <span>{translatedQuestions[q.id] || showVietnamese ? 'Ẩn dịch' : 'Dịch câu hỏi'}</span>
-                    </button>
                   )}
                 </div>
 

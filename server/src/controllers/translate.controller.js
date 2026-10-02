@@ -59,19 +59,27 @@ exports.translateSelection = async (req, res, next) => {
       effectiveTarget = target === 'vi' ? 'en' : 'vi';
     }
 
-    // 3. Dịch câu ngữ cảnh (nếu có context và dài hơn từ đang dịch)
-    let contextTranslation = '';
-    if (context && context.trim().length > queryWord.length) {
+    // 3. Dịch câu ngữ cảnh (nếu có context hợp lệ và dài hơn từ đang dịch)
+    let validContext = (context || '').trim();
+    let contextTranslation = null;
+    if (
+      validContext &&
+      validContext.length >= 12 &&
+      validContext.length > queryWord.length &&
+      /[a-zA-ZÀ-ỹ]{3,}/.test(validContext)
+    ) {
       try {
         const ctxRes = await translationService.translate(
-          context.trim(),
+          validContext,
           effectiveSource,
           effectiveTarget
         );
-        contextTranslation = ctxRes.translated;
+        contextTranslation = ctxRes.translated || null;
       } catch (ctxErr) {
         console.warn('[TranslateController] Context translation warning:', ctxErr.message);
       }
+    } else {
+      validContext = null;
     }
 
     return res.json({
@@ -82,8 +90,8 @@ exports.translateSelection = async (req, res, next) => {
         sourceLang: effectiveSource,
         targetLang: effectiveTarget,
         dictionary: wordResult.dictionary || [],
-        contextSentence: context || null,
-        contextTranslation: contextTranslation || null,
+        contextSentence: contextTranslation ? validContext : null,
+        contextTranslation: contextTranslation,
         phonetic: localVocab?.pronunciation || null,
         localMeaning: localVocab?.meaning_vi || null,
         exampleSentence: localVocab?.example_sentence || null,

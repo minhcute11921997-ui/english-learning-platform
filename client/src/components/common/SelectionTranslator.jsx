@@ -216,8 +216,11 @@ export default function SelectionTranslator() {
             )}
           </div>
 
-          {/* Nút bấm xem ngữ cảnh (ẩn mặc định, chỉ hiện khi click) */}
-          {result.contextSentence && result.contextSentence !== result.original && (
+          {/* Nút bấm xem ngữ cảnh (chỉ hiện khi có câu ngữ cảnh dài và có bản dịch ngữ cảnh hợp lệ) */}
+          {result.contextSentence &&
+            result.contextTranslation &&
+            result.contextSentence.length >= 15 &&
+            result.contextSentence.trim().toLowerCase() !== result.original.trim().toLowerCase() && (
             <div className="pt-0.5">
               <button
                 type="button"
