@@ -11,6 +11,14 @@ const getDueReviews = catchAsync(async (req, res) => {
   return ApiResponse.success(res, dueWords, 'Lấy danh sách từ vựng cần ôn tập thành công');
 });
 
+const getLearningReviews = catchAsync(async (req, res) => {
+  const userId = req.user.id;
+  const limit = parseInt(req.query.limit) || 100;
+  const learningWords = await SrsService.getLearningWords(userId, limit);
+
+  return ApiResponse.success(res, learningWords, 'Lấy danh sách từ đang học thành công');
+});
+
 const getUpcomingReviews = catchAsync(async (req, res) => {
   const userId = req.user.id;
   const days = parseInt(req.query.days) || 7;
@@ -49,6 +57,7 @@ const getReviewStats = catchAsync(async (req, res) => {
 
 module.exports = {
   getDueReviews,
+  getLearningReviews,
   getUpcomingReviews,
   answerReview,
   getReviewStats

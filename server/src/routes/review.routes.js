@@ -7,6 +7,7 @@ const router = express.Router();
 router.use(authenticate);
 
 router.get('/due', reviewController.getDueReviews);
+router.get('/learning', reviewController.getLearningReviews);
 router.get('/upcoming', reviewController.getUpcomingReviews);
 router.get('/stats', reviewController.getReviewStats);
 router.post('/:vocabId/answer', reviewController.answerReview);

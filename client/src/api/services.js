@@ -35,6 +35,7 @@ export const exerciseApi = {
 
 export const reviewApi = {
   getDue: (limit = 30) => api.get('/reviews/due', { params: { limit } }),
+  getLearning: (limit = 100) => api.get('/reviews/learning', { params: { limit } }),
   getUpcoming: (days = 7) => api.get('/reviews/upcoming', { params: { days } }),
   getStats: () => api.get('/reviews/stats'),
   answerReview: (vocabId, data) => api.post(`/reviews/${vocabId}/answer`, data)

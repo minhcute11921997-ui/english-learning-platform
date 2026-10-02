@@ -142,6 +142,29 @@ class SrsService {
   }
 
   /**
+   * Lấy danh sách từ vựng đang học (để người dùng chủ động ôn tập bất cứ lúc nào)
+   */
+  static async getLearningWords(userId, limit = 100) {
+    const learningProgress = await UserVocabProgress.findAll({
+      where: {
+        user_id: userId,
+        status: { [Op.in]: ['new', 'learning'] }
+      },
+      include: [
+        {
+          model: Vocabulary,
+          as: 'vocabulary',
+          include: [{ model: Topic, as: 'topic', attributes: ['id', 'name', 'name_vi'] }]
+        }
+      ],
+      order: [['next_review_at', 'ASC']],
+      limit
+    });
+
+    return learningProgress;
+  }
+
+  /**
    * Lấy lịch ôn tập sắp tới (calendar view)
    */
   static async getUpcomingReviews(userId, days = 7) {
