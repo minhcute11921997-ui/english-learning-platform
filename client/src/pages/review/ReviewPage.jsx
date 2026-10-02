@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { reviewApi } from '../../api/services';
+import { reviewApi, vocabListApi } from '../../api/services';
 import Button from '../../components/ui/Button';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import {
@@ -11,7 +11,8 @@ import {
   HiBookOpen,
   HiSparkles,
   HiArrowRight,
-  HiLightningBolt
+  HiLightningBolt,
+  HiChevronDown
 } from 'react-icons/hi';
 
 export default function ReviewPage() {
@@ -19,12 +20,15 @@ export default function ReviewPage() {
   const [dueWords, setDueWords] = useState([]);
   const [learningWords, setLearningWords] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
-  const [reviewMode, setReviewMode] = useState('due'); // 'due' | 'learning'
+  const [myLists, setMyLists] = useState([]);
+  const [listWordsMap, setListWordsMap] = useState({});
+  const [selectedSource, setSelectedSource] = useState('all_learning'); // 'all_learning' | 'due_today' | 'list_${id}'
   const [activeTab, setActiveTab] = useState('queue'); // 'queue' | 'learning_list' | 'upcoming'
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isListLoading, setIsListLoading] = useState(false);
 
   useEffect(() => {
     loadReviewData();
@@ -33,11 +37,12 @@ export default function ReviewPage() {
   const loadReviewData = async () => {
     try {
       setIsLoading(true);
-      const [sRes, dRes, lRes, uRes] = await Promise.all([
+      const [sRes, dRes, lRes, uRes, listsRes] = await Promise.all([
         reviewApi.getStats(),
         reviewApi.getDue(50),
         reviewApi.getLearning(100),
-        reviewApi.getUpcoming(7)
+        reviewApi.getUpcoming(7),
+        vocabListApi.getAll().catch(() => ({ data: [] }))
       ]);
       setStats(sRes.data);
       const due = dRes.data || [];
@@ -45,12 +50,13 @@ export default function ReviewPage() {
       setDueWords(due);
       setLearningWords(learning);
       setUpcoming(uRes.data || []);
+      setMyLists(listsRes.data || []);
 
-      // Nếu không có từ đến hạn mà có từ đang học -> tự động đề xuất hoặc giữ mode
-      if (due.length === 0 && learning.length > 0) {
-        setReviewMode('learning');
+      // Mặc định chọn nguồn: nếu có từ đến hạn thì chọn due_today, nếu không thì all_learning
+      if (due.length > 0) {
+        setSelectedSource('due_today');
       } else {
-        setReviewMode('due');
+        setSelectedSource('all_learning');
       }
       setCurrentIndex(0);
       setShowAnswer(false);
@@ -71,9 +77,56 @@ export default function ReviewPage() {
     }
   };
 
-  const currentQueue = reviewMode === 'due' ? dueWords : learningWords;
+  const handleSourceChange = async (source) => {
+    setSelectedSource(source);
+    setCurrentIndex(0);
+    setShowAnswer(false);
+    setActiveTab('queue');
+
+    if (source.startsWith('list_')) {
+      const listId = source.replace('list_', '');
+      if (!listWordsMap[listId]) {
+        try {
+          setIsListLoading(true);
+          const res = await vocabListApi.getById(listId);
+          const vocabs = (res.data?.vocabularies || []).map((v) => ({
+            vocabulary: v,
+            user_progress: v.user_progress
+          }));
+          setListWordsMap((prev) => ({ ...prev, [listId]: vocabs }));
+        } catch {
+          toast.error('Không thể tải từ trong sổ từ này');
+        } finally {
+          setIsListLoading(false);
+        }
+      }
+    }
+  };
+
+  const getCurrentQueue = () => {
+    if (selectedSource === 'due_today') return dueWords;
+    if (selectedSource === 'all_learning') return learningWords;
+    if (selectedSource.startsWith('list_')) {
+      const listId = selectedSource.replace('list_', '');
+      return listWordsMap[listId] || [];
+    }
+    return learningWords;
+  };
+
+  const currentQueue = getCurrentQueue();
   const currentItem = currentQueue[currentIndex];
   const vocab = currentItem?.vocabulary;
+
+  const getSourceTitle = () => {
+    if (selectedSource === 'due_today') return 'Đang ôn từ đến hạn';
+    if (selectedSource === 'all_learning') return 'Đang ôn tất cả từ đang học';
+    if (selectedSource.startsWith('list_')) {
+      const listId = selectedSource.replace('list_', '');
+      const list = myLists.find((l) => String(l.id) === String(listId));
+      return list ? `Sổ từ: ${list.name}` : 'Sổ từ cá nhân';
+    }
+    return 'Ôn tập';
+  };
 
   const handleAnswer = async (quality) => {
     if (!vocab) return;
@@ -104,13 +157,6 @@ export default function ReviewPage() {
     }
   };
 
-  const switchToMode = (mode) => {
-    setReviewMode(mode);
-    setActiveTab('queue');
-    setCurrentIndex(0);
-    setShowAnswer(false);
-  };
-
   if (isLoading) {
     return (
       <div className="py-24 flex flex-col items-center justify-center gap-3">
@@ -130,48 +176,47 @@ export default function ReviewPage() {
           </h1>
         </div>
 
-        {/* Chế độ ôn tập switcher */}
-        <div className="flex items-center gap-1.5 p-1 bg-stone-100 rounded-xl self-start sm:self-auto">
-          <button
-            type="button"
-            onClick={() => switchToMode('due')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-              reviewMode === 'due' && activeTab === 'queue'
-                ? 'bg-white text-emerald-800 shadow-xs'
-                : 'text-stone-600 hover:text-stone-900'
-            }`}
-          >
-            <span>Cần ôn hôm nay</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[10.5px] font-bold ${
-              dueWords.length > 0 ? 'bg-orange-100 text-orange-700' : 'bg-stone-200 text-stone-600'
-            }`}>
-              {dueWords.length}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => switchToMode('learning')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-              reviewMode === 'learning' && activeTab === 'queue'
-                ? 'bg-white text-emerald-800 shadow-xs'
-                : 'text-stone-600 hover:text-stone-900'
-            }`}
-          >
-            <span>Ôn từ đang học</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 text-[10.5px] font-bold">
-              {learningWords.length}
-            </span>
-          </button>
+        {/* Nguồn ôn tập Selector (Option thống nhất) */}
+        <div className="flex items-center gap-2">
+          <label htmlFor="review-source" className="text-xs font-semibold text-stone-600 hidden sm:inline">
+            Nguồn ôn:
+          </label>
+          <div className="relative">
+            <select
+              id="review-source"
+              value={selectedSource}
+              onChange={(e) => handleSourceChange(e.target.value)}
+              className="py-1.5 pl-3 pr-8 rounded-xl text-xs font-semibold border border-stone-300 bg-white text-stone-800 shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-700 cursor-pointer appearance-none"
+            >
+              <option value="all_learning">
+                ★ Tất cả từ đang học ({learningWords.length} từ)
+              </option>
+              <option value="due_today">
+                ⏰ Chỉ từ đến hạn hôm nay ({dueWords.length} từ)
+              </option>
+              {myLists.length > 0 && (
+                <optgroup label="Sổ từ cá nhân">
+                  {myLists.map((list) => (
+                    <option key={list.id} value={`list_${list.id}`}>
+                      📁 {list.name} ({list.vocab_count || 0} từ)
+                    </option>
+                  ))}
+                </optgroup>
+              )}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-stone-500">
+              <HiChevronDown className="w-4 h-4" />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Stats Cards - Có thể click để chọn ôn */}
+      {/* Stats Cards - Có thể click để chọn nguồn ôn */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
         <div
-          onClick={() => switchToMode('due')}
+          onClick={() => handleSourceChange('due_today')}
           className={`card text-center p-4 cursor-pointer transition-all border ${
-            reviewMode === 'due' && activeTab === 'queue'
+            selectedSource === 'due_today' && activeTab === 'queue'
               ? 'ring-2 ring-orange-500 bg-orange-50/70 border-orange-300 shadow-sm'
               : 'bg-white hover:bg-orange-50/30 border-stone-200'
           }`}
@@ -183,9 +228,9 @@ export default function ReviewPage() {
         </div>
 
         <div
-          onClick={() => switchToMode('learning')}
+          onClick={() => handleSourceChange('all_learning')}
           className={`card text-center p-4 cursor-pointer transition-all border ${
-            reviewMode === 'learning' && activeTab === 'queue'
+            selectedSource === 'all_learning' && activeTab === 'queue'
               ? 'ring-2 ring-emerald-600 bg-emerald-50/70 border-emerald-300 shadow-sm'
               : 'bg-white hover:bg-emerald-50/30 border-stone-200'
           }`}
@@ -223,7 +268,7 @@ export default function ReviewPage() {
         >
           <HiSparkles className="w-4 h-4" />
           <span>
-            {reviewMode === 'due' ? 'Ôn tập theo hạn' : 'Ôn tất cả từ đang học'} ({currentQueue.length})
+            Thẻ ôn tập ({currentQueue.length})
           </span>
         </button>
 
@@ -255,13 +300,18 @@ export default function ReviewPage() {
       {/* TAB 1: REVIEW QUEUE INTERACTIVE CARD */}
       {activeTab === 'queue' && (
         <>
-          {currentQueue.length > 0 && vocab ? (
+          {isListLoading ? (
+            <div className="py-20 flex flex-col items-center justify-center gap-2 text-stone-500 text-xs">
+              <LoadingSpinner size="md" />
+              <span>Đang tải các từ trong sổ từ...</span>
+            </div>
+          ) : currentQueue.length > 0 && vocab ? (
             <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-sm max-w-2xl mx-auto space-y-6">
               {/* Badge & Mode Header */}
               <div className="flex justify-between items-center text-xs font-semibold text-stone-500 pb-3 border-b border-stone-100">
                 <span className="flex items-center gap-1.5 text-emerald-800">
                   <HiClock className="w-4 h-4" />
-                  {reviewMode === 'due' ? 'Đang ôn theo hạn:' : 'Ôn từ đang học:'} {currentIndex + 1} / {currentQueue.length}
+                  {getSourceTitle()}: {currentIndex + 1} / {currentQueue.length}
                 </span>
                 <span className="text-xs px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200 font-medium">
                   {vocab.topic?.name_vi || 'Từ vựng'}
@@ -364,28 +414,42 @@ export default function ReviewPage() {
                 <HiCheckCircle className="w-12 h-12" />
               </div>
               <h2 className="text-xl font-bold font-serif text-stone-900">
-                {reviewMode === 'due'
+                {selectedSource === 'due_today'
                   ? 'Hôm nay chưa có từ nào đến hạn ôn'
+                  : selectedSource.startsWith('list_')
+                  ? 'Sổ từ này hiện chưa có từ vựng nào'
                   : 'Bạn chưa có từ nào trong danh sách đang học'}
               </h2>
 
-              {reviewMode === 'due' && learningWords.length > 0 ? (
+              {selectedSource === 'due_today' && learningWords.length > 0 ? (
                 <div className="space-y-4">
                   <p className="text-sm text-stone-600 leading-relaxed">
-                    Hệ thống sẽ tự động nhắc bạn khi não bộ chuẩn bị quên. Tuy nhiên, bạn đang có{' '}
+                    Hệ thống sẽ tự động nhắc bạn khi não bộ chuẩn bị quên theo thuật toán ngắt quãng. Tuy nhiên, bạn đang có{' '}
                     <strong className="text-emerald-800 font-bold">{learningWords.length} từ đang học</strong>{' '}
                     và có thể chủ động ôn tập ngay bây giờ!
                   </p>
                   <Button
-                    onClick={() => switchToMode('learning')}
+                    onClick={() => handleSourceChange('all_learning')}
                     className="bg-emerald-800 hover:bg-emerald-900 text-white gap-2"
                   >
                     <HiLightningBolt className="w-4 h-4" /> Ôn tập ngay các từ đang học ({learningWords.length})
                   </Button>
                 </div>
+              ) : selectedSource.startsWith('list_') && learningWords.length > 0 ? (
+                <div className="space-y-4">
+                  <p className="text-sm text-stone-600 leading-relaxed">
+                    Hãy thêm từ vào sổ từ này trong trang Từ vựng hoặc chuyển sang ôn tất cả từ đang học.
+                  </p>
+                  <Button
+                    onClick={() => handleSourceChange('all_learning')}
+                    className="bg-emerald-800 hover:bg-emerald-900 text-white gap-2"
+                  >
+                    <HiLightningBolt className="w-4 h-4" /> Ôn tập tất cả từ đang học ({learningWords.length})
+                  </Button>
+                </div>
               ) : (
                 <p className="text-sm text-stone-500 leading-relaxed">
-                  Hãy vào mục <strong>Từ vựng</strong> để thêm các từ mới vào sổ học của bạn!
+                  Hãy vào mục <strong>Từ vựng</strong> để thêm các từ mới vào danh sách học của bạn!
                 </p>
               )}
             </div>
@@ -406,7 +470,7 @@ export default function ReviewPage() {
             {learningWords.length > 0 && (
               <Button
                 size="sm"
-                onClick={() => switchToMode('learning')}
+                onClick={() => handleSourceChange('all_learning')}
                 className="bg-emerald-800 hover:bg-emerald-900 text-white gap-1.5 text-xs"
               >
                 <HiLightningBolt className="w-3.5 h-3.5" /> Bắt đầu ôn tập ({learningWords.length} từ)

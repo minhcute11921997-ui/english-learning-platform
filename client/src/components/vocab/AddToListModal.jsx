@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { vocabListApi } from '../../api/services';
+import { vocabListApi, vocabApi } from '../../api/services';
 import {
   HiX,
   HiPlus,
@@ -104,6 +104,14 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
         list_ids: selectedListIds
       });
 
+      if (vocab.id && selectedListIds.length > 0) {
+        try {
+          await vocabApi.markAsLearned(vocab.id);
+        } catch {
+          // ignore if already learned
+        }
+      }
+
       toast.success(
         selectedListIds.length > 0
           ? `Đã lưu từ "${vocab.word}" vào ${selectedListIds.length} danh sách!`
@@ -111,7 +119,7 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
       );
 
       if (onSuccess) {
-        onSuccess(selectedListIds);
+        onSuccess(selectedListIds, vocab.id);
       }
       onClose();
     } catch (err) {

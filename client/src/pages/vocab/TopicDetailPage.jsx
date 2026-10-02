@@ -207,36 +207,40 @@ export default function TopicDetailPage() {
               <div className="pt-3 border-t border-[#ECE7DC] flex items-center justify-between text-xs text-gray-500">
                 {isLearned ? (
                   <span className="inline-flex items-center gap-1 text-[#195646] font-semibold">
-                    <HiCheckCircle className="w-4 h-4 text-[#195646]" /> Đang học (Lịch ôn tập)
+                    <HiCheckCircle className="w-4 h-4 text-[#195646]" /> Đang học
                   </span>
                 ) : (
                   <span className="text-[#7B827E]">Chưa thêm</span>
                 )}
 
                 <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedVocabForModal(vocab)}
-                    className="p-1.5 text-xs text-[#555C58] hover:text-[#8C6D3B] hover:bg-[#FAF5EC] rounded-lg border border-[#E0DACE] transition-colors cursor-pointer flex items-center gap-1"
-                    title="Lưu từ này vào bộ danh sách cá nhân"
-                  >
-                    <HiOutlineBookmark className="w-3.5 h-3.5 text-[#8C6D3B]" />
-                    <span className="hidden sm:inline">Lưu sổ</span>
-                  </button>
-
                   {isLearned ? (
-                    <Link
-                      to="/review"
-                      className="py-1 px-3 text-xs rounded-lg border border-[#D7E9E1] bg-[#F0F7F4] text-[#195646] hover:bg-[#E2F0EA] font-medium transition-colors"
-                    >
-                      Vào ôn tập →
-                    </Link>
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedVocabForModal(vocab)}
+                        className="py-1 px-2.5 text-xs text-[#555C58] hover:text-[#195646] hover:bg-[#F0F7F4] rounded-lg border border-[#E0DACE] transition-colors cursor-pointer flex items-center gap-1"
+                        title="Quản lý danh sách lưu"
+                      >
+                        <HiOutlineBookmark className="w-3.5 h-3.5 text-[#195646]" />
+                        <span>Sổ từ</span>
+                      </button>
+                      <Link
+                        to="/review"
+                        className="py-1 px-3 text-xs rounded-lg border border-[#D7E9E1] bg-[#F0F7F4] text-[#195646] hover:bg-[#E2F0EA] font-semibold transition-colors"
+                      >
+                        Ôn tập ngay →
+                      </Link>
+                    </>
                   ) : (
                     <button
-                      onClick={() => handleMarkLearned(vocab.id)}
-                      className="btn btn-outline py-1 px-3 text-xs cursor-pointer"
+                      type="button"
+                      onClick={() => setSelectedVocabForModal(vocab)}
+                      className="py-1 px-3 text-xs rounded-lg border border-[#195646] bg-[#195646] text-white hover:bg-[#134235] font-medium transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
+                      title="Lưu vào danh sách học và lên lịch ôn tập"
                     >
-                      + Thêm vào sổ học
+                      <HiOutlineBookmark className="w-3.5 h-3.5 text-white/90" />
+                      + Thêm vào danh sách học
                     </button>
                   )}
                 </div>
