@@ -13,6 +13,7 @@ const communityRoutes = require('./community.routes');
 const adminRoutes = require('./admin.routes');
 const statsRoutes = require('./stats.routes');
 const translateRoutes = require('./translate.routes');
+const userVocabListRoutes = require('./userVocabList.routes');
 
 const router = express.Router();
 
@@ -21,6 +22,7 @@ router.use('/users', userRoutes);
 router.use('/assessment', assessmentRoutes);
 router.use('/topics', topicRoutes);
 router.use('/vocabularies', vocabularyRoutes);
+router.use('/vocab-lists', userVocabListRoutes);
 router.use('/exercises', exerciseRoutes);
 router.use('/reviews', reviewRoutes);
 router.use('/readings', readingRoutes);

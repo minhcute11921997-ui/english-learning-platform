@@ -18,6 +18,7 @@ import TopicsPage from './pages/vocab/TopicsPage';
 import TopicDetailPage from './pages/vocab/TopicDetailPage';
 import FlashcardPage from './pages/vocab/FlashcardPage';
 import ExercisePage from './pages/vocab/ExercisePage';
+import UserVocabListDetailPage from './pages/vocab/UserVocabListDetailPage';
 
 // Review SRS Page
 import ReviewPage from './pages/review/ReviewPage';
@@ -69,6 +70,8 @@ const router = createBrowserRouter([
       { path: '/topics/:id', element: <TopicDetailPage /> },
       { path: '/topics/:id/flashcards', element: <FlashcardPage /> },
       { path: '/topics/:id/exercise', element: <ExercisePage /> },
+      { path: '/vocab-lists/:id', element: <UserVocabListDetailPage /> },
+      { path: '/vocab-lists/:id/flashcards', element: <FlashcardPage /> },
 
       // Spaced Repetition Review (SM-2)
       { path: '/review', element: <ReviewPage /> },

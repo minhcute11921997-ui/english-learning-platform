@@ -38,6 +38,8 @@ const GroupVocabSet = require('./GroupVocabSet')(sequelize);
 const GroupVocabItem = require('./GroupVocabItem')(sequelize);
 const GroupReadingSet = require('./GroupReadingSet')(sequelize);
 const CommunityPost = require('./CommunityPost')(sequelize);
+const UserVocabList = require('./UserVocabList')(sequelize);
+const UserVocabListItem = require('./UserVocabListItem')(sequelize);
 
 // ===== ASSOCIATIONS =====
 
@@ -123,6 +125,29 @@ GroupReadingSet.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
 // CommunityPost associations
 CommunityPost.belongsTo(User, { foreignKey: 'user_id', as: 'author' });
 
+// UserVocabList & UserVocabListItem associations
+User.hasMany(UserVocabList, { foreignKey: 'user_id', as: 'vocabLists' });
+UserVocabList.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+
+UserVocabList.hasMany(UserVocabListItem, { foreignKey: 'list_id', as: 'listItems' });
+UserVocabListItem.belongsTo(UserVocabList, { foreignKey: 'list_id', as: 'list' });
+
+UserVocabListItem.belongsTo(Vocabulary, { foreignKey: 'vocabulary_id', as: 'vocabulary' });
+Vocabulary.hasMany(UserVocabListItem, { foreignKey: 'vocabulary_id', as: 'listItems' });
+
+UserVocabList.belongsToMany(Vocabulary, {
+  through: UserVocabListItem,
+  foreignKey: 'list_id',
+  otherKey: 'vocabulary_id',
+  as: 'vocabularies'
+});
+Vocabulary.belongsToMany(UserVocabList, {
+  through: UserVocabListItem,
+  foreignKey: 'vocabulary_id',
+  otherKey: 'list_id',
+  as: 'vocabLists'
+});
+
 const db = {
   sequelize,
   Sequelize,
@@ -142,7 +167,9 @@ const db = {
   GroupVocabSet,
   GroupVocabItem,
   GroupReadingSet,
-  CommunityPost
+  CommunityPost,
+  UserVocabList,
+  UserVocabListItem
 };
 
 module.exports = db;

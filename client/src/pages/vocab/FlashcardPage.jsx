@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { vocabApi, topicApi } from '../../api/services';
+import { vocabApi, topicApi, vocabListApi } from '../../api/services';
 import Button from '../../components/ui/Button';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import {
@@ -15,6 +15,8 @@ import {
 
 export default function FlashcardPage() {
   const { id } = useParams();
+  const location = useLocation();
+  const isCustomList = location.pathname.includes('/vocab-lists/');
   const [topic, setTopic] = useState(null);
   const [vocabs, setVocabs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -23,17 +25,24 @@ export default function FlashcardPage() {
 
   useEffect(() => {
     loadData();
-  }, [id]);
+  }, [id, isCustomList]);
 
   const loadData = async () => {
     try {
       setIsLoading(true);
-      const [tRes, vRes] = await Promise.all([
-        topicApi.getById(id),
-        vocabApi.getByTopic(id, { limit: 100 })
-      ]);
-      setTopic(tRes.data);
-      setVocabs(vRes.data || []);
+      if (isCustomList) {
+        const res = await vocabListApi.getById(id);
+        const listData = res.data;
+        setTopic({ name_vi: listData.name, name: 'Sổ từ cá nhân' });
+        setVocabs(listData.vocabularies || []);
+      } else {
+        const [tRes, vRes] = await Promise.all([
+          topicApi.getById(id),
+          vocabApi.getByTopic(id, { limit: 100 })
+        ]);
+        setTopic(tRes.data);
+        setVocabs(vRes.data || []);
+      }
     } catch (err) {
       toast.error(err.message || 'Không thể tải từ vựng');
     } finally {
@@ -115,10 +124,10 @@ export default function FlashcardPage() {
       {/* Top bar */}
       <div className="flex items-center justify-between">
         <Link
-          to={`/topics/${id}`}
+          to={isCustomList ? `/vocab-lists/${id}` : `/topics/${id}`}
           className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-primary-600"
         >
-          <HiArrowLeft /> Quay lại danh sách từ
+          <HiArrowLeft /> Quay lại {isCustomList ? 'danh sách từ' : 'chủ đề'}
         </Link>
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-gray-600">

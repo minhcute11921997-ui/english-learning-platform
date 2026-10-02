@@ -14,6 +14,8 @@ import {
   HiLightningBolt,
   HiViewGrid
 } from 'react-icons/hi';
+import { HiOutlineBookmark } from 'react-icons/hi2';
+import AddToListModal from '../../components/vocab/AddToListModal';
 
 export default function TopicDetailPage() {
   const { id } = useParams();
@@ -22,6 +24,7 @@ export default function TopicDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [difficulty, setDifficulty] = useState('');
+  const [selectedVocabForModal, setSelectedVocabForModal] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -210,21 +213,33 @@ export default function TopicDetailPage() {
                   <span className="text-[#7B827E]">Chưa thêm</span>
                 )}
 
-                {isLearned ? (
-                  <Link
-                    to="/review"
-                    className="py-1 px-3 text-xs rounded-lg border border-[#D7E9E1] bg-[#F0F7F4] text-[#195646] hover:bg-[#E2F0EA] font-medium transition-colors"
-                  >
-                    Vào ôn tập →
-                  </Link>
-                ) : (
+                <div className="flex items-center gap-1.5">
                   <button
-                    onClick={() => handleMarkLearned(vocab.id)}
-                    className="btn btn-outline py-1 px-3 text-xs cursor-pointer"
+                    type="button"
+                    onClick={() => setSelectedVocabForModal(vocab)}
+                    className="p-1.5 text-xs text-[#555C58] hover:text-[#8C6D3B] hover:bg-[#FAF5EC] rounded-lg border border-[#E0DACE] transition-colors cursor-pointer flex items-center gap-1"
+                    title="Lưu từ này vào bộ danh sách cá nhân"
                   >
-                    + Thêm vào sổ học
+                    <HiOutlineBookmark className="w-3.5 h-3.5 text-[#8C6D3B]" />
+                    <span className="hidden sm:inline">Lưu sổ</span>
                   </button>
-                )}
+
+                  {isLearned ? (
+                    <Link
+                      to="/review"
+                      className="py-1 px-3 text-xs rounded-lg border border-[#D7E9E1] bg-[#F0F7F4] text-[#195646] hover:bg-[#E2F0EA] font-medium transition-colors"
+                    >
+                      Vào ôn tập →
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => handleMarkLearned(vocab.id)}
+                      className="btn btn-outline py-1 px-3 text-xs cursor-pointer"
+                    >
+                      + Thêm vào sổ học
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           );
@@ -235,6 +250,24 @@ export default function TopicDetailPage() {
         <div className="text-center py-12 card">
           <p className="text-gray-500">Không tìm thấy từ vựng nào khớp với bộ lọc.</p>
         </div>
+      )}
+
+      {/* Modal lưu từ vào các bộ danh sách cá nhân */}
+      {selectedVocabForModal && (
+        <AddToListModal
+          isOpen={!!selectedVocabForModal}
+          onClose={() => setSelectedVocabForModal(null)}
+          vocab={selectedVocabForModal}
+          onSuccess={() => {
+            setVocabularies((prev) =>
+              prev.map((v) =>
+                v.id === selectedVocabForModal.id
+                  ? { ...v, user_progress: { status: 'learning', correct_count: 1 } }
+                  : v
+              )
+            );
+          }}
+        />
       )}
     </div>
   );

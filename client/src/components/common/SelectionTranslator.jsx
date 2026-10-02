@@ -7,14 +7,17 @@ import {
   HiOutlineXMark,
   HiOutlineBookOpen,
   HiOutlineChevronDown,
-  HiOutlineChevronUp
+  HiOutlineChevronUp,
+  HiOutlineBookmark
 } from 'react-icons/hi2';
+import AddToListModal from '../vocab/AddToListModal';
 
 export default function SelectionTranslator() {
   const [selectionData, setSelectionData] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showContext, setShowContext] = useState(false);
+  const [openAddModal, setOpenAddModal] = useState(false);
   const [langs, setLangs] = useState({ source: 'en', target: 'vi' });
   const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0, placement: 'bottom' });
   const tooltipRef = useRef(null);
@@ -22,8 +25,11 @@ export default function SelectionTranslator() {
   // Lắng nghe sự kiện bôi đen (mouseup)
   useEffect(() => {
     const handleMouseUp = (e) => {
-      // Nếu click bên trong tooltip thì không đóng
-      if (tooltipRef.current && tooltipRef.current.contains(e.target)) {
+      // Nếu click bên trong tooltip hoặc modal thì không đóng
+      if (
+        (tooltipRef.current && tooltipRef.current.contains(e.target)) ||
+        e.target.closest?.('.fixed')
+      ) {
         return;
       }
 
@@ -195,13 +201,24 @@ export default function SelectionTranslator() {
               )}
             </div>
 
-            <button
-              onClick={() => speakWord(result.original, langs.source)}
-              title="Phát âm"
-              className="p-1.5 bg-[#F0F7F4] hover:bg-[#E2F0EA] text-[#195646] rounded-xl transition flex-shrink-0 cursor-pointer border border-[#D6EBE0]"
-            >
-              <HiOutlineSpeakerWave className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => setOpenAddModal(true)}
+                title="Lưu vào bộ danh sách từ cá nhân"
+                className="p-1.5 bg-[#FAF5EC] hover:bg-[#F3EAD7] text-[#8C6D3B] rounded-xl transition cursor-pointer border border-[#EFE5D0]"
+              >
+                <HiOutlineBookmark className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => speakWord(result.original, langs.source)}
+                title="Phát âm"
+                className="p-1.5 bg-[#F0F7F4] hover:bg-[#E2F0EA] text-[#195646] rounded-xl transition cursor-pointer border border-[#D6EBE0]"
+              >
+                <HiOutlineSpeakerWave className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Bản dịch chính: Tinh gọn, rõ ràng */}
@@ -269,6 +286,20 @@ export default function SelectionTranslator() {
           )}
         </div>
       ) : null}
+
+      {/* Modal lưu từ vào bộ danh sách cá nhân */}
+      {openAddModal && result && (
+        <AddToListModal
+          isOpen={openAddModal}
+          onClose={() => setOpenAddModal(false)}
+          vocab={{
+            word: result.original,
+            meaning_vi: result.translation,
+            pronunciation: result.phonetic,
+            part_of_speech: result.dictionary?.[0]?.partOfSpeech || 'noun'
+          }}
+        />
+      )}
     </div>
   );
 }

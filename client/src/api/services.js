@@ -88,3 +88,14 @@ export const statsApi = {
   getMyProgress: () => api.get('/stats/my-progress'),
   getLearningTrends: () => api.get('/stats/learning-trends')
 };
+
+export const vocabListApi = {
+  getAll: () => api.get('/vocab-lists'),
+  getById: (id) => api.get(`/vocab-lists/${id}`),
+  create: (data) => api.post('/vocab-lists', data),
+  update: (id, data) => api.put(`/vocab-lists/${id}`, data),
+  delete: (id) => api.delete(`/vocab-lists/${id}`),
+  syncWord: (data) => api.post('/vocab-lists/words/sync', data),
+  removeWord: (listId, vocabId) => api.delete(`/vocab-lists/${listId}/words/${vocabId}`),
+  getWordMembership: (params) => api.get('/vocab-lists/words/membership', { params })
+};
