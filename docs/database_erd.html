@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sơ Đồ Thực Thể Quan Hệ (ERD) — EngLearn Database</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #FAF8F5;
+      --card-bg: #FFFFFF;
+      --primary: #195646;
+      --primary-light: #EBF4F0;
+      --accent: #D96237;
+      --border: #E8E4DC;
+      --text: #16201B;
+      --text-muted: #6C726E;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.5;
+      padding: 24px;
+    }
+
+    header {
+      max-width: 1400px;
+      margin: 0 auto 24px auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-title {
+      font-family: 'Lora', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .brand-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .legend-user { background: #EBF4F0; color: #195646; border-color: #CDE3DA; }
+    .legend-content { background: #F0F4FA; color: #2B579A; border-color: #D3E0F3; }
+    .legend-progress { background: #FDF5EE; color: #D96237; border-color: #F8DFCE; }
+    .legend-social { background: #F5F0FB; color: #6D3BAA; border-color: #E6D8F8; }
+
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Diagram Canvas Wrapper */
+    .canvas-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .canvas-toolbar {
+      padding: 12px 18px;
+      background: #FAF8F5;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .canvas-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: var(--text);
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: #F2EFE8;
+      border-color: #D6D0C4;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: #123F33;
+    }
+
+    .viewport {
+      width: 100%;
+      height: 720px;
+      overflow: auto;
+      cursor: grab;
+      position: relative;
+      background: #FCFBF9;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px;
+    }
+
+    .viewport:active {
+      cursor: grabbing;
+    }
+
+    #mermaid-render {
+      transform-origin: top center;
+      transition: transform 0.1s ease-out;
+    }
+
+    /* Reference Tables Section */
+    .reference-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+
+    .section-header {
+      font-family: 'Lora', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .section-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .grid-docs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .doc-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      background: #FAF8F5;
+      font-size: 13px;
+    }
+
+    .doc-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .badge-layer {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .doc-desc {
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      font-size: 12.5px;
+    }
+
+    .field-list {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      line-height: 1.8;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .field-pk { color: #D96237; font-weight: 700; }
+    .field-fk { color: #2B579A; font-weight: 700; }
+    .field-type { color: #787E7B; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1 class="brand-title">EngLearn — Sơ Đồ Cấu Trúc Database (ERD)</h1>
+      <p class="brand-sub">Mô hình thực thể quan hệ chuẩn 3NF và phân quyền dữ liệu người dùng (User Multi-tenancy)</p>
+    </div>
+
+    <div class="legend">
+      <span class="legend-item legend-user">● Tài khoản & Định danh</span>
+      <span class="legend-item legend-content">● Kho nội dung mẫu (Topics / Readings)</span>
+      <span class="legend-item legend-progress">● Tiến độ học & Sổ từ cá nhân (SRS)</span>
+      <span class="legend-item legend-social">● Nhóm học & Cộng đồng</span>
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <!-- Interactive Canvas -->
+    <div class="canvas-card">
+      <div class="canvas-toolbar">
+        <span class="canvas-title">Sơ đồ Quan Hệ Trực Quan (Interactive Mermaid Canvas)</span>
+        <div class="toolbar-actions">
+          <button class="btn" onclick="zoomIn()">Phóng to (+)</button>
+          <button class="btn" onclick="zoomOut()">Thu nhỏ (-)</button>
+          <button class="btn" onclick="resetZoom()">Vừa màn hình (100%)</button>
+          <button class="btn btn-primary" onclick="window.print()">In / Xuất PDF</button>
+        </div>
+      </div>
+
+      <div class="viewport" id="viewport">
+        <div id="mermaid-render">
+          <pre class="mermaid">
+erDiagram
+    %% TẦNG 1: NGƯỜI DÙNG & ĐỊNH DANH
+    USERS {
+        int id PK
+        string username
+        string email
+        string password_hash
+        string full_name
+        string role
+        int initial_level
+        datetime last_login_at
+    }
+
+    LEVEL_ASSESSMENTS {
+        int id PK
+        int user_id FK
+        int score
+        int total_questions
+        string assessed_level
+        datetime completed_at
+    }
+
+    %% TẦNG 2: KHO NỘI DUNG MẪU
+    TOPICS {
+        int id PK
+        string name
+        string name_vi
+        text description
+        string icon
+        int display_order
+    }
+
+    VOCABULARIES {
+        int id PK
+        int topic_id FK
+        string word
+        string pronunciation
+        string part_of_speech
+        string meaning_vi
+        text example_sentence
+        string difficulty
+        boolean is_approved
+    }
+
+    VOCAB_EXAMPLES {
+        int id PK
+        int vocabulary_id FK
+        text sentence
+        text translation
+    }
+
+    READINGS {
+        int id PK
+        int topic_id FK
+        string title
+        string title_vi
+        text content
+        text content_vi
+        int word_count
+        string difficulty
+    }
+
+    QUESTIONS {
+        int id PK
+        int reading_id FK
+        text question_text
+        text question_text_vi
+        json options
+        int correct_option
+        text explanation_vi
+    }
+
+    %% TẦNG 3: TIẾN ĐỘ HỌC CÁ NHÂN & SỔ TỪ
+    USER_VOCAB_LISTS {
+        int id PK
+        int user_id FK
+        string name
+        text description
+        string color
+    }
+
+    USER_VOCAB_LIST_ITEMS {
+        int id PK
+        int list_id FK
+        int vocabulary_id FK
+    }
+
+    USER_VOCAB_PROGRESS {
+        int id PK
+        int user_id FK
+        int vocabulary_id FK
+        string status
+        int correct_count
+        float ease_factor
+        int interval_days
+        int repetition_count
+        datetime next_review_at
+    }
+
+    REVIEW_SCHEDULES {
+        int id PK
+        int user_id FK
+        int vocabulary_id FK
+        datetime scheduled_at
+        boolean is_completed
+        string source
+    }
+
+    USER_READING_ATTEMPTS {
+        int id PK
+        int user_id FK
+        int reading_id FK
+        int score
+        int total_questions
+        float percentage
+        int time_spent_seconds
+        datetime completed_at
+    }
+
+    USER_ANSWERS {
+        int id PK
+        int attempt_id FK
+        int question_id FK
+        int selected_option
+        boolean is_correct
+    }
+
+    %% TẦNG 4: NHÓM HỌC & CỘNG ĐỒNG
+    GROUPS {
+        int id PK
+        int owner_id FK
+        string name
+        string invite_code
+        boolean is_active
+    }
+
+    GROUP_MEMBERS {
+        int id PK
+        int group_id FK
+        int user_id FK
+        string role
+    }
+
+    GROUP_VOCAB_SETS {
+        int id PK
+        int group_id FK
+        int created_by FK
+        string title
+        boolean is_published
+    }
+
+    COMMUNITY_POSTS {
+        int id PK
+        int user_id FK
+        string title
+        text content
+        int upvotes_count
+    }
+
+    %% QUAN HỆ & RÀNG BUỘC (RELATIONSHIPS)
+    USERS ||--o{ LEVEL_ASSESSMENTS : "làm bài test đầu vào"
+    USERS ||--o{ USER_VOCAB_LISTS : "tự tạo bộ từ cá nhân"
+    USERS ||--o{ USER_VOCAB_PROGRESS : "lưu trạng thái trí nhớ SM-2"
+    USERS ||--o{ REVIEW_SCHEDULES : "hàng đợi ôn tập ngắt quãng"
+    USERS ||--o{ USER_READING_ATTEMPTS : "lịch sử thi đọc hiểu"
+    USERS ||--o{ GROUPS : "sở hữu nhóm học"
+    USERS ||--o{ GROUP_MEMBERS : "tham gia nhóm"
+    USERS ||--o{ COMMUNITY_POSTS : "đăng bài thảo luận"
+
+    TOPICS ||--o{ VOCABULARIES : "phân loại từ vựng"
+    TOPICS ||--o{ READINGS : "phân loại bài đọc"
+
+    VOCABULARIES ||--o{ VOCAB_EXAMPLES : "ví dụ minh họa"
+    VOCABULARIES ||--o{ USER_VOCAB_LIST_ITEMS : "được thêm vào sổ từ"
+    VOCABULARIES ||--o{ USER_VOCAB_PROGRESS : "được học bởi user"
+    VOCABULARIES ||--o{ REVIEW_SCHEDULES : "được lên lịch ôn"
+
+    USER_VOCAB_LISTS ||--|{ USER_VOCAB_LIST_ITEMS : "chứa nhiều từ"
+
+    READINGS ||--|{ QUESTIONS : "chứa câu hỏi trắc nghiệm"
+    READINGS ||--o{ USER_READING_ATTEMPTS : "được làm bài đọc"
+
+    USER_READING_ATTEMPTS ||--|{ USER_ANSWERS : "ghi nhận đáp án từng câu"
+    QUESTIONS ||--o{ USER_ANSWERS : "được trả lời bởi"
+
+    GROUPS ||--|{ GROUP_MEMBERS : "thành viên nhóm"
+    GROUPS ||--o{ GROUP_VOCAB_SETS : "bộ từ của nhóm"
+          </pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reference Description Section -->
+    <div class="reference-section">
+      <h2 class="section-header">Chi Tiết Các Bảng & Cơ Chế Cách Ly Dữ Liệu</h2>
+      <p class="section-desc">Giải thích nguyên lý lưu trữ phân tầng giữa dữ liệu dùng chung và dữ liệu cá nhân của từng học viên.</p>
+
+      <div class="grid-docs">
+        <!-- Card 1 -->
+        <div class="doc-card">
+          <div class="doc-title">
+            <span>users</span>
+            <span class="badge-layer legend-user">Identity</span>
+          </div>
+          <p class="doc-desc">Lưu tài khoản đăng nhập, phân quyền quản trị (admin / learner / group_owner) và trình độ khởi điểm.</p>
+          <div class="field-list">
+            <span class="field-pk">id: INT (PK)</span><br>
+            username, email, password_hash<br>
+            role: ENUM('admin','learner','group_owner')<br>
+            initial_level: INT (0-100)<br>
+            learning_goal: VARCHAR
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="doc-card">
+          <div class="doc-title">
+            <span>user_vocab_lists</span>
+            <span class="badge-layer legend-progress">Custom Sets</span>
+          </div>
+          <p class="doc-desc">Các bộ từ vựng cá nhân do học viên tự tạo (ví dụ: "Từ khó nhớ", "Từ vựng IELTS").</p>
+          <div class="field-list">
+            <span class="field-pk">id: INT (PK)</span><br>
+            <span class="field-fk">user_id: INT (FK -> users.id)</span><br>
+            name: VARCHAR(150)<br>
+            description: TEXT<br>
+            color: VARCHAR(30)
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="doc-card">
+          <div class="doc-title">
+            <span>user_vocab_list_items</span>
+            <span class="badge-layer legend-progress">Many-to-Many</span>
+          </div>
+          <p class="doc-desc">Bảng cầu nối Nhiều - Nhiều: Cho phép 1 từ vựng nằm trong nhiều bộ danh sách khác nhau.</p>
+          <div class="field-list">
+            <span class="field-pk">id: INT (PK)</span><br>
+            <span class="field-fk">list_id: INT (FK -> user_vocab_lists)</span><br>
+            <span class="field-fk">vocabulary_id: INT (FK -> vocabularies)</span><br>
+            UNIQUE(list_id, vocabulary_id)
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="doc-card">
+          <div class="doc-title">
+            <span>user_vocab_progress</span>
+            <span class="badge-layer legend-progress">SM-2 Algorithm</span>
+          </div>
+          <p class="doc-desc">Lưu trạng thái trí nhớ và các hệ số toán học của thuật toán ghi nhớ ngắt quãng SuperMemo-2.</p>
+          <div class="field-list">
+            <span class="field-pk">id: INT (PK)</span><br>
+            <span class="field-fk">user_id, vocabulary_id</span> (UNIQUE)<br>
+            status: ENUM('new','learning','mastered')<br>
+            ease_factor: FLOAT (mặc định 2.5)<br>
+            interval_days: INT (khoảng cách ngày)<br>
+            next_review_at: DATETIME
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="doc-card">
+          <div class="doc-title">
+            <span>review_schedules</span>
+            <span class="badge-layer legend-progress">SRS Queue</span>
+          </div>
+          <p class="doc-desc">Hàng đợi lịch hẹn ôn tập. Truy vấn nhanh danh sách "Từ cần ôn hôm nay" theo ngày đáo hạn.</p>
+          <div class="field-list">
+            <span class="field-pk">id: INT (PK)</span><br>
+            <span class="field-fk">user_id, vocabulary_id</span><br>
+            scheduled_at: DATETIME<br>
+            is_completed: BOOLEAN<br>
+            source: ENUM('personal','group')
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="doc-card">
+          <div class="doc-title">
+            <span>user_reading_attempts</span>
+            <span class="badge-layer legend-progress">Reading History</span>
+          </div>
+          <p class="doc-desc">Lịch sử làm bài đọc hiểu: điểm số, tỷ lệ phần trăm đúng, thời gian làm và chi tiết từng câu trả lời.</p>
+          <div class="field-list">
+            <span class="field-pk">id: INT (PK)</span><br>
+            <span class="field-fk">user_id, reading_id</span><br>
+            score, total_questions: INT<br>
+            percentage: FLOAT<br>
+            time_spent_seconds: INT
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        fontFamily: 'Plus Jakarta Sans',
+        primaryColor: '#FAF8F5',
+        primaryBorderColor: '#195646',
+        primaryTextColor: '#16201B',
+        lineColor: '#5C6460'
+      }
+    });
+
+    let currentScale = 1;
+    const renderEl = document.getElementById('mermaid-render');
+
+    function updateZoom() {
+      renderEl.style.transform = `scale(${currentScale})`;
+    }
+
+    function zoomIn() {
+      if (currentScale < 2.5) {
+        currentScale += 0.15;
+        updateZoom();
+      }
+    }
+
+    function zoomOut() {
+      if (currentScale > 0.4) {
+        currentScale -= 0.15;
+        updateZoom();
+      }
+    }
+
+    function resetZoom() {
+      currentScale = 1;
+      updateZoom();
+    }
+
+    // Hỗ trợ lăn chuột để Zoom (Ctrl + Wheel)
+    document.getElementById('viewport').addEventListener('wheel', (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        if (e.deltaY < 0) zoomIn();
+        else zoomOut();
+      }
+    });
+  </script>
+</body>
+</html>
