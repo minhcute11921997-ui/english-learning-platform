@@ -39,22 +39,58 @@ export function getSmartSelectionData() {
 
   let fullWord = rawText;
   const startNode = range.startContainer;
+  const endNode = range.endContainer;
 
-  // 1. Nếu bôi một từ đơn lẻ mà bị thiếu ký tự đầu/cuối, tự động mở rộng trong text node
-  if (startNode && startNode.nodeType === Node.TEXT_NODE && !rawText.includes(' ') && rawText.length < 30) {
-    const fullText = startNode.textContent || '';
+  // 1. Tự động mở rộng từ/cụm từ nếu người dùng bôi thiếu ký tự ở đầu hoặc cuối
+  // Áp dụng cho cả từ đơn và cụm từ (dưới 150 ký tự)
+  if (rawText.length < 150) {
     let start = range.startOffset;
     let end = range.endOffset;
+    let startExpanded = false;
+    let endExpanded = false;
 
-    while (start > 0 && isWordChar(fullText[start - 1])) {
-      start--;
+    // Mở rộng đầu: nếu vị trí bắt đầu cắt ngang một từ
+    if (startNode && startNode.nodeType === Node.TEXT_NODE) {
+      const startText = startNode.textContent || '';
+      while (start < startText.length && /\s/.test(startText[start])) {
+        start++;
+      }
+      if (start > 0 && isWordChar(startText[start - 1]) && isWordChar(startText[start])) {
+        while (start > 0 && isWordChar(startText[start - 1])) {
+          start--;
+        }
+        startExpanded = true;
+      }
     }
-    while (end < fullText.length && isWordChar(fullText[end])) {
-      end++;
+
+    // Mở rộng cuối: nếu vị trí kết thúc cắt ngang một từ
+    if (endNode && endNode.nodeType === Node.TEXT_NODE) {
+      const endText = endNode.textContent || '';
+      while (end > 0 && /\s/.test(endText[end - 1])) {
+        end--;
+      }
+      if (end > 0 && end < endText.length && isWordChar(endText[end - 1]) && isWordChar(endText[end])) {
+        while (end < endText.length && isWordChar(endText[end])) {
+          end++;
+        }
+        endExpanded = true;
+      }
     }
-    const expanded = fullText.slice(start, end).trim();
-    if (expanded && isWordChar(expanded[0])) {
-      fullWord = expanded;
+
+    if (startExpanded || endExpanded) {
+      if (startNode === endNode && startNode && startNode.nodeType === Node.TEXT_NODE) {
+        const expanded = (startNode.textContent || '').slice(start, end).trim();
+        if (expanded) {
+          fullWord = expanded.replace(/^[:\s\-–—\.\,\;\?\!]+|[:\s\-–—\.\,\;\?\!]+$/g, '').trim();
+        }
+      } else {
+        const prefix = (startExpanded && startNode?.textContent) ? startNode.textContent.slice(start, range.startOffset) : '';
+        const suffix = (endExpanded && endNode?.textContent) ? endNode.textContent.slice(range.endOffset, end) : '';
+        const combined = `${prefix}${rawText}${suffix}`.trim();
+        if (combined) {
+          fullWord = combined.replace(/^[:\s\-–—\.\,\;\?\!]+|[:\s\-–—\.\,\;\?\!]+$/g, '').trim();
+        }
+      }
     }
   }
 
@@ -64,7 +100,7 @@ export function getSmartSelectionData() {
   let contextSentence = null;
   const wordCount = fullWord.split(/\s+/).length;
 
-  if (fullWord.length < 45 && wordCount <= 5) {
+  if (fullWord.length < 80 && wordCount <= 8) {
     let container = range.commonAncestorContainer;
     if (container.nodeType === Node.TEXT_NODE) {
       container = container.parentElement;
