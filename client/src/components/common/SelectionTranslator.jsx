@@ -5,15 +5,18 @@ import {
   HiOutlineSpeakerWave,
   HiOutlineArrowsRightLeft,
   HiOutlineXMark,
-  HiOutlineBookOpen
+  HiOutlineBookOpen,
+  HiOutlineChevronDown,
+  HiOutlineChevronUp
 } from 'react-icons/hi2';
 
 export default function SelectionTranslator() {
   const [selectionData, setSelectionData] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showContext, setShowContext] = useState(false);
   const [langs, setLangs] = useState({ source: 'en', target: 'vi' });
-  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0, placement: 'top' });
+  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0, placement: 'bottom' });
   const tooltipRef = useRef(null);
 
   // Lắng nghe sự kiện bôi đen (mouseup)
@@ -35,29 +38,38 @@ export default function SelectionTranslator() {
           }
 
           setSelectionData(data);
+          setShowContext(false); // Luôn ẩn ngữ cảnh mặc định để tooltip gọn gàng
           const initLangs = { source: data.source, target: data.target };
           setLangs(initLangs);
 
-          // Tính toán vị trí hiển thị
+          // Tính toán vị trí hiển thị thông minh:
+          // Ưu tiên hiển thị BÊN DƯỚI vùng bôi để tránh bị che khuất ở mép trên màn hình
           const tooltipWidth = 330;
-          const tooltipHeight = 220;
-          let left = data.rect.clientX - tooltipWidth / 2;
-          left = Math.max(16, Math.min(window.innerWidth - tooltipWidth - 16, left));
+          const viewportTop = data.rect.viewportTop !== undefined ? data.rect.viewportTop : data.rect.clientY;
+          const viewportBottom = data.rect.viewportBottom !== undefined ? data.rect.viewportBottom : (data.rect.clientY + data.rect.height);
 
-          let top = data.rect.top - 10;
-          let placement = 'top';
+          const spaceAbove = viewportTop;
+          const spaceBelow = window.innerHeight - viewportBottom;
 
-          // Nếu sát mép trên màn hình, lật tooltip xuống dưới vùng bôi
-          if (data.rect.clientY < tooltipHeight + 20) {
-            top = data.rect.top + data.rect.height + 10;
-            placement = 'bottom';
+          let placement = 'bottom';
+          let top = data.rect.top + data.rect.height + 8;
+
+          // Chỉ lật lên trên nếu phía dưới quá chật (< 180px) VÀ phía trên còn đủ rộng (>= 180px)
+          if (spaceBelow < 180 && spaceAbove >= 180) {
+            placement = 'top';
+            top = data.rect.top - 8;
           }
+
+          // Căn giữa theo từ được bôi và đảm bảo không tràn ra ngoài màn hình
+          let left = data.rect.left + (data.rect.width / 2) - (tooltipWidth / 2);
+          left = Math.max(16, Math.min(window.innerWidth - tooltipWidth - 16, left));
 
           setTooltipPos({ top, left, placement });
           fetchTranslation(data, initLangs.source, initLangs.target);
         } else {
           setSelectionData(null);
           setResult(null);
+          setShowContext(false);
         }
       }, 60);
     };
@@ -66,6 +78,7 @@ export default function SelectionTranslator() {
       if (e.key === 'Escape') {
         setSelectionData(null);
         setResult(null);
+        setShowContext(false);
       }
     };
 
@@ -129,12 +142,12 @@ export default function SelectionTranslator() {
         left: `${tooltipPos.left}px`,
         zIndex: 9999
       }}
-      className={`w-[340px] bg-[#FCFBF9] rounded-2xl shadow-[0_12px_36px_-6px_rgba(22,32,27,0.18)] border border-[#E5DFD3] p-4 text-sm transition-all duration-150 ${
+      className={`w-[330px] bg-[#FCFBF9] rounded-2xl shadow-[0_12px_36px_-6px_rgba(22,32,27,0.18)] border border-[#E5DFD3] p-3.5 text-sm transition-all duration-150 ${
         tooltipPos.placement === 'top' ? '-translate-y-full' : ''
       }`}
     >
       {/* Header tối giản */}
-      <div className="flex items-center justify-between pb-2.5 border-b border-[#ECE7DC]">
+      <div className="flex items-center justify-between pb-2 border-b border-[#ECE7DC]">
         <div className="flex items-center gap-1 text-[11px] font-bold text-[#195646] bg-[#F0F7F4] px-2.5 py-0.5 rounded-full border border-[#DCEEE5]">
           <span>{langs.source.toUpperCase()}</span>
           <button
@@ -151,6 +164,7 @@ export default function SelectionTranslator() {
           onClick={() => {
             setSelectionData(null);
             setResult(null);
+            setShowContext(false);
           }}
           className="text-[#969C98] hover:text-[#16201B] p-1 rounded-lg hover:bg-[#EFECE5] transition cursor-pointer"
           title="Đóng (Esc)"
@@ -161,14 +175,14 @@ export default function SelectionTranslator() {
 
       {/* Nội dung kết quả */}
       {loading ? (
-        <div className="py-6 flex flex-col items-center justify-center gap-2 text-xs text-[#7B827E]">
+        <div className="py-5 flex flex-col items-center justify-center gap-2 text-xs text-[#7B827E]">
           <div className="w-5 h-5 border-2 border-[#195646] border-t-transparent rounded-full animate-spin" />
-          <span>Đang tra cứu ngữ cảnh...</span>
+          <span>Đang tra cứu từ điển...</span>
         </div>
       ) : result ? (
-        <div className="mt-3 space-y-3">
-          {/* Từ gốc + Phát âm */}
-          <div className="flex items-start justify-between gap-3">
+        <div className="mt-2.5 space-y-2.5">
+          {/* Từ gốc + Nút phát âm */}
+          <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               <h4 className="font-serif text-base font-bold text-[#16201B] leading-snug break-words">
                 {result.original}
@@ -183,45 +197,62 @@ export default function SelectionTranslator() {
             <button
               onClick={() => speakWord(result.original, langs.source)}
               title="Phát âm"
-              className="p-2 bg-[#F0F7F4] hover:bg-[#E2F0EA] text-[#195646] rounded-xl transition flex-shrink-0 cursor-pointer border border-[#D6EBE0]"
+              className="p-1.5 bg-[#F0F7F4] hover:bg-[#E2F0EA] text-[#195646] rounded-xl transition flex-shrink-0 cursor-pointer border border-[#D6EBE0]"
             >
               <HiOutlineSpeakerWave className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Bản dịch chính: Rõ ràng, sang trọng */}
-          <div className="p-3 rounded-xl bg-[#F4F9F6] border border-[#D7E9E1]">
-            <p className="font-serif text-base font-bold text-[#11382E] leading-snug">
+          {/* Bản dịch chính: Tinh gọn, rõ ràng */}
+          <div className="p-2.5 rounded-xl bg-[#F4F9F6] border border-[#D7E9E1]">
+            <p className="font-serif text-sm font-bold text-[#11382E] leading-snug">
               {result.translation}
             </p>
             {result.localMeaning && result.localMeaning !== result.translation && (
-              <p className="text-xs text-[#4E7065] mt-1">
+              <p className="text-xs text-[#4E7065] mt-0.5">
                 Nghĩa từ điển: {result.localMeaning}
               </p>
             )}
           </div>
 
-          {/* Câu ngữ cảnh và bản dịch (Gọn gàng, thanh lịch) */}
+          {/* Nút bấm xem ngữ cảnh (ẩn mặc định, chỉ hiện khi click) */}
           {result.contextSentence && result.contextSentence !== result.original && (
-            <div className="text-xs bg-[#FAF7F2] p-3 rounded-xl border border-[#EAE3D6] space-y-1">
-              <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-[#8C8476] tracking-wider">
-                <HiOutlineBookOpen className="w-3.5 h-3.5 text-[#195646]" />
-                <span>Ngữ cảnh trong bài</span>
-              </div>
-              <p className="text-[#3E4340] italic leading-relaxed">
-                &ldquo;{result.contextSentence}&rdquo;
-              </p>
-              {result.contextTranslation && (
-                <p className="text-[#195646] font-medium pt-1 border-t border-[#E8E1D2] mt-1">
-                  ↳ {result.contextTranslation}
-                </p>
+            <div className="pt-0.5">
+              <button
+                type="button"
+                onClick={() => setShowContext(!showContext)}
+                className="text-xs font-semibold text-[#195646] hover:text-[#12392F] flex items-center justify-between py-1 px-2.5 rounded-lg bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#EAE3D6] transition-colors cursor-pointer w-full"
+              >
+                <span className="flex items-center gap-1.5">
+                  <HiOutlineBookOpen className="w-3.5 h-3.5 text-[#195646]" />
+                  <span>{showContext ? 'Ẩn ngữ cảnh câu' : 'Xem ngữ cảnh trong câu'}</span>
+                </span>
+                {showContext ? (
+                  <HiOutlineChevronUp className="w-3.5 h-3.5 text-[#767D79]" />
+                ) : (
+                  <HiOutlineChevronDown className="w-3.5 h-3.5 text-[#767D79]" />
+                )}
+              </button>
+
+              {/* Khung ngữ cảnh chỉ mở ra khi bấm xem */}
+              {showContext && (
+                <div className="mt-2 text-xs bg-[#FAF7F2] p-2.5 rounded-xl border border-[#EAE3D6] space-y-1">
+                  <p className="text-[#3E4340] italic leading-relaxed">
+                    &ldquo;{result.contextSentence}&rdquo;
+                  </p>
+                  {result.contextTranslation && (
+                    <p className="text-[#195646] font-medium pt-1 border-t border-[#E8E1D2] mt-1">
+                      ↳ {result.contextTranslation}
+                    </p>
+                  )}
+                </div>
               )}
             </div>
           )}
 
           {/* Từ điển theo từ loại nếu có */}
           {result.dictionary && result.dictionary.length > 0 && (
-            <div className="pt-2 border-t border-[#ECE7DC] space-y-1">
+            <div className="pt-1.5 border-t border-[#ECE7DC] space-y-1">
               {result.dictionary.slice(0, 2).map((dict, idx) => (
                 <div key={idx} className="text-[11px] text-[#555C58] flex items-baseline gap-1.5">
                   <span className="text-[10px] font-semibold text-[#8A918D] uppercase italic">

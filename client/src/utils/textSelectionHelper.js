@@ -82,7 +82,9 @@ export function getSmartSelectionData() {
       width: rect.width,
       height: rect.height,
       clientX: rect.left + rect.width / 2,
-      clientY: rect.top
+      clientY: rect.top,
+      viewportTop: rect.top,
+      viewportBottom: rect.bottom
     }
   };
 }
