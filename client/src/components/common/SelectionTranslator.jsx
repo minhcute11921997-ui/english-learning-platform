@@ -83,7 +83,9 @@ export default function SelectionTranslator() {
         source,
         target
       });
-      setResult(res.data.data);
+      // axios unwraps response.data via interceptor; handle both shapes safely
+      const payload = res?.data?.original ? res.data : (res?.data?.data || res?.data || res);
+      setResult(payload);
     } catch (err) {
       console.warn('Translate error:', err);
     } finally {
