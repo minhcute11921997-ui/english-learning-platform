@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from '@/api/axios';
 import { getSmartSelectionData } from '@/utils/textSelectionHelper';
-import { HiVolumeUp, HiSwitchHorizontal, HiX, HiSparkles, HiBookOpen } from 'react-icons/hi';
+import {
+  HiOutlineSpeakerWave,
+  HiOutlineArrowsRightLeft,
+  HiOutlineXMark,
+  HiOutlineBookOpen
+} from 'react-icons/hi2';
 
 export default function SelectionTranslator() {
   const [selectionData, setSelectionData] = useState(null);
@@ -33,19 +38,18 @@ export default function SelectionTranslator() {
           const initLangs = { source: data.source, target: data.target };
           setLangs(initLangs);
 
-          // Tính toán vị trí hiển thị (tránh tràn mép trên và 2 bên màn hình)
-          const tooltipWidth = 320;
+          // Tính toán vị trí hiển thị
+          const tooltipWidth = 330;
           const tooltipHeight = 220;
           let left = data.rect.clientX - tooltipWidth / 2;
-          // Giữ trong màn hình
           left = Math.max(16, Math.min(window.innerWidth - tooltipWidth - 16, left));
 
-          let top = data.rect.top - 12;
+          let top = data.rect.top - 10;
           let placement = 'top';
 
           // Nếu sát mép trên màn hình, lật tooltip xuống dưới vùng bôi
           if (data.rect.clientY < tooltipHeight + 20) {
-            top = data.rect.top + data.rect.height + 12;
+            top = data.rect.top + data.rect.height + 10;
             placement = 'bottom';
           }
 
@@ -83,7 +87,6 @@ export default function SelectionTranslator() {
         source,
         target
       });
-      // axios unwraps response.data via interceptor; handle both shapes safely
       const payload = res?.data?.original ? res.data : (res?.data?.data || res?.data || res);
       setResult(payload);
     } catch (err) {
@@ -126,21 +129,20 @@ export default function SelectionTranslator() {
         left: `${tooltipPos.left}px`,
         zIndex: 9999
       }}
-      className={`w-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-blue-100 p-3.5 text-sm transition-all duration-200 animate-in fade-in zoom-in-95 ${
+      className={`w-[340px] bg-[#FCFBF9] rounded-2xl shadow-[0_12px_36px_-6px_rgba(22,32,27,0.18)] border border-[#E5DFD3] p-4 text-sm transition-all duration-150 ${
         tooltipPos.placement === 'top' ? '-translate-y-full' : ''
       }`}
     >
-      {/* Header điều khiển */}
-      <div className="flex items-center justify-between pb-2 border-b border-gray-100">
-        <div className="flex items-center gap-1.5 bg-blue-50/80 px-2 py-0.5 rounded-full text-xs font-semibold text-blue-700">
-          <HiSparkles className="w-3.5 h-3.5 text-blue-500" />
+      {/* Header tối giản */}
+      <div className="flex items-center justify-between pb-2.5 border-b border-[#ECE7DC]">
+        <div className="flex items-center gap-1 text-[11px] font-bold text-[#195646] bg-[#F0F7F4] px-2.5 py-0.5 rounded-full border border-[#DCEEE5]">
           <span>{langs.source.toUpperCase()}</span>
           <button
             onClick={handleSwap}
-            title="Đổi chiều dịch (EN ⇄ VI)"
-            className="p-0.5 hover:bg-blue-100 rounded-full text-blue-600 transition"
+            title="Đổi chiều dịch"
+            className="p-0.5 hover:bg-[#D5EAE0] rounded-full transition cursor-pointer"
           >
-            <HiSwitchHorizontal className="w-3.5 h-3.5" />
+            <HiOutlineArrowsRightLeft className="w-3 h-3 text-[#195646]" />
           </button>
           <span>{langs.target.toUpperCase()}</span>
         </div>
@@ -150,99 +152,82 @@ export default function SelectionTranslator() {
             setSelectionData(null);
             setResult(null);
           }}
-          className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition"
+          className="text-[#969C98] hover:text-[#16201B] p-1 rounded-lg hover:bg-[#EFECE5] transition cursor-pointer"
           title="Đóng (Esc)"
         >
-          <HiX className="w-4 h-4" />
+          <HiOutlineXMark className="w-4 h-4" />
         </button>
       </div>
 
       {/* Nội dung kết quả */}
       {loading ? (
-        <div className="py-6 flex flex-col items-center justify-center gap-2 text-xs text-gray-500">
-          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-          <span>Đang dịch theo ngữ cảnh câu...</span>
+        <div className="py-6 flex flex-col items-center justify-center gap-2 text-xs text-[#7B827E]">
+          <div className="w-5 h-5 border-2 border-[#195646] border-t-transparent rounded-full animate-spin" />
+          <span>Đang tra cứu ngữ cảnh...</span>
         </div>
       ) : result ? (
-        <div className="mt-2.5 space-y-2.5">
+        <div className="mt-3 space-y-3">
           {/* Từ gốc + Phát âm */}
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="font-bold text-base text-gray-900 tracking-tight">
-                  {result.original}
-                </span>
-                {result.difficulty && (
-                  <span className="text-[10px] px-1.5 py-0.2 bg-emerald-50 text-emerald-700 rounded border border-emerald-200 capitalize font-medium">
-                    {result.difficulty}
-                  </span>
-                )}
-              </div>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h4 className="font-serif text-base font-bold text-[#16201B] leading-snug break-words">
+                {result.original}
+              </h4>
               {result.phonetic && (
-                <div className="text-xs text-gray-400 font-mono mt-0.5">
+                <p className="text-xs text-[#7B827E] font-mono mt-0.5">
                   {result.phonetic}
-                </div>
+                </p>
               )}
             </div>
 
             <button
               onClick={() => speakWord(result.original, langs.source)}
-              title="Phát âm từ này"
-              className="p-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full transition shadow-sm active:scale-95"
+              title="Phát âm"
+              className="p-2 bg-[#F0F7F4] hover:bg-[#E2F0EA] text-[#195646] rounded-xl transition flex-shrink-0 cursor-pointer border border-[#D6EBE0]"
             >
-              <HiVolumeUp className="w-4 h-4" />
+              <HiOutlineSpeakerWave className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Thông báo nếu đã tự động mở rộng do người dùng bôi thiếu */}
-          {selectionData.isExpanded && (
-            <div className="text-[11px] text-amber-800 bg-amber-50/80 px-2.5 py-1 rounded-lg border border-amber-200/60 flex items-center gap-1.5">
-              <span>✨</span>
-              <span>
-                Đã tự động sửa vùng bôi thiếu: <b>{result.original}</b>
-              </span>
-            </div>
-          )}
-
-          {/* Bản dịch chính */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50/60 p-2.5 rounded-xl border border-blue-100/80">
-            <div className="text-blue-950 font-bold text-sm leading-snug">
+          {/* Bản dịch chính: Rõ ràng, sang trọng */}
+          <div className="p-3 rounded-xl bg-[#F4F9F6] border border-[#D7E9E1]">
+            <p className="font-serif text-base font-bold text-[#11382E] leading-snug">
               {result.translation}
-            </div>
+            </p>
             {result.localMeaning && result.localMeaning !== result.translation && (
-              <div className="text-xs text-blue-800/80 mt-1">
+              <p className="text-xs text-[#4E7065] mt-1">
                 Nghĩa từ điển: {result.localMeaning}
-              </div>
+              </p>
             )}
           </div>
 
-          {/* Câu ngữ cảnh và bản dịch ngữ cảnh */}
+          {/* Câu ngữ cảnh và bản dịch (Gọn gàng, thanh lịch) */}
           {result.contextSentence && result.contextSentence !== result.original && (
-            <div className="text-xs bg-gray-50/90 p-2.5 rounded-xl border border-gray-100 space-y-1">
-              <div className="flex items-center gap-1 text-[10px] uppercase font-bold text-gray-400 tracking-wider">
-                <HiBookOpen className="w-3 h-3 text-gray-400" />
-                <span>Ngữ cảnh trong câu</span>
+            <div className="text-xs bg-[#FAF7F2] p-3 rounded-xl border border-[#EAE3D6] space-y-1">
+              <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-[#8C8476] tracking-wider">
+                <HiOutlineBookOpen className="w-3.5 h-3.5 text-[#195646]" />
+                <span>Ngữ cảnh trong bài</span>
               </div>
-              <p className="text-gray-700 italic leading-relaxed">
-                "{result.contextSentence}"
+              <p className="text-[#3E4340] italic leading-relaxed">
+                &ldquo;{result.contextSentence}&rdquo;
               </p>
               {result.contextTranslation && (
-                <p className="text-blue-600 font-medium pt-0.5 border-t border-gray-100 mt-1">
+                <p className="text-[#195646] font-medium pt-1 border-t border-[#E8E1D2] mt-1">
                   ↳ {result.contextTranslation}
                 </p>
               )}
             </div>
           )}
 
-          {/* Từ điển theo từ loại (Danh từ, Động từ, Tính từ...) */}
+          {/* Từ điển theo từ loại nếu có */}
           {result.dictionary && result.dictionary.length > 0 && (
-            <div className="pt-1.5 border-t border-gray-100 space-y-1">
+            <div className="pt-2 border-t border-[#ECE7DC] space-y-1">
               {result.dictionary.slice(0, 2).map((dict, idx) => (
-                <div key={idx} className="text-[11px] text-gray-600 flex items-baseline gap-1.5">
-                  <span className="text-[10px] font-semibold text-gray-400 uppercase italic">
+                <div key={idx} className="text-[11px] text-[#555C58] flex items-baseline gap-1.5">
+                  <span className="text-[10px] font-semibold text-[#8A918D] uppercase italic">
                     {dict.partOfSpeech}:
                   </span>
-                  <span className="text-gray-700 truncate">{dict.terms?.join(', ')}</span>
+                  <span className="text-[#2C332F] truncate">{dict.terms?.join(', ')}</span>
                 </div>
               ))}
             </div>
