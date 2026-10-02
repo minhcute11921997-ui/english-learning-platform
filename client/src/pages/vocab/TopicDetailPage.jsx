@@ -58,7 +58,7 @@ export default function TopicDetailPage() {
   const handleMarkLearned = async (vocabId) => {
     try {
       await vocabApi.markAsLearned(vocabId);
-      toast.success('Đã thêm từ vào lịch ôn tập!');
+      toast.success('Đã thêm từ vào sổ học và lên lịch ôn tập!');
       setVocabularies((prev) =>
         prev.map((v) =>
           v.id === vocabId
@@ -201,23 +201,30 @@ export default function TopicDetailPage() {
                 )}
               </div>
 
-              <div className="pt-3 border-t flex items-center justify-between text-xs text-gray-500">
+              <div className="pt-3 border-t border-[#ECE7DC] flex items-center justify-between text-xs text-gray-500">
                 {isLearned ? (
-                  <span className="inline-flex items-center gap-1 text-green-600 font-semibold">
-                    <HiCheckCircle className="w-4 h-4" /> Đã lưu vào lịch ôn tập
+                  <span className="inline-flex items-center gap-1 text-[#195646] font-semibold">
+                    <HiCheckCircle className="w-4 h-4 text-[#195646]" /> Đang học (Lịch SRS)
                   </span>
                 ) : (
-                  <span>Chưa học</span>
+                  <span className="text-[#7B827E]">Chưa thêm</span>
                 )}
 
-                <button
-                  onClick={() => handleMarkLearned(vocab.id)}
-                  className={`btn py-1 px-3 text-xs ${
-                    isLearned ? 'btn-secondary' : 'btn-outline'
-                  }`}
-                >
-                  {isLearned ? 'Ôn lại' : 'Đánh dấu đã học'}
-                </button>
+                {isLearned ? (
+                  <Link
+                    to="/review"
+                    className="py-1 px-3 text-xs rounded-lg border border-[#D7E9E1] bg-[#F0F7F4] text-[#195646] hover:bg-[#E2F0EA] font-medium transition-colors"
+                  >
+                    Vào ôn tập →
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => handleMarkLearned(vocab.id)}
+                    className="btn btn-outline py-1 px-3 text-xs cursor-pointer"
+                  >
+                    + Thêm vào sổ học
+                  </button>
+                )}
               </div>
             </div>
           );
