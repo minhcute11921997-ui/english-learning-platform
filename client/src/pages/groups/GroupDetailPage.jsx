@@ -302,10 +302,6 @@ export default function GroupDetailPage() {
             {group.name}
           </h1>
 
-          <p className="text-sm text-stone-600 leading-relaxed">
-            {group.description || 'Chưa có mô tả cho nhóm học này.'}
-          </p>
-
           <div className="pt-1 flex items-center gap-3 text-xs text-stone-500 flex-wrap">
             <span>
               Chủ sở hữu:{' '}
@@ -357,9 +353,6 @@ export default function GroupDetailPage() {
               )}
             </button>
           </div>
-          <p className="text-[11px] text-stone-400 text-center">
-            Chia sẻ mã này để mời thành viên vào lớp
-          </p>
         </div>
       </div>
 
@@ -373,7 +366,7 @@ export default function GroupDetailPage() {
               : 'border-transparent text-stone-500 hover:text-stone-800'
           }`}
         >
-          <HiBookOpen className="w-4 h-4" /> Nội dung học ({group.vocabSets?.length || 0} bộ từ, {group.readingSets?.length || 0} bài đọc)
+          <HiBookOpen className="w-4 h-4" /> Nội dung học
         </button>
 
         <button
@@ -384,7 +377,7 @@ export default function GroupDetailPage() {
               : 'border-transparent text-stone-500 hover:text-stone-800'
           }`}
         >
-          <HiUserGroup className="w-4 h-4" /> Thành viên ({group.members?.length || 0})
+          <HiUserGroup className="w-4 h-4" /> Thành viên
         </button>
 
         {group.is_owner && (
@@ -433,9 +426,6 @@ export default function GroupDetailPage() {
                     <div className="flex justify-between items-start gap-4">
                       <div>
                         <h3 className="font-bold text-stone-900 text-base">{vSet.title}</h3>
-                        <p className="text-xs text-stone-500 mt-0.5">
-                          {vSet.description || 'Không có mô tả'}
-                        </p>
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
@@ -499,10 +489,7 @@ export default function GroupDetailPage() {
                       <span className="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 uppercase tracking-wide mb-2">
                         {rSet.reading?.difficulty}
                       </span>
-                      <h3 className="font-bold text-stone-900 text-base">{rSet.reading?.title}</h3>
-                      <p className="text-xs text-stone-500 italic mb-4 mt-0.5">
-                        {rSet.reading?.title_vi}
-                      </p>
+                      <h3 className="font-bold text-stone-900 text-base mb-4">{rSet.reading?.title}</h3>
                     </div>
 
                     <Link

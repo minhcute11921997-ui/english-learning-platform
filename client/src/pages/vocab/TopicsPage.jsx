@@ -91,14 +91,11 @@ export default function TopicsPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Header & Tabs */}
-      <div className="border-b border-[#E8E4DC] pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div className="border-b border-[#E8E4DC] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#16201B]">
             Học Từ Vựng
           </h1>
-          <p className="text-xs sm:text-sm text-[#6C726E] mt-0.5">
-            Học theo chủ đề hệ thống hoặc tạo các bộ danh sách từ cá nhân để ôn tập.
-          </p>
         </div>
 
         {/* Tab Switcher */}
@@ -112,21 +109,18 @@ export default function TopicsPage() {
                 : 'text-[#6C726E] hover:text-[#16201B]'
             }`}
           >
-            Chủ đề hệ thống ({topics.length})
+            Chủ đề hệ thống
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('my-lists')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               activeTab === 'my-lists'
                 ? 'bg-white text-[#195646] shadow-xs'
                 : 'text-[#6C726E] hover:text-[#16201B]'
             }`}
           >
-            <span>Sổ từ của tôi</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-[#195646]/10 text-[#195646] text-[10.5px]">
-              {myLists.length}
-            </span>
+            Sổ từ của tôi
           </button>
         </div>
       </div>
@@ -156,9 +150,6 @@ export default function TopicsPage() {
                   <h2 className="font-serif text-lg font-bold text-[#16201B] group-hover:text-[#195646] transition-colors leading-snug">
                     {t.name_vi}
                   </h2>
-                  <p className="text-xs font-medium text-[#7C827E] mt-0.5">
-                    {t.name}
-                  </p>
 
                   {/* Thanh tiến độ học gọn gàng */}
                   <div className="mt-4 pt-3 border-t border-[#F2EEE6]">
@@ -207,9 +198,6 @@ export default function TopicsPage() {
               <h2 className="font-serif text-base font-bold text-[#16201B]">
                 Các bộ từ vựng cá nhân
               </h2>
-              <p className="text-xs text-[#6C726E] mt-0.5">
-                Gom từ vựng từ bài đọc hoặc các chủ đề vào bộ từ riêng để ôn tập bất cứ khi nào.
-              </p>
             </div>
             <button
               type="button"
@@ -242,15 +230,12 @@ export default function TopicsPage() {
                         </span>
                       </div>
 
-                      {/* Title & Description */}
+                      {/* Title */}
                       <Link to={`/vocab-lists/${list.id}`}>
                         <h3 className="font-serif text-lg font-bold text-[#16201B] group-hover:text-[#195646] transition-colors leading-snug">
                           {list.name}
                         </h3>
                       </Link>
-                      <p className="text-xs text-[#6C726E] mt-1 line-clamp-2 min-h-[32px]">
-                        {list.description || 'Chưa có mô tả cho bộ từ này.'}
-                      </p>
                     </div>
 
                     {/* Action buttons */}

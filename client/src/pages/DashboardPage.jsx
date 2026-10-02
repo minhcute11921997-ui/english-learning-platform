@@ -48,9 +48,6 @@ export default function DashboardPage() {
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#16201B]">
             Xin chào, {user?.full_name || user?.username}!
           </h1>
-          <p className="text-xs sm:text-sm text-[#6C726E] mt-0.5">
-            {user?.learning_goal ? `Mục tiêu: ${user.learning_goal}` : 'Học tập đều đặn mỗi ngày.'}
-          </p>
         </div>
 
         {/* Level badge */}
@@ -125,7 +122,6 @@ export default function DashboardPage() {
             <h3 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#195646] transition-colors">
               Từ vựng
             </h3>
-            <p className="text-xs text-[#7B827E] mt-0.5">7 chủ đề · 200+ từ</p>
           </div>
         </Link>
 
@@ -143,7 +139,6 @@ export default function DashboardPage() {
             <h3 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#D96237] transition-colors">
               Đọc hiểu
             </h3>
-            <p className="text-xs text-[#7B827E] mt-0.5">21 bài đọc & câu hỏi</p>
           </div>
         </Link>
 
@@ -161,7 +156,6 @@ export default function DashboardPage() {
             <h3 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#B88728] transition-colors">
               Ôn tập hôm nay
             </h3>
-            <p className="text-xs text-[#7B827E] mt-0.5">Nhắc nhở từ sắp quên</p>
           </div>
         </Link>
 
@@ -179,7 +173,6 @@ export default function DashboardPage() {
             <h3 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#6952A3] transition-colors">
               Nhóm học
             </h3>
-            <p className="text-xs text-[#7B827E] mt-0.5">Lớp học & Chia sẻ bộ từ</p>
           </div>
         </Link>
       </div>

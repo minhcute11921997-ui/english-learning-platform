@@ -171,16 +171,9 @@ export default function GroupsPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60 text-xs font-semibold uppercase tracking-wider mb-2">
-            <HiUserGroup className="w-3.5 h-3.5 text-emerald-600" />
-            Nhóm & Lớp học
-          </div>
           <h1 className="text-2xl sm:text-3xl font-bold font-serif text-stone-900">
             Nhóm Học Tập Của Tôi
           </h1>
-          <p className="text-sm text-stone-600 mt-1">
-            Học tập cùng lớp, chia sẻ bộ từ vựng mục tiêu và đồng hành theo dõi tiến độ mỗi ngày.
-          </p>
         </div>
 
         <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
@@ -275,17 +268,14 @@ export default function GroupsPage() {
                     </div>
                   </div>
 
-                  {/* Title & Description */}
-                  <h2 className="text-lg font-bold font-serif text-stone-900 mb-1.5 line-clamp-1">
+                  {/* Title */}
+                  <h2 className="text-lg font-bold font-serif text-stone-900 mb-4 line-clamp-1">
                     {group.name}
                   </h2>
-                  <p className="text-xs text-stone-500 line-clamp-2 mb-4 leading-relaxed min-h-[2rem]">
-                    {group.description || 'Chưa có mô tả cho nhóm học này.'}
-                  </p>
 
                   {/* Invite Code Box */}
                   <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/80 flex items-center justify-between text-xs text-stone-600 mb-4">
-                    <span className="flex items-center gap-1.5">
+                    <span className="flex items-center gap-1.5 font-medium">
                       Mã mời:
                       <strong className="text-emerald-800 font-mono text-sm tracking-wider bg-white px-2 py-0.5 rounded border border-stone-200">
                         {group.invite_code}
@@ -307,14 +297,10 @@ export default function GroupsPage() {
                 </div>
 
                 {/* Footer Bar */}
-                <div className="pt-3.5 border-t border-stone-100 flex items-center justify-between">
-                  <span className="text-xs text-stone-400 truncate max-w-[150px]">
-                    Chủ nhóm: <strong className="text-stone-600 font-medium">{group.owner?.full_name || group.owner?.username}</strong>
-                  </span>
-
+                <div className="pt-3 border-t border-stone-100 flex items-center justify-end">
                   <Link
                     to={`/groups/${group.id}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white transition-colors shadow-sm"
+                    className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white transition-colors shadow-sm w-full text-center"
                   >
                     Vào lớp <HiArrowRight className="w-3.5 h-3.5" />
                   </Link>

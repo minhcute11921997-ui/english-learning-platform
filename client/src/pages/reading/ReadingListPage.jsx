@@ -70,9 +70,6 @@ export default function ReadingListPage() {
         <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#16201B]">
           Luyện đọc hiểu
         </h1>
-        <p className="text-xs sm:text-sm text-[#6C726E] mt-0.5">
-          21 bài đọc phân cấp độ kèm câu hỏi trắc nghiệm và giải thích từ khóa.
-        </p>
       </div>
 
       {/* Recommended Section (Gọn gàng, loại bỏ gradient xanh AI) */}
@@ -100,7 +97,6 @@ export default function ReadingListPage() {
                     </span>
                   </div>
                   <h3 className="font-serif text-sm font-bold text-[#16201B] truncate">{rec.title}</h3>
-                  <p className="text-xs text-[#7A807C] italic truncate">{rec.title_vi}</p>
                 </div>
                 <Link
                   to={`/readings/${rec.id}`}
@@ -183,12 +179,9 @@ export default function ReadingListPage() {
                   </span>
                 </div>
 
-                <h2 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#195646] transition-colors leading-snug">
+                <h2 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#195646] transition-colors leading-snug mb-3">
                   {reading.title}
                 </h2>
-                <p className="text-xs text-[#7A807C] italic mt-0.5 mb-3 line-clamp-1">
-                  {reading.title_vi}
-                </p>
 
                 <div className="flex items-center gap-3 text-[11px] text-[#8C928E]">
                   <span className="flex items-center gap-1">

@@ -187,11 +187,6 @@ export default function UserVocabListDetailPage() {
                   {vocabularies.length} từ
                 </span>
               </div>
-              {list.description && (
-                <p className="text-sm text-[#6C726E] leading-relaxed max-w-2xl">
-                  {list.description}
-                </p>
-              )}
             </div>
 
             {/* Actions for this list */}

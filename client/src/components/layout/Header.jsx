@@ -35,18 +35,13 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link to="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-[#195646] text-white flex items-center justify-center font-serif text-lg font-bold shadow-[0_2px_6px_rgba(25,86,70,0.3)] transition-transform group-hover:scale-105">
               E
             </div>
-            <div className="flex flex-col">
-              <span className="font-serif text-lg font-bold tracking-tight text-[#16201B] leading-none">
-                EngLearn
-              </span>
-              <span className="text-[9.5px] font-semibold tracking-widest text-[#7E7A71] uppercase mt-0.5">
-                Study Studio
-              </span>
-            </div>
+            <span className="font-serif text-xl font-bold tracking-tight text-[#16201B]">
+              EngLearn
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
