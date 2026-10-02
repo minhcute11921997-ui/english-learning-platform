@@ -218,14 +218,9 @@ export default function AssessmentPage() {
           <p className="text-xs uppercase tracking-wider font-semibold text-primary-600 mb-2">
             Đánh giá năng lực tiếng Anh
           </p>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">
             {currentQ.question_text}
           </h2>
-          {currentQ.question_text_vi && (
-            <p className="text-sm text-gray-500 italic mb-6">
-              {currentQ.question_text_vi}
-            </p>
-          )}
 
           <div className="space-y-3">
             {currentQ.options?.map((option, idx) => {

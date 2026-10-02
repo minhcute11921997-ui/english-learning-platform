@@ -158,8 +158,8 @@ export default function ReadingDetailPage() {
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900">{reading.title}</h1>
-        {reading.title_vi && <p className="text-sm text-gray-500 italic">{reading.title_vi}</p>}
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#16201B]">{reading.title}</h1>
+        {showVietnamese && reading.title_vi && <p className="text-sm text-[#7A807C] italic">{reading.title_vi}</p>}
 
         {/* English Content */}
         <div className="text-base text-gray-800 leading-relaxed font-serif whitespace-pre-line bg-gray-50/50 p-6 rounded-xl border border-gray-100">
@@ -219,7 +219,7 @@ export default function ReadingDetailPage() {
                     <p className="font-bold text-gray-900">
                       Câu {idx + 1}: {q.question_text}
                     </p>
-                    {q.question_text_vi && (
+                    {showVietnamese && q.question_text_vi && (
                       <p className="text-xs text-gray-500 italic mt-0.5">{q.question_text_vi}</p>
                     )}
                   </div>
@@ -268,7 +268,7 @@ export default function ReadingDetailPage() {
                   <p className="font-bold text-gray-900">
                     Câu {idx + 1}: {q.question_text}
                   </p>
-                  {q.question_text_vi && (
+                  {showVietnamese && q.question_text_vi && (
                     <p className="text-xs text-gray-500 italic mt-0.5">{q.question_text_vi}</p>
                   )}
                 </div>
