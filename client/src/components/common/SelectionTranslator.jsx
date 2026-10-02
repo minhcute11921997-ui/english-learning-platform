@@ -54,8 +54,9 @@ export default function SelectionTranslator() {
           let placement = 'bottom';
           let top = data.rect.top + data.rect.height + 8;
 
-          // Chỉ lật lên trên nếu phía dưới quá chật (< 180px) VÀ phía trên còn đủ rộng (>= 180px)
-          if (spaceBelow < 180 && spaceAbove >= 180) {
+          // Tự động xử lý khi ở mép dưới màn hình:
+          // Nếu khoảng trống phía dưới < 220px VÀ phía trên có nhiều chỗ hơn -> Lật popup lên trên
+          if (spaceBelow < 220 && spaceAbove > spaceBelow) {
             placement = 'top';
             top = data.rect.top - 8;
           }
@@ -142,7 +143,7 @@ export default function SelectionTranslator() {
         left: `${tooltipPos.left}px`,
         zIndex: 9999
       }}
-      className={`w-[330px] bg-[#FCFBF9] rounded-2xl shadow-[0_12px_36px_-6px_rgba(22,32,27,0.18)] border border-[#E5DFD3] p-3.5 text-sm transition-all duration-150 ${
+      className={`w-[330px] max-h-[85vh] overflow-y-auto bg-[#FCFBF9] rounded-2xl shadow-[0_12px_36px_-6px_rgba(22,32,27,0.18)] border border-[#E5DFD3] p-3.5 text-sm transition-all duration-150 ${
         tooltipPos.placement === 'top' ? '-translate-y-full' : ''
       }`}
     >
