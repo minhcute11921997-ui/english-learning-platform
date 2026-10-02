@@ -6,132 +6,166 @@
   <title>Sơ Đồ Thực Thể Quan Hệ (ERD) — EngLearn Database</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <style>
     :root {
       --bg: #FAF8F5;
       --card-bg: #FFFFFF;
       --primary: #195646;
+      --primary-hover: #123F33;
       --primary-light: #EBF4F0;
       --accent: #D96237;
       --border: #E8E4DC;
       --text: #16201B;
       --text-muted: #6C726E;
-      --radius: 14px;
+      --radius: 16px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background-color: var(--bg);
       color: var(--text);
       font-family: 'Plus Jakarta Sans', sans-serif;
-      line-height: 1.5;
       padding: 24px;
+      min-width: 1024px;
     }
 
     header {
-      max-width: 1400px;
-      margin: 0 auto 24px auto;
+      max-width: 1600px;
+      margin: 0 auto 20px auto;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       gap: 16px;
       padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 2px solid var(--border);
     }
 
     .brand-title {
       font-family: 'Lora', serif;
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 700;
       color: var(--primary);
     }
 
     .brand-sub {
-      font-size: 13px;
+      font-size: 14px;
       color: var(--text-muted);
-      margin-top: 2px;
+      margin-top: 4px;
     }
 
-    .legend {
+    /* Tab switcher */
+    .tabs-bar {
+      max-width: 1600px;
+      margin: 0 auto 16px auto;
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      background: #EFEBE4;
+      padding: 6px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
     }
 
-    .legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1px solid transparent;
-    }
-
-    .legend-user { background: #EBF4F0; color: #195646; border-color: #CDE3DA; }
-    .legend-content { background: #F0F4FA; color: #2B579A; border-color: #D3E0F3; }
-    .legend-progress { background: #FDF5EE; color: #D96237; border-color: #F8DFCE; }
-    .legend-social { background: #F5F0FB; color: #6D3BAA; border-color: #E6D8F8; }
-
-    .main-container {
-      max-width: 1400px;
-      margin: 0 auto;
+    .tab-btn {
+      padding: 9px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: #555C58;
+      cursor: pointer;
+      transition: all 0.2s ease;
       display: flex;
-      flex-direction: column;
-      gap: 24px;
+      align-items: center;
+      gap: 8px;
     }
 
-    /* Diagram Canvas Wrapper */
+    .tab-btn:hover {
+      color: var(--primary);
+      background: rgba(255,255,255,0.6);
+    }
+
+    .tab-btn.active {
+      background: #FFFFFF;
+      color: var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .tab-badge {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      background: rgba(25, 86, 70, 0.1);
+      color: var(--primary);
+    }
+
+    /* Canvas Card */
     .canvas-card {
+      max-width: 1600px;
+      margin: 0 auto 24px auto;
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-      position: relative;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.04);
       overflow: hidden;
     }
 
     .canvas-toolbar {
-      padding: 12px 18px;
+      padding: 12px 20px;
       background: #FAF8F5;
       border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 16px;
     }
 
-    .canvas-title {
-      font-size: 13px;
+    .view-info {
+      font-size: 14px;
       font-weight: 700;
-      color: var(--text);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .toolbar-actions {
+      color: var(--primary);
       display: flex;
+      align-items: center;
       gap: 8px;
     }
 
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .zoom-indicator {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      min-width: 65px;
+      text-align: center;
+    }
+
     .btn {
-      padding: 6px 14px;
+      padding: 8px 16px;
       border-radius: 8px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid var(--border);
       background: #FFFFFF;
       color: var(--text);
       transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .btn:hover {
@@ -146,19 +180,17 @@
     }
 
     .btn-primary:hover {
-      background: #123F33;
+      background: var(--primary-hover);
     }
 
+    /* Viewport Area */
     .viewport {
       width: 100%;
-      height: 720px;
+      height: 750px;
       overflow: auto;
-      cursor: grab;
       position: relative;
       background: #FCFBF9;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      cursor: grab;
       padding: 40px;
     }
 
@@ -166,461 +198,779 @@
       cursor: grabbing;
     }
 
-    #mermaid-render {
-      transform-origin: top center;
-      transition: transform 0.1s ease-out;
+    .diagram-container {
+      transform-origin: top left;
+      transition: transform 0.08s ease-out;
+      display: inline-block;
+      min-width: 100%;
     }
 
-    /* Reference Tables Section */
-    .reference-section {
+    /* Cực kỳ quan trọng: Ép Mermaid SVG to rõ, không bị co dúm */
+    .mermaid svg {
+      max-width: none !important;
+      height: auto !important;
+      display: block !important;
+    }
+
+    .mermaid text,
+    .mermaid .nodeLabel,
+    .mermaid .entityLabel {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-size: 16px !important;
+      font-weight: 600 !important;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Visual HTML Cards Breakdown */
+    .breakdown-section {
+      max-width: 1600px;
+      margin: 0 auto;
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      padding: 28px;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.04);
     }
 
-    .section-header {
+    .breakdown-title {
       font-family: 'Lora', serif;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
       color: var(--text);
       margin-bottom: 6px;
     }
 
-    .section-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-
-    .grid-docs {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 16px;
-    }
-
-    .doc-card {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-      background: #FAF8F5;
-      font-size: 13px;
-    }
-
-    .doc-title {
-      font-family: 'JetBrains Mono', monospace;
+    .breakdown-desc {
       font-size: 14px;
-      font-weight: 700;
-      color: var(--primary);
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    .table-box {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #FAF8F5;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .table-box:hover {
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      border-color: var(--primary);
+    }
+
+    .table-head {
+      padding: 12px 16px;
+      background: #F4F1EA;
+      border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
     }
 
-    .badge-layer {
-      font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    .doc-desc {
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      font-size: 12.5px;
-    }
-
-    .field-list {
+    .table-name {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      background: #FFFFFF;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 8px 12px;
-      line-height: 1.8;
-      max-height: 180px;
-      overflow-y: auto;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
     }
 
-    .field-pk { color: #D96237; font-weight: 700; }
-    .field-fk { color: #2B579A; font-weight: 700; }
-    .field-type { color: #787E7B; }
+    .table-domain {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .domain-user { background: #EBF4F0; color: #195646; }
+    .domain-progress { background: #FDF5EE; color: #D96237; }
+    .domain-content { background: #F0F4FA; color: #2B579A; }
+    .domain-social { background: #F5F0FB; color: #6D3BAA; }
+
+    .table-purpose {
+      padding: 12px 16px 8px 16px;
+      font-size: 13px;
+      color: #444A47;
+      line-height: 1.4;
+    }
+
+    .table-fields {
+      padding: 12px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.8;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border);
+    }
+
+    .pk { color: #D96237; font-weight: 700; }
+    .fk { color: #2B579A; font-weight: 700; }
+    .type { color: #7B827E; font-size: 11px; }
   </style>
 </head>
 <body>
 
   <header>
     <div>
-      <h1 class="brand-title">EngLearn — Sơ Đồ Cấu Trúc Database (ERD)</h1>
-      <p class="brand-sub">Mô hình thực thể quan hệ chuẩn 3NF và phân quyền dữ liệu người dùng (User Multi-tenancy)</p>
+      <h1 class="brand-title">EngLearn — Sơ Đồ Thực Thể Quan Hệ (ERD)</h1>
+      <p class="brand-sub">Mô hình dữ liệu quan hệ chuẩn 3NF và phân tách dữ liệu đa người dùng (Multi-tenant Data Isolation)</p>
     </div>
 
-    <div class="legend">
-      <span class="legend-item legend-user">● Tài khoản & Định danh</span>
-      <span class="legend-item legend-content">● Kho nội dung mẫu (Topics / Readings)</span>
-      <span class="legend-item legend-progress">● Tiến độ học & Sổ từ cá nhân (SRS)</span>
-      <span class="legend-item legend-social">● Nhóm học & Cộng đồng</span>
+    <div>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ In / Xuất PDF</button>
     </div>
   </header>
 
-  <main class="main-container">
+  <!-- Navigation Tabs to view separated modules clearly -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('user-srs')">
+      <span>👤 Phân hệ Người Dùng, Sổ Từ & SRS</span>
+      <span class="tab-badge">Khuyên xem</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('content-reading')">
+      <span>📚 Phân hệ Kho Từ Vựng & Đọc Hiểu</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('groups-social')">
+      <span>👥 Phân hệ Nhóm Học & Cộng Đồng</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('full-system')">
+      <span>🌐 Toàn Bộ Hệ Thống (Full Overview)</span>
+    </button>
+  </div>
 
-    <!-- Interactive Canvas -->
-    <div class="canvas-card">
-      <div class="canvas-toolbar">
-        <span class="canvas-title">Sơ đồ Quan Hệ Trực Quan (Interactive Mermaid Canvas)</span>
-        <div class="toolbar-actions">
-          <button class="btn" onclick="zoomIn()">Phóng to (+)</button>
-          <button class="btn" onclick="zoomOut()">Thu nhỏ (-)</button>
-          <button class="btn" onclick="resetZoom()">Vừa màn hình (100%)</button>
-          <button class="btn btn-primary" onclick="window.print()">In / Xuất PDF</button>
-        </div>
+  <!-- Canvas Display Card -->
+  <div class="canvas-card">
+    <div class="canvas-toolbar">
+      <div class="view-info" id="view-title">
+        <span>📍 Đang xem: Phân hệ Người Dùng, Sổ Từ Cá Nhân & Ôn Tập SRS (Chữ Lớn, To Rõ)</span>
       </div>
 
-      <div class="viewport" id="viewport">
-        <div id="mermaid-render">
+      <div class="controls-group">
+        <button class="btn" onclick="zoomIn()" title="Phóng to">🔍+ Phóng to</button>
+        <button class="btn" onclick="zoomOut()" title="Thu nhỏ">🔍- Thu nhỏ</button>
+        <div class="zoom-indicator" id="zoom-text">100%</div>
+        <button class="btn" onclick="resetZoom()" title="Về ban đầu">⟲ Đặt lại</button>
+      </div>
+    </div>
+
+    <div class="viewport" id="viewport">
+      <div class="diagram-container" id="zoom-target">
+
+        <!-- TAB 1: USER & SRS (To rõ nhất, giải thích đúng câu hỏi người dùng) -->
+        <div id="tab-user-srs" class="tab-content active">
           <pre class="mermaid">
 erDiagram
-    %% TẦNG 1: NGƯỜI DÙNG & ĐỊNH DANH
+    USERS ||--o{ USER_VOCAB_LISTS : "1 user có nhiều bộ từ"
+    USERS ||--o{ USER_VOCAB_PROGRESS : "lưu trạng thái trí nhớ SM-2"
+    USERS ||--o{ REVIEW_SCHEDULES : "hàng đợi ôn tập ngắt quãng"
+    USERS ||--o{ LEVEL_ASSESSMENTS : "lịch sử kiểm tra trình độ"
+
+    USER_VOCAB_LISTS ||--|{ USER_VOCAB_LIST_ITEMS : "chứa các từ (1-N)"
+    VOCABULARIES ||--o{ USER_VOCAB_LIST_ITEMS : "được thêm vào sổ từ (1-N)"
+    VOCABULARIES ||--o{ USER_VOCAB_PROGRESS : "được học bởi user"
+    VOCABULARIES ||--o{ REVIEW_SCHEDULES : "được lên lịch ôn tập"
+
     USERS {
-        int id PK
-        string username
-        string email
-        string password_hash
-        string full_name
-        string role
-        int initial_level
-        datetime last_login_at
+        int id PK "Khóa chính User"
+        string username "Tên tài khoản (unique)"
+        string email "Email đăng nhập (unique)"
+        string full_name "Họ và tên học viên"
+        string role "admin | learner | group_owner"
+        int initial_level "Điểm đầu vào (0 - 100)"
+        datetime last_login_at "Đăng nhập lần cuối"
+    }
+
+    USER_VOCAB_LISTS {
+        int id PK "Khóa chính Bộ từ"
+        int user_id FK "Thuộc sở hữu của User nào"
+        string name "Tên bộ từ (Ví dụ: Từ khó nhớ)"
+        text description "Ghi chú mục đích của bộ từ"
+        string color "Mã màu nhận diện"
+    }
+
+    USER_VOCAB_LIST_ITEMS {
+        int id PK "Khóa chính dòng liên kết"
+        int list_id FK "Mã bộ danh sách (user_vocab_lists.id)"
+        int vocabulary_id FK "Mã từ vựng (vocabularies.id)"
+    }
+
+    USER_VOCAB_PROGRESS {
+        int id PK "Khóa chính tiến độ"
+        int user_id FK "Mã học viên"
+        int vocabulary_id FK "Mã từ vựng"
+        string status "new | learning | mastered"
+        int correct_count "Số lần ôn đúng"
+        int incorrect_count "Số lần ôn sai"
+        float ease_factor "Hệ số dễ (SM-2, mặc định 2.5)"
+        int interval_days "Khoảng cách ngày ôn kế tiếp"
+        datetime next_review_at "Ngày giờ ôn tập tiếp theo"
+    }
+
+    REVIEW_SCHEDULES {
+        int id PK "Khóa chính lịch hẹn"
+        int user_id FK "Mã học viên cần ôn"
+        int vocabulary_id FK "Mã từ vựng cần ôn"
+        datetime scheduled_at "Ngày đến hạn ôn (Due date)"
+        boolean is_completed "Đã ôn xong chưa"
+        string source "personal | group"
     }
 
     LEVEL_ASSESSMENTS {
-        int id PK
-        int user_id FK
-        int score
-        int total_questions
-        string assessed_level
-        datetime completed_at
+        int id PK "Khóa chính bài test"
+        int user_id FK "Mã học viên"
+        int score "Điểm đạt được"
+        int total_questions "Tổng số câu hỏi"
+        string assessed_level "Trình độ đánh giá"
+        datetime completed_at "Thời gian hoàn thành"
     }
 
-    %% TẦNG 2: KHO NỘI DUNG MẪU
+    VOCABULARIES {
+        int id PK "Mã từ vựng hệ thống"
+        string word "Từ tiếng Anh"
+        string pronunciation "Phiên âm IPA"
+        string part_of_speech "noun | verb | adj | adv"
+        string meaning_vi "Nghĩa tiếng Việt"
+        string difficulty "easy | medium | hard"
+    }
+          </pre>
+        </div>
+
+        <!-- TAB 2: CONTENT & READING -->
+        <div id="tab-content-reading" class="tab-content">
+          <pre class="mermaid">
+erDiagram
+    TOPICS ||--o{ VOCABULARIES : "phân loại chủ đề từ"
+    TOPICS ||--o{ READINGS : "phân loại chủ đề bài đọc"
+
+    VOCABULARIES ||--o{ VOCAB_EXAMPLES : "ví dụ minh họa câu"
+
+    READINGS ||--|{ QUESTIONS : "chứa 4-5 câu hỏi trắc nghiệm"
+    READINGS ||--o{ USER_READING_ATTEMPTS : "học viên làm bài đọc"
+
+    USER_READING_ATTEMPTS ||--|{ USER_ANSWERS : "ghi nhận đáp án từng câu"
+    QUESTIONS ||--o{ USER_ANSWERS : "được trả lời bởi"
+
     TOPICS {
         int id PK
-        string name
-        string name_vi
-        text description
-        string icon
-        int display_order
+        string name "Tên tiếng Anh (Family, School...)"
+        string name_vi "Tên tiếng Việt (Gia đình, Trường học...)"
+        text description "Mô tả chủ đề"
+        string icon "Icon đại diện"
+        int display_order "Thứ tự hiển thị"
     }
 
     VOCABULARIES {
         int id PK
-        int topic_id FK
-        string word
-        string pronunciation
-        string part_of_speech
-        string meaning_vi
-        text example_sentence
-        string difficulty
-        boolean is_approved
+        int topic_id FK "Thuộc chủ đề nào"
+        string word "Từ tiếng Anh"
+        string pronunciation "Phiên âm IPA"
+        string part_of_speech "noun, verb, adj, adv..."
+        string meaning_vi "Nghĩa tiếng Việt chuẩn"
+        text example_sentence "Câu ví dụ tiếng Anh"
+        text example_translation "Bản dịch câu ví dụ"
+        string difficulty "easy | medium | hard"
     }
 
     VOCAB_EXAMPLES {
         int id PK
         int vocabulary_id FK
-        text sentence
-        text translation
+        text sentence "Câu ví dụ bổ sung"
+        text translation "Nghĩa tiếng Việt"
     }
 
     READINGS {
         int id PK
-        int topic_id FK
-        string title
-        string title_vi
-        text content
-        text content_vi
-        int word_count
-        string difficulty
+        int topic_id FK "Thuộc chủ đề nào"
+        string title "Tiêu đề bài đọc tiếng Anh"
+        string title_vi "Tiêu đề tiếng Việt"
+        text content "Nội dung đoạn văn tiếng Anh"
+        text content_vi "Bản dịch tiếng Việt tham khảo"
+        int word_count "Số lượng từ"
+        int estimated_time_minutes "Thời gian ước tính"
     }
 
     QUESTIONS {
         int id PK
         int reading_id FK
-        text question_text
-        text question_text_vi
-        json options
-        int correct_option
-        text explanation_vi
-    }
-
-    %% TẦNG 3: TIẾN ĐỘ HỌC CÁ NHÂN & SỔ TỪ
-    USER_VOCAB_LISTS {
-        int id PK
-        int user_id FK
-        string name
-        text description
-        string color
-    }
-
-    USER_VOCAB_LIST_ITEMS {
-        int id PK
-        int list_id FK
-        int vocabulary_id FK
-    }
-
-    USER_VOCAB_PROGRESS {
-        int id PK
-        int user_id FK
-        int vocabulary_id FK
-        string status
-        int correct_count
-        float ease_factor
-        int interval_days
-        int repetition_count
-        datetime next_review_at
-    }
-
-    REVIEW_SCHEDULES {
-        int id PK
-        int user_id FK
-        int vocabulary_id FK
-        datetime scheduled_at
-        boolean is_completed
-        string source
+        text question_text "Câu hỏi tiếng Anh"
+        text question_text_vi "Câu hỏi tiếng Việt"
+        json options "Mảng 4 đáp án [A, B, C, D]"
+        int correct_option "Vị trí đáp án đúng (0, 1, 2, 3)"
+        text explanation_vi "Giải thích chi tiết đáp án"
     }
 
     USER_READING_ATTEMPTS {
         int id PK
-        int user_id FK
-        int reading_id FK
-        int score
-        int total_questions
-        float percentage
-        int time_spent_seconds
-        datetime completed_at
+        int user_id FK "Học viên làm bài"
+        int reading_id FK "Bài đọc đã làm"
+        int score "Số câu đúng"
+        int total_questions "Tổng số câu"
+        float percentage "Tỷ lệ % đúng"
+        int time_spent_seconds "Thời gian hoàn thành (giây)"
+        datetime completed_at "Ngày giờ nộp bài"
     }
 
     USER_ANSWERS {
         int id PK
-        int attempt_id FK
-        int question_id FK
-        int selected_option
-        boolean is_correct
+        int attempt_id FK "Lần làm bài nào"
+        int question_id FK "Câu hỏi nào"
+        int selected_option "Đáp án học viên chọn (0-3)"
+        boolean is_correct "Đúng hay sai"
     }
+          </pre>
+        </div>
 
-    %% TẦNG 4: NHÓM HỌC & CỘNG ĐỒNG
+        <!-- TAB 3: GROUPS & COMMUNITY -->
+        <div id="tab-groups-social" class="tab-content">
+          <pre class="mermaid">
+erDiagram
+    USERS ||--o{ GROUPS : "tạo và sở hữu nhóm (owner)"
+    USERS ||--o{ GROUP_MEMBERS : "tham gia làm thành viên"
+    USERS ||--o{ COMMUNITY_POSTS : "đăng bài thảo luận"
+
+    GROUPS ||--|{ GROUP_MEMBERS : "danh sách thành viên nhóm"
+    GROUPS ||--o{ GROUP_VOCAB_SETS : "bộ từ vựng riêng của nhóm"
+    GROUPS ||--o{ GROUP_READING_SETS : "bài đọc giao cho nhóm"
+
+    GROUP_VOCAB_SETS ||--|{ GROUP_VOCAB_ITEMS : "chứa từ vựng"
+    VOCABULARIES ||--o{ GROUP_VOCAB_ITEMS : "được đưa vào bộ từ nhóm"
+
+    READINGS ||--o{ GROUP_READING_SETS : "được đưa vào bài đọc nhóm"
+
     GROUPS {
         int id PK
-        int owner_id FK
-        string name
-        string invite_code
-        boolean is_active
+        int owner_id FK "Giáo viên / Chủ nhóm"
+        string name "Tên nhóm học (Lớp 10A1...)"
+        text description "Mục tiêu nhóm học"
+        string invite_code "Mã mời tham gia nhóm"
+        boolean is_active "Trạng thái hoạt động"
     }
 
     GROUP_MEMBERS {
         int id PK
         int group_id FK
         int user_id FK
-        string role
+        string role "owner | member"
     }
 
     GROUP_VOCAB_SETS {
         int id PK
         int group_id FK
         int created_by FK
-        string title
+        string title "Tiêu đề bộ từ của lớp"
+        boolean is_published "Đã công bố cho lớp chưa"
+    }
+
+    GROUP_VOCAB_ITEMS {
+        int id PK
+        int vocab_set_id FK
+        int vocabulary_id FK
+        int display_order "Thứ tự sắp xếp"
+    }
+
+    GROUP_READING_SETS {
+        int id PK
+        int group_id FK
+        int reading_id FK
+        int created_by FK
         boolean is_published
     }
 
     COMMUNITY_POSTS {
         int id PK
-        int user_id FK
-        string title
-        text content
-        int upvotes_count
+        int user_id FK "Người đăng bài"
+        string title "Tiêu đề bài viết"
+        text content "Nội dung thảo luận"
+        int upvotes_count "Lượt thích"
     }
 
-    %% QUAN HỆ & RÀNG BUỘC (RELATIONSHIPS)
-    USERS ||--o{ LEVEL_ASSESSMENTS : "làm bài test đầu vào"
-    USERS ||--o{ USER_VOCAB_LISTS : "tự tạo bộ từ cá nhân"
-    USERS ||--o{ USER_VOCAB_PROGRESS : "lưu trạng thái trí nhớ SM-2"
-    USERS ||--o{ REVIEW_SCHEDULES : "hàng đợi ôn tập ngắt quãng"
-    USERS ||--o{ USER_READING_ATTEMPTS : "lịch sử thi đọc hiểu"
-    USERS ||--o{ GROUPS : "sở hữu nhóm học"
-    USERS ||--o{ GROUP_MEMBERS : "tham gia nhóm"
-    USERS ||--o{ COMMUNITY_POSTS : "đăng bài thảo luận"
+    USERS {
+        int id PK
+        string full_name
+        string email
+    }
 
-    TOPICS ||--o{ VOCABULARIES : "phân loại từ vựng"
-    TOPICS ||--o{ READINGS : "phân loại bài đọc"
+    VOCABULARIES {
+        int id PK
+        string word
+        string meaning_vi
+    }
 
-    VOCABULARIES ||--o{ VOCAB_EXAMPLES : "ví dụ minh họa"
-    VOCABULARIES ||--o{ USER_VOCAB_LIST_ITEMS : "được thêm vào sổ từ"
-    VOCABULARIES ||--o{ USER_VOCAB_PROGRESS : "được học bởi user"
-    VOCABULARIES ||--o{ REVIEW_SCHEDULES : "được lên lịch ôn"
-
-    USER_VOCAB_LISTS ||--|{ USER_VOCAB_LIST_ITEMS : "chứa nhiều từ"
-
-    READINGS ||--|{ QUESTIONS : "chứa câu hỏi trắc nghiệm"
-    READINGS ||--o{ USER_READING_ATTEMPTS : "được làm bài đọc"
-
-    USER_READING_ATTEMPTS ||--|{ USER_ANSWERS : "ghi nhận đáp án từng câu"
-    QUESTIONS ||--o{ USER_ANSWERS : "được trả lời bởi"
-
-    GROUPS ||--|{ GROUP_MEMBERS : "thành viên nhóm"
-    GROUPS ||--o{ GROUP_VOCAB_SETS : "bộ từ của nhóm"
+    READINGS {
+        int id PK
+        string title
+    }
           </pre>
         </div>
+
+        <!-- TAB 4: FULL SYSTEM OVERVIEW -->
+        <div id="tab-full-system" class="tab-content">
+          <pre class="mermaid">
+erDiagram
+    USERS ||--o{ USER_VOCAB_LISTS : "sở hữu"
+    USERS ||--o{ USER_VOCAB_PROGRESS : "tiến độ"
+    USERS ||--o{ REVIEW_SCHEDULES : "lịch ôn"
+    USERS ||--o{ USER_READING_ATTEMPTS : "thi đọc"
+    USERS ||--o{ LEVEL_ASSESSMENTS : "test"
+    USERS ||--o{ GROUPS : "tạo nhóm"
+    USERS ||--o{ GROUP_MEMBERS : "tham gia"
+    USERS ||--o{ COMMUNITY_POSTS : "bài viết"
+
+    TOPICS ||--o{ VOCABULARIES : "chủ đề từ"
+    TOPICS ||--o{ READINGS : "chủ đề đọc"
+
+    VOCABULARIES ||--o{ VOCAB_EXAMPLES : "ví dụ"
+    VOCABULARIES ||--o{ USER_VOCAB_LIST_ITEMS : "gom sổ từ"
+    VOCABULARIES ||--o{ USER_VOCAB_PROGRESS : "học"
+    VOCABULARIES ||--o{ REVIEW_SCHEDULES : "lên lịch"
+    VOCABULARIES ||--o{ GROUP_VOCAB_ITEMS : "nhóm"
+
+    USER_VOCAB_LISTS ||--|{ USER_VOCAB_LIST_ITEMS : "chứa"
+
+    READINGS ||--|{ QUESTIONS : "câu hỏi"
+    READINGS ||--o{ USER_READING_ATTEMPTS : "làm bài"
+    READINGS ||--o{ GROUP_READING_SETS : "bài đọc nhóm"
+
+    USER_READING_ATTEMPTS ||--|{ USER_ANSWERS : "đáp án"
+    QUESTIONS ||--o{ USER_ANSWERS : "trả lời"
+
+    GROUPS ||--|{ GROUP_MEMBERS : "thành viên"
+    GROUPS ||--o{ GROUP_VOCAB_SETS : "bộ từ nhóm"
+    GROUPS ||--o{ GROUP_READING_SETS : "bài nhóm"
+    GROUP_VOCAB_SETS ||--|{ GROUP_VOCAB_ITEMS : "từ"
+
+    USERS {
+        int id PK
+        string username
+        string email
+        string full_name
+        string role
+        int initial_level
+    }
+    USER_VOCAB_LISTS {
+        int id PK
+        int user_id FK
+        string name
+        string color
+    }
+    USER_VOCAB_LIST_ITEMS {
+        int id PK
+        int list_id FK
+        int vocabulary_id FK
+    }
+    USER_VOCAB_PROGRESS {
+        int id PK
+        int user_id FK
+        int vocabulary_id FK
+        string status
+        float ease_factor
+        datetime next_review_at
+    }
+    REVIEW_SCHEDULES {
+        int id PK
+        int user_id FK
+        int vocabulary_id FK
+        datetime scheduled_at
+        boolean is_completed
+    }
+    TOPICS {
+        int id PK
+        string name
+        string name_vi
+    }
+    VOCABULARIES {
+        int id PK
+        int topic_id FK
+        string word
+        string meaning_vi
+    }
+    READINGS {
+        int id PK
+        int topic_id FK
+        string title
+    }
+    QUESTIONS {
+        int id PK
+        int reading_id FK
+        text question_text
+        int correct_option
+    }
+    USER_READING_ATTEMPTS {
+        int id PK
+        int user_id FK
+        int reading_id FK
+        int score
+    }
+    USER_ANSWERS {
+        int id PK
+        int attempt_id FK
+        int question_id FK
+        boolean is_correct
+    }
+          </pre>
+        </div>
+
       </div>
     </div>
+  </div>
 
-    <!-- Reference Description Section -->
-    <div class="reference-section">
-      <h2 class="section-header">Chi Tiết Các Bảng & Cơ Chế Cách Ly Dữ Liệu</h2>
-      <p class="section-desc">Giải thích nguyên lý lưu trữ phân tầng giữa dữ liệu dùng chung và dữ liệu cá nhân của từng học viên.</p>
+  <!-- Detailed Reference Table Cards -->
+  <section class="breakdown-section">
+    <h2 class="breakdown-title">Từ Điển Cấu Trúc Các Bảng (Schema Reference)</h2>
+    <p class="breakdown-desc">Mô tả chi tiết mục đích, khóa chính (PK), khóa ngoại (FK) và kiểu dữ liệu của từng bảng.</p>
 
-      <div class="grid-docs">
-        <!-- Card 1 -->
-        <div class="doc-card">
-          <div class="doc-title">
-            <span>users</span>
-            <span class="badge-layer legend-user">Identity</span>
-          </div>
-          <p class="doc-desc">Lưu tài khoản đăng nhập, phân quyền quản trị (admin / learner / group_owner) và trình độ khởi điểm.</p>
-          <div class="field-list">
-            <span class="field-pk">id: INT (PK)</span><br>
-            username, email, password_hash<br>
-            role: ENUM('admin','learner','group_owner')<br>
-            initial_level: INT (0-100)<br>
-            learning_goal: VARCHAR
-          </div>
+    <div class="cards-grid">
+      <!-- 1. users -->
+      <div class="table-box">
+        <div class="table-head">
+          <span class="table-name">users</span>
+          <span class="table-domain domain-user">Tài khoản</span>
         </div>
-
-        <!-- Card 2 -->
-        <div class="doc-card">
-          <div class="doc-title">
-            <span>user_vocab_lists</span>
-            <span class="badge-layer legend-progress">Custom Sets</span>
-          </div>
-          <p class="doc-desc">Các bộ từ vựng cá nhân do học viên tự tạo (ví dụ: "Từ khó nhớ", "Từ vựng IELTS").</p>
-          <div class="field-list">
-            <span class="field-pk">id: INT (PK)</span><br>
-            <span class="field-fk">user_id: INT (FK -> users.id)</span><br>
-            name: VARCHAR(150)<br>
-            description: TEXT<br>
-            color: VARCHAR(30)
-          </div>
+        <p class="table-purpose">Lưu thông tin đăng nhập, phân quyền và điểm trình độ ban đầu của người dùng.</p>
+        <div class="table-fields">
+          <span class="pk">id: INT (PK, Auto Inc)</span><br>
+          username: VARCHAR(50) [UNIQUE]<br>
+          email: VARCHAR(100) [UNIQUE]<br>
+          password_hash: VARCHAR(255)<br>
+          full_name: VARCHAR(100)<br>
+          role: ENUM('admin','learner','group_owner')<br>
+          initial_level: INT (0 - 100)<br>
+          last_login_at: DATETIME
         </div>
+      </div>
 
-        <!-- Card 3 -->
-        <div class="doc-card">
-          <div class="doc-title">
-            <span>user_vocab_list_items</span>
-            <span class="badge-layer legend-progress">Many-to-Many</span>
-          </div>
-          <p class="doc-desc">Bảng cầu nối Nhiều - Nhiều: Cho phép 1 từ vựng nằm trong nhiều bộ danh sách khác nhau.</p>
-          <div class="field-list">
-            <span class="field-pk">id: INT (PK)</span><br>
-            <span class="field-fk">list_id: INT (FK -> user_vocab_lists)</span><br>
-            <span class="field-fk">vocabulary_id: INT (FK -> vocabularies)</span><br>
-            UNIQUE(list_id, vocabulary_id)
-          </div>
+      <!-- 2. user_vocab_lists -->
+      <div class="table-box">
+        <div class="table-head">
+          <span class="table-name">user_vocab_lists</span>
+          <span class="table-domain domain-progress">Sổ từ cá nhân</span>
         </div>
-
-        <!-- Card 4 -->
-        <div class="doc-card">
-          <div class="doc-title">
-            <span>user_vocab_progress</span>
-            <span class="badge-layer legend-progress">SM-2 Algorithm</span>
-          </div>
-          <p class="doc-desc">Lưu trạng thái trí nhớ và các hệ số toán học của thuật toán ghi nhớ ngắt quãng SuperMemo-2.</p>
-          <div class="field-list">
-            <span class="field-pk">id: INT (PK)</span><br>
-            <span class="field-fk">user_id, vocabulary_id</span> (UNIQUE)<br>
-            status: ENUM('new','learning','mastered')<br>
-            ease_factor: FLOAT (mặc định 2.5)<br>
-            interval_days: INT (khoảng cách ngày)<br>
-            next_review_at: DATETIME
-          </div>
+        <p class="table-purpose">Lưu các bộ danh sách từ do từng học viên tự tạo (ví dụ: "Từ khó nhớ", "Từ vựng IELTS").</p>
+        <div class="table-fields">
+          <span class="pk">id: INT (PK, Auto Inc)</span><br>
+          <span class="fk">user_id: INT (FK -> users.id)</span><br>
+          name: VARCHAR(150)<br>
+          description: TEXT<br>
+          color: VARCHAR(30)
         </div>
+      </div>
 
-        <!-- Card 5 -->
-        <div class="doc-card">
-          <div class="doc-title">
-            <span>review_schedules</span>
-            <span class="badge-layer legend-progress">SRS Queue</span>
-          </div>
-          <p class="doc-desc">Hàng đợi lịch hẹn ôn tập. Truy vấn nhanh danh sách "Từ cần ôn hôm nay" theo ngày đáo hạn.</p>
-          <div class="field-list">
-            <span class="field-pk">id: INT (PK)</span><br>
-            <span class="field-fk">user_id, vocabulary_id</span><br>
-            scheduled_at: DATETIME<br>
-            is_completed: BOOLEAN<br>
-            source: ENUM('personal','group')
-          </div>
+      <!-- 3. user_vocab_list_items -->
+      <div class="table-box">
+        <div class="table-head">
+          <span class="table-name">user_vocab_list_items</span>
+          <span class="table-domain domain-progress">Cầu nối N - N</span>
         </div>
+        <p class="table-purpose">Bảng trung gian Nhiều - Nhiều: 1 từ vựng có thể được thêm vào nhiều bộ danh sách khác nhau.</p>
+        <div class="table-fields">
+          <span class="pk">id: INT (PK, Auto Inc)</span><br>
+          <span class="fk">list_id: INT (FK -> user_vocab_lists.id)</span><br>
+          <span class="fk">vocabulary_id: INT (FK -> vocabularies.id)</span><br>
+          <span class="type">INDEX UNIQUE(list_id, vocabulary_id)</span>
+        </div>
+      </div>
 
-        <!-- Card 6 -->
-        <div class="doc-card">
-          <div class="doc-title">
-            <span>user_reading_attempts</span>
-            <span class="badge-layer legend-progress">Reading History</span>
-          </div>
-          <p class="doc-desc">Lịch sử làm bài đọc hiểu: điểm số, tỷ lệ phần trăm đúng, thời gian làm và chi tiết từng câu trả lời.</p>
-          <div class="field-list">
-            <span class="field-pk">id: INT (PK)</span><br>
-            <span class="field-fk">user_id, reading_id</span><br>
-            score, total_questions: INT<br>
-            percentage: FLOAT<br>
-            time_spent_seconds: INT
-          </div>
+      <!-- 4. user_vocab_progress -->
+      <div class="table-box">
+        <div class="table-head">
+          <span class="table-name">user_vocab_progress</span>
+          <span class="table-domain domain-progress">Thuật toán SM-2</span>
+        </div>
+        <p class="table-purpose">Lưu trạng thái ghi nhớ của từng User cho từng từ vựng theo thuật toán SuperMemo-2 (Anki).</p>
+        <div class="table-fields">
+          <span class="pk">id: INT (PK, Auto Inc)</span><br>
+          <span class="fk">user_id: INT (FK -> users.id)</span><br>
+          <span class="fk">vocabulary_id: INT (FK -> vocabularies.id)</span><br>
+          status: ENUM('new','learning','mastered')<br>
+          correct_count, incorrect_count: INT<br>
+          ease_factor: FLOAT (mặc định 2.5)<br>
+          interval_days: INT (khoảng cách ngày ôn)<br>
+          next_review_at: DATETIME
+        </div>
+      </div>
+
+      <!-- 5. review_schedules -->
+      <div class="table-box">
+        <div class="table-head">
+          <span class="table-name">review_schedules</span>
+          <span class="table-domain domain-progress">Hàng đợi SRS</span>
+        </div>
+        <p class="table-purpose">Hàng đợi lịch hẹn ngày cần ôn tập. Hệ thống truy vấn các từ đến hạn (due) để hiển thị trong ngày.</p>
+        <div class="table-fields">
+          <span class="pk">id: INT (PK, Auto Inc)</span><br>
+          <span class="fk">user_id: INT (FK -> users.id)</span><br>
+          <span class="fk">vocabulary_id: INT (FK -> vocabularies.id)</span><br>
+          scheduled_at: DATETIME<br>
+          is_completed: BOOLEAN<br>
+          completed_at: DATETIME<br>
+          source: ENUM('personal','group')
+        </div>
+      </div>
+
+      <!-- 6. vocabularies -->
+      <div class="table-box">
+        <div class="table-head">
+          <span class="table-name">vocabularies</span>
+          <span class="table-domain domain-content">Kho từ vựng</span>
+        </div>
+        <p class="table-purpose">Kho dữ liệu từ vựng tiếng Anh gốc dùng chung cho toàn hệ thống.</p>
+        <div class="table-fields">
+          <span class="pk">id: INT (PK, Auto Inc)</span><br>
+          <span class="fk">topic_id: INT (FK -> topics.id)</span><br>
+          word: VARCHAR(100)<br>
+          pronunciation: VARCHAR(100)<br>
+          part_of_speech: ENUM('noun','verb','adjective'...)<br>
+          meaning_vi: VARCHAR(255)<br>
+          difficulty: ENUM('easy','medium','hard')<br>
+          is_approved: BOOLEAN
+        </div>
+      </div>
+
+      <!-- 7. readings & questions -->
+      <div class="table-box">
+        <div class="table-head">
+          <span class="table-name">readings & questions</span>
+          <span class="table-domain domain-content">Đọc hiểu</span>
+        </div>
+        <p class="table-purpose">Bài đọc tiếng Anh kèm bộ câu hỏi trắc nghiệm A, B, C, D và giải thích chi tiết.</p>
+        <div class="table-fields">
+          <span class="pk">readings.id: INT (PK)</span><br>
+          title, content: TEXT<br>
+          word_count, estimated_time_minutes: INT<br>
+          <hr style="margin: 6px 0; border: none; border-top: 1px dashed #DDD">
+          <span class="pk">questions.id: INT (PK)</span><br>
+          <span class="fk">reading_id: INT (FK)</span><br>
+          question_text, options (JSON)<br>
+          correct_option: INT (0-3)<br>
+          explanation_vi: TEXT
+        </div>
+      </div>
+
+      <!-- 8. user_reading_attempts -->
+      <div class="table-box">
+        <div class="table-head">
+          <span class="table-name">user_reading_attempts</span>
+          <span class="table-domain domain-progress">Lịch sử làm bài</span>
+        </div>
+        <p class="table-purpose">Lịch sử thi đọc hiểu: điểm số, % đúng, thời gian làm và từng câu trả lời đúng/sai.</p>
+        <div class="table-fields">
+          <span class="pk">id: INT (PK, Auto Inc)</span><br>
+          <span class="fk">user_id: INT (FK -> users.id)</span><br>
+          <span class="fk">reading_id: INT (FK -> readings.id)</span><br>
+          score, total_questions: INT<br>
+          percentage: FLOAT<br>
+          time_spent_seconds: INT<br>
+          completed_at: DATETIME
         </div>
       </div>
     </div>
-
-  </main>
+  </section>
 
   <script>
     mermaid.initialize({
       startOnLoad: true,
       theme: 'base',
+      er: {
+        useMaxWidth: false,
+        fontSize: 18
+      },
       themeVariables: {
         fontFamily: 'Plus Jakarta Sans',
+        fontSize: '18px',
         primaryColor: '#FAF8F5',
         primaryBorderColor: '#195646',
         primaryTextColor: '#16201B',
-        lineColor: '#5C6460'
+        lineColor: '#195646'
       }
     });
 
-    let currentScale = 1;
-    const renderEl = document.getElementById('mermaid-render');
+    let currentScale = 1.0;
+    const zoomTarget = document.getElementById('zoom-target');
+    const zoomText = document.getElementById('zoom-text');
 
-    function updateZoom() {
-      renderEl.style.transform = `scale(${currentScale})`;
+    function applyZoom() {
+      zoomTarget.style.transform = `scale(${currentScale})`;
+      zoomText.textContent = `${Math.round(currentScale * 100)}%`;
     }
 
     function zoomIn() {
-      if (currentScale < 2.5) {
-        currentScale += 0.15;
-        updateZoom();
+      if (currentScale < 4.0) {
+        currentScale += 0.2;
+        applyZoom();
       }
     }
 
     function zoomOut() {
       if (currentScale > 0.4) {
-        currentScale -= 0.15;
-        updateZoom();
+        currentScale -= 0.2;
+        applyZoom();
       }
     }
 
     function resetZoom() {
-      currentScale = 1;
-      updateZoom();
+      currentScale = 1.0;
+      applyZoom();
     }
 
-    // Hỗ trợ lăn chuột để Zoom (Ctrl + Wheel)
-    document.getElementById('viewport').addEventListener('wheel', (e) => {
+    // Tab switching
+    const tabTitles = {
+      'user-srs': '📍 Đang xem: Phân hệ Người Dùng, Sổ Từ Cá Nhân & Ôn Tập SRS (To Rõ, Đầy Đủ Chi Tiết)',
+      'content-reading': '📍 Đang xem: Phân hệ Kho Từ Vựng Gốc & Bài Đọc Hiểu Trắc Nghiệm',
+      'groups-social': '📍 Đang xem: Phân hệ Nhóm Học & Cộng Đồng Thảo Luận',
+      'full-system': '📍 Đang xem: Toàn Bộ Hệ Thống (Full ERD 17 Bảng)'
+    };
+
+    function switchTab(tabKey) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      event.currentTarget.classList.add('active');
+      document.getElementById(`tab-${tabKey}`).classList.add('active');
+      document.getElementById('view-title').textContent = tabTitles[tabKey] || '';
+      resetZoom();
+    }
+
+    // Kéo rê chuột để di chuyển (Pan / Drag)
+    const viewport = document.getElementById('viewport');
+    let isDown = false;
+    let startX, startY, scrollLeft, scrollTop;
+
+    viewport.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startX = e.pageX - viewport.offsetLeft;
+      startY = e.pageY - viewport.offsetTop;
+      scrollLeft = viewport.scrollLeft;
+      scrollTop = viewport.scrollTop;
+    });
+
+    viewport.addEventListener('mouseleave', () => { isDown = false; });
+    viewport.addEventListener('mouseup', () => { isDown = false; });
+
+    viewport.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - viewport.offsetLeft;
+      const y = e.pageY - viewport.offsetTop;
+      viewport.scrollLeft = scrollLeft - (x - startX);
+      viewport.scrollTop = scrollTop - (y - startY);
+    });
+
+    // Lăn chuột phóng to thu nhỏ (Ctrl + Wheel)
+    viewport.addEventListener('wheel', (e) => {
       if (e.ctrlKey) {
         e.preventDefault();
         if (e.deltaY < 0) zoomIn();
