@@ -4,27 +4,25 @@ import { toast } from 'react-hot-toast';
 import { topicApi } from '../../api/services';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import {
-  HiBookOpen,
-  HiUser,
-  HiUserGroup,
-  HiAcademicCap,
-  HiSparkles,
-  HiHeart,
-  HiGlobe,
-  HiClock,
-  HiArrowRight,
-  HiLightningBolt,
-  HiViewGrid
-} from 'react-icons/hi';
+  HiOutlineBookOpen,
+  HiOutlineUser,
+  HiOutlineUserGroup,
+  HiOutlineAcademicCap,
+  HiOutlineSparkles,
+  HiOutlineHeart,
+  HiOutlineGlobeAmericas,
+  HiOutlineClock,
+  HiOutlineArrowRight
+} from 'react-icons/hi2';
 
 const iconMap = {
-  HiUser: HiUser,
-  HiUserGroup: HiUserGroup,
-  HiAcademicCap: HiAcademicCap,
-  HiSparkles: HiSparkles,
-  HiHeart: HiHeart,
-  HiGlobe: HiGlobe,
-  HiClock: HiClock
+  HiUser: HiOutlineUser,
+  HiUserGroup: HiOutlineUserGroup,
+  HiAcademicCap: HiOutlineAcademicCap,
+  HiSparkles: HiOutlineSparkles,
+  HiHeart: HiOutlineHeart,
+  HiGlobe: HiOutlineGlobeAmericas,
+  HiClock: HiOutlineClock
 };
 
 export default function TopicsPage() {
@@ -56,65 +54,81 @@ export default function TopicsPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold">Học Từ Vựng Theo Chủ Đề</h1>
-        <p className="text-gray-600">Khám phá 7 chủ đề thông dụng với hơn 200 từ vựng căn bản, flashcards và bài tập</p>
+    <div className="space-y-6 pb-12">
+      {/* Header tối giản */}
+      <div className="border-b border-[#E8E4DC] pb-4">
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#16201B]">
+          Chủ đề từ vựng
+        </h1>
+        <p className="text-xs sm:text-sm text-[#6C726E] mt-0.5">
+          Chọn chủ đề để học từ mới, ôn flashcards hoặc làm bài tập kiểm tra.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Grid thẻ chủ đề: Ít chữ, thoáng mắt, trực quan */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {topics.map((t) => {
-          const IconComponent = iconMap[t.icon] || HiBookOpen;
+          const IconComponent = iconMap[t.icon] || HiOutlineBookOpen;
           return (
-            <div key={t.id} className="card hover:shadow-md transition-all flex flex-col justify-between p-6">
+            <div
+              key={t.id}
+              className="card card-hover p-5 border-[#E8E4DC] flex flex-col justify-between group"
+            >
               <div>
-                <div className="flex items-start justify-between gap-4 mb-4">
-                  <div className="p-3.5 rounded-xl bg-primary-50 text-primary-600">
-                    <IconComponent className="w-7 h-7" />
+                {/* Header thẻ: Icon & Số lượng từ */}
+                <div className="flex items-center justify-between mb-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-[#F0F7F4] text-[#195646] flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <IconComponent className="w-5 h-5" />
                   </div>
-                  <span className="badge bg-gray-100 text-gray-700 font-medium">
-                    {t.vocab_count} từ vựng
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#F4F1EA] text-[#69706C]">
+                    {t.vocab_count} từ
                   </span>
                 </div>
 
-                <h2 className="text-xl font-bold text-gray-900 mb-1">{t.name_vi}</h2>
-                <p className="text-sm font-semibold text-primary-600 mb-2">{t.name}</p>
-                <p className="text-sm text-gray-600 line-clamp-2 mb-4">{t.description}</p>
+                {/* Tên chủ đề (Bỏ đoạn văn mô tả dài dòng) */}
+                <h2 className="font-serif text-lg font-bold text-[#16201B] group-hover:text-[#195646] transition-colors leading-snug">
+                  {t.name_vi}
+                </h2>
+                <p className="text-xs font-medium text-[#7C827E] mt-0.5">
+                  {t.name}
+                </p>
 
-                {/* Progress bar */}
-                <div className="mb-4">
-                  <div className="flex justify-between text-xs font-semibold text-gray-500 mb-1">
-                    <span>Tiến độ: {t.learned_count} / {t.vocab_count} từ</span>
+                {/* Thanh tiến độ học gọn gàng */}
+                <div className="mt-4 pt-3 border-t border-[#F2EEE6]">
+                  <div className="flex justify-between text-[11px] font-semibold text-[#7C827E] mb-1.5">
+                    <span>Tiến độ: {t.learned_count}/{t.vocab_count}</span>
                     <span>{t.progress_percent}%</span>
                   </div>
-                  <div className="w-full bg-gray-100 rounded-full h-2">
+                  <div className="w-full bg-[#EBE7DF] rounded-full h-1.5 overflow-hidden">
                     <div
-                      className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                      className="bg-[#195646] h-1.5 rounded-full transition-all duration-300"
                       style={{ width: `${t.progress_percent}%` }}
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Action buttons */}
-              <div className="pt-4 border-t flex items-center justify-between gap-2">
+              {/* Nút hành động chính và phụ */}
+              <div className="pt-4 mt-3 border-t border-[#F2EEE6] flex items-center gap-2">
                 <Link
                   to={`/topics/${t.id}`}
-                  className="btn btn-primary text-xs flex-1 text-center py-2"
+                  className="btn btn-primary text-xs flex-1 py-2 text-center"
                 >
                   Học từ
                 </Link>
                 <Link
                   to={`/topics/${t.id}/flashcards`}
-                  className="btn btn-secondary text-xs flex-1 text-center py-2"
+                  className="btn btn-secondary text-xs px-3 py-2 text-center"
+                  title="Ôn Flashcards"
                 >
-                  Flashcards
+                  Flashcard
                 </Link>
                 <Link
                   to={`/topics/${t.id}/exercise`}
-                  className="btn btn-outline text-xs flex-1 text-center py-2"
+                  className="btn btn-secondary text-xs px-3 py-2 text-center"
+                  title="Làm bài tập"
                 >
-                  Bài tập
+                  Luyện tập
                 </Link>
               </div>
             </div>

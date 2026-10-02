@@ -4,14 +4,13 @@ import { toast } from 'react-hot-toast';
 import { readingApi, topicApi } from '../../api/services';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import {
-  HiBookOpen,
-  HiClock,
-  HiCheckCircle,
-  HiFilter,
-  HiSearch,
-  HiSparkles,
-  HiArrowRight
-} from 'react-icons/hi';
+  HiOutlineBookOpen,
+  HiOutlineClock,
+  HiOutlineCheckCircle,
+  HiMagnifyingGlass,
+  HiOutlineBookmark,
+  HiOutlineArrowRight
+} from 'react-icons/hi2';
 
 export default function ReadingListPage() {
   const [readings, setReadings] = useState([]);
@@ -65,41 +64,49 @@ export default function ReadingListPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold">Luyện Đọc Hiểu Tiếng Anh</h1>
-        <p className="text-gray-600">
-          Nâng cao khả năng đọc hiểu với các đoạn văn ngắn, câu hỏi trắc nghiệm kèm giải thích chi tiết
+    <div className="space-y-6 pb-12">
+      {/* Header gọn gàng */}
+      <div className="border-b border-[#E8E4DC] pb-4">
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#16201B]">
+          Luyện đọc hiểu
+        </h1>
+        <p className="text-xs sm:text-sm text-[#6C726E] mt-0.5">
+          21 bài đọc phân cấp độ kèm câu hỏi trắc nghiệm và giải thích từ khóa.
         </p>
       </div>
 
-      {/* Recommended Section */}
+      {/* Recommended Section (Gọn gàng, loại bỏ gradient xanh AI) */}
       {recommended.length > 0 && (
-        <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 space-y-4">
-          <div className="flex items-center gap-2 text-primary-700">
-            <HiSparkles className="w-5 h-5 text-amber-500" />
-            <h2 className="text-lg font-bold">Bài đọc gợi ý riêng cho bạn</h2>
+        <div className="card p-5 bg-[#FAF7F2] border-[#E8DCCB]">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#195646]">
+              <HiOutlineBookmark className="w-4 h-4 text-[#195646]" />
+              Bài đọc đề xuất hôm nay
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {recommended.slice(0, 2).map((rec) => (
-              <div key={rec.id} className="bg-white p-5 rounded-xl shadow-sm border border-blue-100 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="badge bg-primary-100 text-primary-700 text-xs">
+              <div
+                key={rec.id}
+                className="bg-white p-4 rounded-xl border border-[#E8E0D5] flex items-center justify-between gap-3 shadow-xs"
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#EBF4F0] text-[#195646]">
                       {rec.topic?.name_vi}
                     </span>
-                    <span className="badge bg-yellow-100 text-yellow-800 text-xs capitalize">
-                      {rec.difficulty}
+                    <span className="text-[10px] text-[#8C928E]">
+                      ~{rec.estimated_time_minutes || 4} phút
                     </span>
                   </div>
-                  <h3 className="font-bold text-gray-900 text-base">{rec.title}</h3>
-                  <p className="text-xs text-gray-500 italic mb-3">{rec.title_vi}</p>
+                  <h3 className="font-serif text-sm font-bold text-[#16201B] truncate">{rec.title}</h3>
+                  <p className="text-xs text-[#7A807C] italic truncate">{rec.title_vi}</p>
                 </div>
                 <Link
                   to={`/readings/${rec.id}`}
-                  className="btn btn-primary text-xs w-full text-center py-2 gap-1"
+                  className="btn btn-primary text-xs py-1.5 px-3 flex-shrink-0"
                 >
-                  Đọc ngay <HiArrowRight className="w-3.5 h-3.5" />
+                  Đọc ngay
                 </Link>
               </div>
             ))}
@@ -107,101 +114,99 @@ export default function ReadingListPage() {
         </div>
       )}
 
-      {/* Filter and Search */}
-      <div className="card p-4 flex flex-col md:flex-row gap-4 justify-between items-center">
-        <div className="relative w-full md:w-80">
-          <HiSearch className="absolute left-3.5 top-3 text-gray-400 w-4 h-4" />
+      {/* Filter and Search Bar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="relative flex-1 max-w-md">
+          <HiMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8C928E]" />
           <input
             type="text"
-            className="input pl-10 py-2 text-sm"
-            placeholder="Tìm theo tiêu đề tiếng Anh hoặc tiếng Việt..."
+            className="input pl-10 py-2 text-xs sm:text-sm"
+            placeholder="Tìm theo tiêu đề bài đọc..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+        <div className="flex items-center gap-2">
           <select
-            className="input py-2 text-sm"
+            className="input py-2 text-xs sm:text-sm bg-white"
             value={selectedTopic}
             onChange={(e) => setSelectedTopic(e.target.value)}
           >
             <option value="">Tất cả chủ đề</option>
             {topics.map((t) => (
               <option key={t.id} value={t.id}>
-                {t.name_vi} ({t.name})
+                {t.name_vi}
               </option>
             ))}
           </select>
 
           <select
-            className="input py-2 text-sm"
+            className="input py-2 text-xs sm:text-sm bg-white"
             value={selectedDifficulty}
             onChange={(e) => setSelectedDifficulty(e.target.value)}
           >
-            <option value="">Tất cả độ khó</option>
+            <option value="">Tất cả cấp độ</option>
             <option value="easy">Dễ (Easy)</option>
-            <option value="medium">Trung bình (Medium)</option>
-            <option value="hard">Nâng cao (Hard)</option>
+            <option value="medium">Trung bình</option>
+            <option value="hard">Nâng cao</option>
           </select>
         </div>
       </div>
 
-      {/* Reading Passages Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Reading Passages Grid: Thẻ tinh gọn, không nhồi nhét đoạn văn */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredReadings.map((reading) => {
           const isDone = reading.is_completed;
           return (
             <div
               key={reading.id}
-              className={`card hover:shadow-md transition-all flex flex-col justify-between p-6 border ${
-                isDone ? 'bg-green-50/20 border-green-200' : 'bg-white'
+              className={`card card-hover p-4 sm:p-5 border-[#E8E4DC] flex flex-col justify-between group ${
+                isDone ? 'bg-[#FAFDFB]' : 'bg-white'
               }`}
             >
               <div>
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="badge bg-blue-100 text-blue-700 text-xs">
+                <div className="flex items-center justify-between gap-2 mb-2.5">
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F4F1EA] text-[#69706C]">
                     {reading.topic?.name_vi}
                   </span>
-                  <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                    <span
-                      className={`badge text-xs ${
-                        reading.difficulty === 'easy'
-                          ? 'bg-green-100 text-green-700'
-                          : reading.difficulty === 'medium'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-red-100 text-red-700'
-                      }`}
-                    >
-                      {reading.difficulty}
-                    </span>
-                  </div>
+                  <span
+                    className={`text-[10px] font-medium px-2 py-0.5 rounded-full capitalize ${
+                      reading.difficulty === 'easy'
+                        ? 'bg-[#EBF4F0] text-[#195646]'
+                        : reading.difficulty === 'medium'
+                        ? 'bg-[#FDF6E9] text-[#B88728]'
+                        : 'bg-[#FDF2F0] text-[#D96237]'
+                    }`}
+                  >
+                    {reading.difficulty}
+                  </span>
                 </div>
 
-                <h2 className="text-lg font-bold text-gray-900 mb-1">{reading.title}</h2>
-                <p className="text-xs text-gray-500 italic mb-3">{reading.title_vi}</p>
-
-                <p className="text-xs text-gray-600 line-clamp-3 mb-4">
-                  {reading.content}
+                <h2 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#195646] transition-colors leading-snug">
+                  {reading.title}
+                </h2>
+                <p className="text-xs text-[#7A807C] italic mt-0.5 mb-3 line-clamp-1">
+                  {reading.title_vi}
                 </p>
 
-                <div className="flex items-center gap-4 text-xs text-gray-400 mb-4">
+                <div className="flex items-center gap-3 text-[11px] text-[#8C928E]">
                   <span className="flex items-center gap-1">
-                    <HiBookOpen className="w-4 h-4" /> ~{reading.word_count} từ
+                    <HiOutlineBookOpen className="w-3.5 h-3.5" /> ~{reading.word_count} từ
                   </span>
                   <span className="flex items-center gap-1">
-                    <HiClock className="w-4 h-4" /> ~{reading.estimated_time_minutes} phút
+                    <HiOutlineClock className="w-3.5 h-3.5" /> ~{reading.estimated_time_minutes} phút
                   </span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t flex items-center justify-between">
+              <div className="pt-3.5 mt-3.5 border-t border-[#F2EEE6] flex items-center justify-between">
                 {isDone ? (
-                  <span className="inline-flex items-center gap-1 text-xs text-green-600 font-semibold">
-                    <HiCheckCircle className="w-4 h-4" /> Điểm: {reading.best_attempt?.score}/{reading.best_attempt?.total_questions}
+                  <span className="inline-flex items-center gap-1 text-xs text-[#195646] font-semibold">
+                    <HiOutlineCheckCircle className="w-4 h-4" /> Điểm: {reading.best_attempt?.score}/{reading.best_attempt?.total_questions}
                   </span>
                 ) : (
-                  <span className="text-xs text-gray-400">Chưa làm</span>
+                  <span className="text-xs text-[#9FA6A2]">Chưa làm</span>
                 )}
 
                 <Link
