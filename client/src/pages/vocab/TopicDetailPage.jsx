@@ -207,7 +207,7 @@ export default function TopicDetailPage() {
               <div className="pt-3 border-t border-[#ECE7DC] flex items-center justify-between text-xs text-gray-500">
                 {isLearned ? (
                   <span className="inline-flex items-center gap-1 text-[#195646] font-semibold">
-                    <HiCheckCircle className="w-4 h-4 text-[#195646]" /> Đang học (Lịch SRS)
+                    <HiCheckCircle className="w-4 h-4 text-[#195646]" /> Đang học (Lịch ôn tập)
                   </span>
                 ) : (
                   <span className="text-[#7B827E]">Chưa thêm</span>

@@ -55,7 +55,7 @@ export default function Header() {
               <NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink>
               <NavLink to="/topics" className={navLinkClass}>Từ vựng</NavLink>
               <NavLink to="/readings" className={navLinkClass}>Đọc hiểu</NavLink>
-              <NavLink to="/review" className={navLinkClass}>Ôn tập SRS</NavLink>
+              <NavLink to="/review" className={navLinkClass}>Ôn tập hôm nay</NavLink>
               <NavLink to="/groups" className={navLinkClass}>Nhóm học</NavLink>
               <NavLink to="/community" className={navLinkClass}>Cộng đồng</NavLink>
               {user?.role === 'admin' && (
@@ -126,7 +126,7 @@ export default function Header() {
             <NavLink to="/dashboard" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Dashboard</NavLink>
             <NavLink to="/topics" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Từ vựng</NavLink>
             <NavLink to="/readings" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Đọc hiểu</NavLink>
-            <NavLink to="/review" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Ôn tập SRS</NavLink>
+            <NavLink to="/review" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Ôn tập hôm nay</NavLink>
             <NavLink to="/groups" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Nhóm học</NavLink>
             <NavLink to="/community" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Cộng đồng</NavLink>
             {user?.role === 'admin' && (

@@ -87,7 +87,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="p-4 text-center sm:text-left">
-            <span className="text-[11px] font-semibold text-[#828884] uppercase">Thuần thục (SRS)</span>
+            <span className="text-[11px] font-semibold text-[#828884] uppercase">Thuần thục</span>
             <p className="font-serif text-2xl sm:text-3xl font-bold text-[#195646] mt-1">
               {stats?.masteredCount || 0}
             </p>
@@ -159,9 +159,9 @@ export default function DashboardPage() {
           </div>
           <div>
             <h3 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#B88728] transition-colors">
-              Ôn tập SRS
+              Ôn tập hôm nay
             </h3>
-            <p className="text-xs text-[#7B827E] mt-0.5">Thuật toán ghi nhớ SM-2</p>
+            <p className="text-xs text-[#7B827E] mt-0.5">Nhắc nhở từ sắp quên</p>
           </div>
         </Link>
 

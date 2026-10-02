@@ -97,9 +97,11 @@ export default function ReviewPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Ôn Tập Ngắt Quãng (SRS - SM-2)</h1>
-        <p className="text-gray-600">
-          Thuật toán SuperMemo 2 tự động tối ưu hóa lịch ôn tập từ vựng dựa trên trí nhớ của bạn
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#16201B]">
+          Ôn Tập Hôm Nay
+        </h1>
+        <p className="text-xs sm:text-sm text-[#6C726E] mt-0.5">
+          Hệ thống tự động nhắc lại những từ bạn sắp quên theo chu kỳ ghi nhớ của não bộ.
         </p>
       </div>
 
