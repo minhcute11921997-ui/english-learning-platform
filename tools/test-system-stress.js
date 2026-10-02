@@ -415,6 +415,16 @@ async function runAllTests() {
     }
   });
 
+  await testCase('Xóa nhóm học tập đã tạo dọn dẹp môi trường -> trả về 200', async () => {
+    if (createdGroupId) {
+      const res = await axios.delete(
+        `${BASE_URL}/groups/${createdGroupId}`,
+        { headers: { Authorization: `Bearer ${studentToken}` } }
+      );
+      if (res.status !== 200) throw new Error('Không xóa được nhóm thử nghiệm');
+    }
+  });
+
   // --- 7. COMMUNITY & CONTRIBUTIONS ---
   console.log('\n🌐 NHÓM 7: CỘNG ĐỒNG ĐÓNG GÓP (COMMUNITY)');
 

@@ -219,6 +219,82 @@ const updateGroup = catchAsync(async (req, res) => {
   return ApiResponse.success(res, group, 'Cập nhật thông tin nhóm thành công');
 });
 
+// Xóa nhóm học tập (chỉ chủ nhóm hoặc admin)
+const deleteGroup = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const currentUserId = req.user.id;
+
+  const group = await Group.findByPk(id, {
+    include: [{ model: GroupVocabSet, as: 'vocabSets' }]
+  });
+
+  if (!group) {
+    throw new AppError('Không tìm thấy nhóm học tập.', 404);
+  }
+
+  if (group.owner_id !== currentUserId && req.user.role !== 'admin') {
+    throw new AppError('Chỉ chủ nhóm mới có quyền xóa nhóm này.', 403);
+  }
+
+  await sequelize.transaction(async (t) => {
+    const vocabSetIds = (group.vocabSets || []).map((vs) => vs.id);
+    if (vocabSetIds.length > 0) {
+      await ReviewSchedule.destroy({
+        where: { group_vocab_set_id: vocabSetIds },
+        transaction: t
+      });
+      await GroupVocabItem.destroy({
+        where: { vocab_set_id: vocabSetIds },
+        transaction: t
+      });
+      await GroupVocabSet.destroy({
+        where: { group_id: id },
+        transaction: t
+      });
+    }
+
+    await GroupReadingSet.destroy({
+      where: { group_id: id },
+      transaction: t
+    });
+
+    await GroupMember.destroy({
+      where: { group_id: id },
+      transaction: t
+    });
+
+    await group.destroy({ transaction: t });
+  });
+
+  return ApiResponse.success(res, null, 'Đã xóa nhóm học tập thành công');
+});
+
+// Thành viên tự rời nhóm
+const leaveGroup = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  const group = await Group.findByPk(id);
+  if (!group) {
+    throw new AppError('Không tìm thấy nhóm học tập.', 404);
+  }
+
+  if (group.owner_id === userId) {
+    throw new AppError('Chủ nhóm không thể rời nhóm. Bạn có thể xóa nhóm hoặc chuyển quyền sở hữu.', 400);
+  }
+
+  const membership = await GroupMember.findOne({
+    where: { group_id: parseInt(id), user_id: userId }
+  });
+
+  if (!membership) {
+    throw new AppError('Bạn không phải là thành viên của nhóm này.', 404);
+  }
+
+  await membership.destroy();
+  return ApiResponse.success(res, null, 'Đã rời khỏi nhóm học tập thành công');
+});
+
 // Tạo lại mã mời
 const regenerateInviteCode = catchAsync(async (req, res) => {
   const { id } = req.params;
@@ -450,6 +526,8 @@ module.exports = {
   joinGroup,
   removeMember,
   updateGroup,
+  deleteGroup,
+  leaveGroup,
   regenerateInviteCode,
   createGroupVocabSet,
   publishGroupVocabSet,

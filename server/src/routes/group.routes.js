@@ -18,6 +18,8 @@ router.get('/my', groupController.getMyGroups);
 router.post('/join', groupController.joinGroup);
 router.get('/:id', groupController.getGroupById);
 router.put('/:id', groupController.updateGroup);
+router.delete('/:id', groupController.deleteGroup);
+router.post('/:id/leave', groupController.leaveGroup);
 router.delete('/:id/members/:userId', groupController.removeMember);
 router.post('/:id/regenerate-code', groupController.regenerateInviteCode);
 
