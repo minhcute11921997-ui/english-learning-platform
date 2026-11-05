@@ -81,14 +81,14 @@ const router = createBrowserRouter([
   {
     path: '*',
     element: (
-      <div className="min-h-screen flex items-center justify-center bg-stone-50 p-4">
-        <div className="text-center card max-w-md p-8 shadow-sm rounded-3xl border-stone-200">
-          <h1 className="text-7xl font-extrabold text-amber-700 font-serif">404</h1>
-          <p className="text-lg font-bold text-stone-800 mt-4">Không tìm thấy trang</p>
-          <p className="text-sm text-stone-500 mt-2 mb-6">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 bg-modern-grid p-4">
+        <div className="text-center card max-w-md p-9 shadow-lg rounded-3xl border-slate-200">
+          <h1 className="text-7xl font-black text-blue-600 tracking-tight">404</h1>
+          <p className="text-lg font-bold text-slate-900 mt-4">Không tìm thấy trang</p>
+          <p className="text-xs text-slate-500 mt-2 mb-6">
             Đường dẫn bạn yêu cầu không tồn tại hoặc đã được tinh giản trong phiên bản chuyên ngành Mỹ thuật.
           </p>
-          <a href="/dashboard" className="btn btn-primary rounded-xl">
+          <a href="/dashboard" className="btn btn-primary rounded-xl text-xs py-2.5 px-5">
             Quay về bảng điều khiển
           </a>
         </div>

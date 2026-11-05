@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { topicApi, vocabApi } from '../../api/services';
-import Button from '../../components/ui/Button';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import VocabImage from '../../components/vocab/VocabImage';
 import VocabSidebarInfo from '../../components/vocab/VocabSidebarInfo';
@@ -80,57 +79,65 @@ export default function TopicDetailPage() {
 
   if (isLoading && !topic) {
     return (
-      <div className="py-20 flex justify-center">
-        <LoadingSpinner size="lg" text="Đang tải danh mục thuật ngữ mỹ thuật..." />
+      <div className="py-24 flex justify-center">
+        <LoadingSpinner size="lg" text="Đang tải phòng triển lãm..." />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Back button & header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-7 pb-14">
+      {/* Back button & Contemporary Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 border-b border-slate-200 pb-6">
         <div>
-          <Link to="/topics" className="inline-flex items-center gap-1.5 text-sm font-medium text-stone-500 hover:text-amber-800 mb-2 transition-colors">
-            <HiArrowLeft /> Quay lại danh sách chủ đề
+          <Link
+            to="/topics"
+            className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-slate-500 hover:text-blue-600 mb-2 transition-colors uppercase tracking-wider"
+          >
+            <HiArrowLeft className="w-3.5 h-3.5" /> Quay lại danh mục triển lãm
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight font-serif">
-            {topic?.name_vi} <span className="text-stone-400 font-sans font-normal text-xl">({topic?.name})</span>
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            {topic?.name_vi}{' '}
+            <span className="text-slate-400 font-mono font-normal text-xl block sm:inline mt-1 sm:mt-0">
+              ({topic?.name})
+            </span>
           </h1>
-          <p className="text-sm text-stone-600 mt-1 max-w-2xl">{topic?.description}</p>
+          <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-3xl leading-relaxed">
+            {topic?.description}
+          </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <Link to={`/topics/${id}/flashcards`} className="btn btn-secondary text-sm gap-2 rounded-xl shadow-2xs">
-            <HiViewGrid className="w-4 h-4 text-amber-700" /> Học Flashcards
+          <Link to={`/topics/${id}/flashcards`} className="btn btn-secondary text-xs py-2.5 px-4 gap-2 rounded-xl">
+            <HiViewGrid className="w-4 h-4 text-blue-600" /> Flashcard 3D
           </Link>
-          <Link to={`/topics/${id}/exercise`} className="btn btn-primary text-sm gap-2 rounded-xl shadow-xs">
-            <HiLightningBolt className="w-4 h-4" /> Làm bài tập
+          <Link to={`/topics/${id}/exercise`} className="btn btn-primary text-xs py-2.5 px-4 gap-2 rounded-xl">
+            <HiLightningBolt className="w-4 h-4" /> Luyện tập đố tranh
           </Link>
         </div>
       </div>
 
       {/* Filter and search bar */}
-      <div className="card p-4 flex flex-col sm:flex-row gap-3 justify-between items-center bg-stone-50/60 border-stone-200/80">
-        <div className="relative w-full sm:w-80">
-          <HiSearch className="absolute left-3.5 top-3 text-stone-400 w-4 h-4" />
+      <div className="card p-4 flex flex-col sm:flex-row gap-3 justify-between items-center bg-white border border-slate-200/90 rounded-2xl shadow-sm">
+        <div className="relative w-full sm:w-96">
+          <HiSearch className="absolute left-3.5 top-3 text-slate-400 w-4 h-4" />
           <input
             type="text"
-            className="input pl-10 py-2 text-sm rounded-xl"
-            placeholder="Tìm theo thuật ngữ, nghệ sĩ hoặc bối cảnh..."
+            className="input pl-10 py-2 text-xs rounded-xl"
+            placeholder="Tìm theo từ tiếng Anh, tiếng Việt, nghệ sĩ, làng nghề..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <HiFilter className="text-stone-400 w-4 h-4" />
+          <HiFilter className="text-slate-400 w-4 h-4" />
           <select
-            className="input py-2 text-sm rounded-xl"
+            className="input py-2 text-xs rounded-xl"
             value={difficulty}
             onChange={(e) => setDifficulty(e.target.value)}
           >
-            <option value="">Tất cả độ khó</option>
+            <option value="">Tất cả mức độ</option>
             <option value="easy">Căn bản (Easy)</option>
             <option value="medium">Trung cấp (Medium)</option>
             <option value="hard">Chuyên sâu (Hard)</option>
@@ -139,7 +146,7 @@ export default function TopicDetailPage() {
       </div>
 
       {/* Vocabulary list grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {filteredVocabs.map((vocab) => {
           const isLearned = !!vocab.user_progress;
           const isExpanded = !!expandedInfoIds[vocab.id];
@@ -156,15 +163,17 @@ export default function TopicDetailPage() {
           return (
             <div
               key={vocab.id}
-              className={`rounded-2xl p-5 border transition-all flex flex-col justify-between shadow-2xs ${
-                isLearned ? 'bg-amber-50/15 border-amber-200/80' : 'bg-white border-stone-200 hover:border-amber-300'
+              className={`rounded-3xl p-6 border transition-all flex flex-col justify-between shadow-sm ${
+                isLearned
+                  ? 'bg-blue-50/20 border-blue-200/80'
+                  : 'bg-white border-slate-200/90 hover:border-blue-300'
               }`}
             >
               <div>
                 {/* Header item */}
-                <div className="flex items-start justify-between gap-3 mb-2.5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden border border-stone-200 bg-stone-50 p-1 shrink-0 shadow-2xs">
+                <div className="flex items-start justify-between gap-4 mb-3">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 p-1 shrink-0 shadow-md">
                       <VocabImage
                         src={vocab.image_url}
                         alt={vocab.image_alt || vocab.word}
@@ -174,38 +183,40 @@ export default function TopicDetailPage() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h2 className="text-xl font-bold text-stone-900">{vocab.word}</h2>
+                        <h2 className="text-xl sm:text-2xl font-extrabold text-slate-950 tracking-tight">
+                          {vocab.word}
+                        </h2>
                         <button
                           onClick={() => handleSpeak(vocab.word)}
                           title="Nghe phát âm chuẩn"
-                          className="p-1 rounded-full hover:bg-stone-100 text-amber-700 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-xl hover:bg-slate-100 text-blue-600 transition-colors cursor-pointer"
                         >
                           <HiVolumeUp className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="text-xs text-stone-500 font-mono mt-0.5">{vocab.pronunciation}</p>
+                      <p className="text-xs text-slate-500 font-mono mt-0.5">{vocab.pronunciation}</p>
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-end gap-1.5">
+                  <div className="flex flex-col items-end gap-1.5 shrink-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="badge bg-amber-100/80 text-amber-900 border border-amber-200/60 text-xs font-semibold">
+                      <span className="badge bg-slate-100 text-slate-700 font-mono text-[10px] uppercase font-bold px-2 py-0.5">
                         {posLabels[vocab.part_of_speech] || vocab.part_of_speech}
                       </span>
                       <span
-                        className={`badge text-xs font-semibold ${
+                        className={`badge font-mono text-[10px] uppercase font-bold px-2 py-0.5 ${
                           vocab.difficulty === 'easy'
-                            ? 'bg-emerald-100 text-emerald-800'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : vocab.difficulty === 'medium'
-                            ? 'bg-amber-100 text-amber-800'
-                            : 'bg-rose-100 text-rose-800'
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                            : 'bg-rose-50 text-rose-700 border border-rose-200'
                         }`}
                       >
                         {vocab.difficulty}
                       </span>
                     </div>
                     {vocab.source_ref && (
-                      <span className="text-[10px] text-stone-500 bg-stone-100 px-2 py-0.5 rounded-full border border-stone-200 font-medium">
+                      <span className="font-mono text-[10px] text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200/60 font-semibold">
                         {vocab.source_ref}
                       </span>
                     )}
@@ -213,33 +224,33 @@ export default function TopicDetailPage() {
                 </div>
 
                 {/* Nghĩa tiếng Việt */}
-                <p className="text-base font-bold text-stone-900 mb-3">{vocab.meaning_vi}</p>
+                <p className="text-base font-bold text-slate-900 mb-3">{vocab.meaning_vi}</p>
 
                 {/* Ví dụ ngữ cảnh */}
                 {vocab.example_sentence && (
-                  <div className="p-3 rounded-xl bg-stone-50/80 text-xs space-y-1 mb-3 border border-stone-200/60">
-                    <p className="font-semibold text-stone-800">"{vocab.example_sentence}"</p>
-                    <p className="text-stone-500 italic">"{vocab.example_translation}"</p>
+                  <div className="p-3.5 rounded-2xl bg-slate-50 text-xs space-y-1 mb-4 border border-slate-200/70">
+                    <p className="font-semibold text-slate-800">"{vocab.example_sentence}"</p>
+                    <p className="text-slate-500 italic">"{vocab.example_translation}"</p>
                   </div>
                 )}
 
                 {/* Collapsible toggle for Cultural Side-Notes */}
                 {(vocab.cultural_note || vocab.related_artist) && (
-                  <div className="mb-3">
+                  <div className="mb-4">
                     <button
                       type="button"
                       onClick={() => toggleExpand(vocab.id)}
-                      className="w-full text-left flex items-center justify-between text-xs font-medium text-amber-900/90 hover:text-amber-800 py-1 px-2.5 rounded-lg bg-amber-50/50 hover:bg-amber-50 border border-amber-200/50 transition-colors cursor-pointer"
+                      className="w-full text-left flex items-center justify-between text-xs font-bold text-slate-700 hover:text-blue-600 py-1.5 px-3 rounded-xl bg-slate-100/70 hover:bg-slate-100 border border-slate-200/60 transition-colors cursor-pointer"
                     >
                       <span className="flex items-center gap-1.5">
-                        <HiOutlineSparkles className="w-3.5 h-3.5 text-amber-600" />
-                        {isExpanded ? 'Ẩn thông tin bên lề & nghệ sĩ' : 'Xem thông tin bên lề & bối cảnh lịch sử'}
+                        <HiOutlineSparkles className="w-3.5 h-3.5 text-blue-600" />
+                        {isExpanded ? 'Ẩn thông tin bên lề & nghệ sĩ' : 'Xem bối cảnh văn hóa & nghệ sĩ tiêu biểu'}
                       </span>
                       {isExpanded ? <HiChevronUp className="w-3.5 h-3.5" /> : <HiChevronDown className="w-3.5 h-3.5" />}
                     </button>
 
                     {isExpanded && (
-                      <div className="mt-2.5">
+                      <div className="mt-3">
                         <VocabSidebarInfo
                           culturalNote={vocab.cultural_note}
                           relatedArtist={vocab.related_artist}
@@ -253,29 +264,29 @@ export default function TopicDetailPage() {
               </div>
 
               {/* Card Footer Actions */}
-              <div className="pt-3 border-t border-stone-200/80 flex items-center justify-between text-xs text-stone-500">
+              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                 {isLearned ? (
-                  <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold">
-                    <HiCheckCircle className="w-4 h-4 text-emerald-600" /> Đang trong lộ trình ôn
+                  <span className="inline-flex items-center gap-1.5 text-emerald-600 font-bold">
+                    <HiCheckCircle className="w-4 h-4" /> Đang ôn tập SM-2
                   </span>
                 ) : (
-                  <span className="text-stone-400">Chưa thêm vào sổ</span>
+                  <span className="text-slate-400 font-mono text-[11px]">Chưa lưu</span>
                 )}
 
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setSelectedVocabForModal(vocab)}
-                    className="py-1 px-2.5 text-xs text-stone-700 hover:text-amber-900 hover:bg-stone-100 rounded-lg border border-stone-200 transition-colors cursor-pointer flex items-center gap-1 font-medium"
+                    className="py-1.5 px-3 text-xs text-slate-700 hover:text-blue-600 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors cursor-pointer flex items-center gap-1.5 font-bold"
                     title="Quản lý sổ từ cá nhân"
                   >
-                    <HiOutlineBookmark className="w-3.5 h-3.5 text-amber-700" />
+                    <HiOutlineBookmark className="w-3.5 h-3.5 text-slate-500" />
                     <span>Sổ từ</span>
                   </button>
                   {isLearned ? (
                     <Link
                       to="/review"
-                      className="py-1 px-3 text-xs rounded-lg border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 font-semibold transition-colors"
+                      className="py-1.5 px-3.5 text-xs rounded-xl border border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold transition-colors"
                     >
                       Ôn tập ngay →
                     </Link>
@@ -283,7 +294,7 @@ export default function TopicDetailPage() {
                     <button
                       type="button"
                       onClick={() => setSelectedVocabForModal(vocab)}
-                      className="py-1 px-3 text-xs rounded-lg border border-stone-800 bg-stone-800 text-white hover:bg-stone-900 font-medium transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                      className="py-1.5 px-3.5 text-xs rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm shadow-blue-600/25"
                       title="Lưu vào danh sách học và lên lịch ôn tập"
                     >
                       <HiOutlineBookmark className="w-3.5 h-3.5 text-white/90" />
@@ -298,8 +309,8 @@ export default function TopicDetailPage() {
       </div>
 
       {filteredVocabs.length === 0 && (
-        <div className="text-center py-12 card border-stone-200">
-          <p className="text-stone-500">Không tìm thấy thuật ngữ nào khớp với từ khóa tìm kiếm.</p>
+        <div className="text-center py-16 card border-slate-200/90 rounded-3xl">
+          <p className="text-slate-500 text-sm">Không tìm thấy thuật ngữ nào khớp với từ khóa tìm kiếm.</p>
         </div>
       )}
 

@@ -1,42 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
   <defs>
-    <linearGradient id="grad_10" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#312e81"/>
-      <stop offset="100%" stop-color="#4338ca"/>
+    <linearGradient id="bg_jewelry_design" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
     </linearGradient>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-opacity="0.3"/>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
+    <filter id="drop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+    <clipPath id="canvasClip">
+      <rect x="24" y="24" width="452" height="452" rx="20"/>
+    </clipPath>
   </defs>
 
-  <!-- Background Canvas -->
-  <rect width="400" height="400" rx="28" fill="url(#grad_10)"/>
-  
-  <!-- Subtle Canvas Texture / Geometric Motif -->
-  <circle cx="50" cy="50" r="120" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
-  <circle cx="350" cy="350" r="140" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
-  <rect x="20" y="20" width="360" height="360" rx="20" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-dasharray="8,6"/>
+  <!-- Outer Exhibition Bezel -->
+  <rect width="500" height="500" rx="24" fill="#0c1017"/>
+  <rect x="20" y="20" width="460" height="460" rx="22" fill="none" stroke="#222b3d" stroke-width="1.5"/>
 
-  <!-- Category Pill Badge -->
-  <g transform="translate(200, 52)">
-    <rect x="-85" y="-14" width="170" height="28" rx="14" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-    <text x="0" y="4" font-family="'Cinzel', 'Times New Roman', Georgia, serif" font-size="10" font-weight="bold" fill="#c7d2fe" text-anchor="middle" letter-spacing="2">FINE ARTS & CRAFTS</text>
-  </g>
-
-  <!-- Central Discipline Illustration -->
-  <g filter="url(#shadow)">
+  <!-- Main Artwork Canvas with Clipping -->
+  <g clip-path="url(#canvasClip)">
+    <rect x="24" y="24" width="452" height="452" fill="url(#bg_jewelry_design)"/>
     
-    <!-- Fine Art Emblem -->
-    <circle cx="200" cy="200" r="55" fill="rgba(255,255,255,0.18)" stroke="white" stroke-width="4"/>
-    <polygon points="200,160 235,225 165,225" fill="none" stroke="#fde047" stroke-width="4"/>
-    <circle cx="200" cy="200" r="12" fill="white"/>
-  
+      <!-- Brilliant Cut Sapphire Gemstone in Solitaire Ring Prongs -->
+      <circle cx="250" cy="310" r="90" fill="none" stroke="#e2e8f0" stroke-width="16" filter="url(#drop)"/>
+      <!-- Faceted Gemstone -->
+      <polygon points="250,130 320,180 250,250 180,180" fill="#3b82f6" filter="url(#softGlow)"/>
+      <polygon points="250,130 300,160 250,190 200,160" fill="#93c5fd"/>
+      <polygon points="250,190 320,180 250,250" fill="#1d4ed8"/>
+      <polygon points="250,190 180,180 250,250" fill="#2563eb"/>
+      <circle cx="250" cy="190" r="10" fill="#ffffff" opacity="0.9"/>
+    
+    <!-- Inner Gallery Vignette / Lighting Accent -->
+    <rect x="24" y="24" width="452" height="452" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
   </g>
-
-  <!-- English Vocabulary Title -->
-  <text x="200" y="325" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="24" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1">JEWELRY DESIGN</text>
-
-  <!-- Vietnamese Meaning & Reference Tag -->
-  <text x="200" y="352" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="14" font-weight="500" fill="rgba(255,255,255,0.92)" text-anchor="middle">thiết kế kim hoàn trang sức</text>
-  <text x="200" y="374" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="11" font-weight="400" fill="#c7d2fe" text-anchor="middle" font-style="italic">Ref: Oxford Art Dictionary</text>
 </svg>

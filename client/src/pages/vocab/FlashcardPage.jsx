@@ -14,6 +14,7 @@ import {
   HiCheck,
   HiLightBulb
 } from 'react-icons/hi';
+import { HiOutlineSparkles } from 'react-icons/hi2';
 
 export default function FlashcardPage() {
   const { id } = useParams();
@@ -87,7 +88,7 @@ export default function FlashcardPage() {
     if (!current) return;
     try {
       await vocabApi.markAsLearned(current.id);
-      toast.success(`Đã lưu "${current.word}" vào lịch ôn tập hôm nay!`);
+      toast.success(`Đã lưu "${current.word}" vào lịch ôn tập SM-2!`);
       handleNext();
     } catch (err) {
       toast.error(err.message || 'Không thể lưu tiến độ');
@@ -113,7 +114,7 @@ export default function FlashcardPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
-        <LoadingSpinner size="lg" text="Đang chuẩn bị bộ thẻ học mỹ thuật..." />
+        <LoadingSpinner size="lg" text="Đang chuẩn bị bộ thẻ học triển lãm..." />
       </div>
     );
   }
@@ -121,29 +122,33 @@ export default function FlashcardPage() {
   const current = vocabs[currentIndex];
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 pb-12">
+    <div className="max-w-2xl mx-auto space-y-6 pb-14">
       {/* Header */}
       <div className="flex items-center justify-between">
         <Link
           to={isCustomList ? `/vocab-lists/${id}` : `/topics/${id}`}
-          className="btn btn-ghost text-sm gap-2"
+          className="btn btn-secondary text-xs gap-2 py-2 px-3.5 rounded-xl"
         >
-          <HiArrowLeft /> Quay lại danh sách
+          <HiArrowLeft /> Quay lại danh mục
         </Link>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={handleShuffle} title="Xáo trộn thứ tự từ">
+          <button
+            onClick={handleShuffle}
+            title="Xáo trộn thứ tự từ"
+            className="btn btn-secondary text-xs gap-1.5 py-1.5 px-3 rounded-xl cursor-pointer"
+          >
             <HiRefresh className="w-4 h-4" /> Xáo thẻ
-          </Button>
-          <span className="text-sm font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+          </button>
+          <span className="font-mono text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
             {currentIndex + 1} / {vocabs.length}
           </span>
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
         <div
-          className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
           style={{ width: `${vocabs.length > 0 ? Math.round(((currentIndex + 1) / vocabs.length) * 100) : 0}%` }}
         />
       </div>
@@ -151,74 +156,76 @@ export default function FlashcardPage() {
       {/* 3D Flip Flashcard */}
       {current ? (
         <div
-          className="perspective-1000 min-h-[460px] cursor-pointer"
+          className="perspective-1000 min-h-[480px] cursor-pointer"
           onClick={() => setIsFlipped(!isFlipped)}
         >
           <div
-            className={`w-full min-h-[460px] rounded-3xl shadow-lg border-2 p-6 sm:p-8 transition-all duration-500 flex flex-col justify-between select-none ${
+            className={`w-full min-h-[480px] rounded-3xl shadow-xl border p-6 sm:p-8 transition-all duration-300 flex flex-col justify-between select-none ${
               isFlipped
-                ? 'bg-gradient-to-br from-amber-50/70 via-stone-50 to-orange-50/40 border-amber-300'
-                : 'bg-white border-stone-200 hover:border-amber-400'
+                ? 'bg-slate-50 border-blue-300 shadow-blue-500/10'
+                : 'bg-white border-slate-200/90 hover:border-blue-400 shadow-slate-900/5'
             }`}
           >
             {/* Header of card */}
-            <div className="flex justify-between items-center text-xs font-semibold text-stone-400 uppercase tracking-wider">
-              <span>{isFlipped ? 'Mặt sau • Nghĩa & Bối cảnh nghệ thuật' : 'Mặt trước • Thuật ngữ tiếng Anh'}</span>
+            <div className="flex justify-between items-center text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
+              <span>{isFlipped ? 'MẶT SAU • GIẢI NGHĨA & DI SẢN' : 'MẶT TRƯỚC • TÁC PHẨM & THUẬT NGỮ'}</span>
               <div className="flex items-center gap-2">
                 {current.source_ref && (
-                  <span className="text-[10px] text-stone-500 bg-stone-100 px-2.5 py-0.5 rounded-full border border-stone-200 font-medium">
+                  <span className="font-mono text-[10px] text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-md font-semibold">
                     {current.source_ref}
                   </span>
                 )}
-                <span className="badge bg-amber-100 text-amber-900 border border-amber-200 font-semibold">{current.part_of_speech}</span>
+                <span className="badge bg-blue-50 text-blue-700 font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-blue-200/60">
+                  {current.part_of_speech}
+                </span>
               </div>
             </div>
 
             {/* Content Front vs Back */}
             {!isFlipped ? (
-              <div className="text-center py-4 flex flex-col items-center justify-center flex-1">
-                {/* Visual Image */}
-                <div className="w-36 h-36 sm:w-44 sm:h-44 mx-auto mb-4 rounded-2xl overflow-hidden shadow-xs border border-stone-200/90 bg-white p-2">
+              <div className="text-center py-6 flex flex-col items-center justify-center flex-1">
+                {/* Visual Image - Contemporary Framing */}
+                <div className="w-40 h-40 sm:w-48 sm:h-48 mx-auto mb-5 rounded-3xl overflow-hidden shadow-lg border border-slate-200 bg-slate-900 p-2">
                   <VocabImage
                     src={current.image_url}
                     alt={current.image_alt || current.word}
                     enableZoom={false}
-                    className="w-full h-full rounded-xl"
+                    className="w-full h-full rounded-2xl"
                   />
                 </div>
 
-                <h2 className="text-3xl sm:text-5xl font-extrabold text-stone-900 mb-2 tracking-tight">
+                <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-950 mb-2 tracking-tight">
                   {current.word}
                 </h2>
-                <p className="text-base text-stone-500 font-mono mb-4">{current.pronunciation}</p>
+                <p className="text-sm font-mono text-slate-500 mb-5">{current.pronunciation}</p>
                 <button
                   onClick={(e) => handleSpeak(current.word, e)}
-                  className="btn btn-secondary text-sm gap-2 mx-auto rounded-xl shadow-2xs hover:bg-stone-100"
+                  className="btn btn-secondary text-xs gap-2 mx-auto rounded-xl shadow-xs hover:bg-slate-200"
                 >
-                  <HiVolumeUp className="w-5 h-5 text-amber-700" /> Nghe phát âm chuẩn
+                  <HiVolumeUp className="w-4 h-4 text-blue-600" /> Nghe phát âm chuẩn
                 </button>
               </div>
             ) : (
               <div className="text-center py-2 space-y-4 flex flex-col justify-center flex-1">
-                <div className="flex items-center justify-center gap-3">
-                  <div className="w-16 h-16 rounded-xl overflow-hidden border border-amber-200 bg-white p-1 shadow-2xs shrink-0">
+                <div className="flex items-center justify-center gap-4">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 p-1.5 shadow-md shrink-0">
                     <VocabImage
                       src={current.image_url}
                       alt={current.image_alt || current.word}
-                      className="w-full h-full rounded-lg"
+                      className="w-full h-full rounded-xl"
                     />
                   </div>
                   <div className="text-left">
-                    <p className="text-2xl sm:text-3xl font-extrabold text-amber-900">{current.meaning_vi}</p>
-                    <p className="text-xs text-stone-500 font-mono">{current.word} • {current.pronunciation}</p>
+                    <p className="text-2xl sm:text-4xl font-extrabold text-slate-950 tracking-tight">{current.meaning_vi}</p>
+                    <p className="text-xs font-mono text-slate-500 mt-1">{current.word} • {current.pronunciation}</p>
                   </div>
                 </div>
 
                 {/* Example sentence */}
                 {current.example_sentence && (
-                  <div className="p-3.5 rounded-2xl bg-white/90 border border-amber-200/80 text-left space-y-1 shadow-2xs">
-                    <p className="text-sm font-semibold text-stone-800">"{current.example_sentence}"</p>
-                    <p className="text-xs sm:text-sm text-stone-600 italic">"{current.example_translation}"</p>
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200 text-left space-y-1 shadow-2xs">
+                    <p className="text-sm font-bold text-slate-800">"{current.example_sentence}"</p>
+                    <p className="text-xs text-slate-500 italic">"{current.example_translation}"</p>
                   </div>
                 )}
 
@@ -233,13 +240,13 @@ export default function FlashcardPage() {
             )}
 
             {/* Footer tip */}
-            <div className="flex justify-between items-center pt-4 border-t border-stone-200/70 text-xs text-stone-500">
-              <span className="flex items-center gap-1.5">
-                <HiLightBulb className="w-4 h-4 text-amber-500" /> Nhấn thẻ hoặc phím Cách để lật
+            <div className="flex justify-between items-center pt-5 border-t border-slate-100 text-xs text-slate-500">
+              <span className="flex items-center gap-1.5 font-mono text-[11px]">
+                <HiLightBulb className="w-4 h-4 text-amber-500" /> [Phím Cách] để lật thẻ
               </span>
               <button
                 onClick={handleMarkLearned}
-                className="btn btn-success text-xs py-1.5 px-3.5 gap-1.5 rounded-xl shadow-xs"
+                className="btn btn-primary text-xs py-2 px-4 gap-1.5 rounded-xl shadow-sm"
               >
                 <HiCheck className="w-4 h-4" /> Đã nhớ từ này
               </button>
@@ -247,18 +254,18 @@ export default function FlashcardPage() {
           </div>
         </div>
       ) : (
-        <div className="card text-center py-12">
-          <p className="text-gray-500">Chưa có từ vựng nào trong chủ đề này.</p>
+        <div className="card text-center py-12 rounded-3xl">
+          <p className="text-slate-500">Chưa có từ vựng nào trong chủ đề này.</p>
         </div>
       )}
 
       {/* Navigation buttons */}
       {vocabs.length > 0 && (
         <div className="flex justify-between items-center pt-2">
-          <Button variant="secondary" onClick={handlePrev} className="gap-2 rounded-xl">
+          <Button variant="secondary" onClick={handlePrev} className="gap-2 rounded-xl text-xs py-2.5 px-4">
             <HiArrowLeft /> Từ trước
           </Button>
-          <Button onClick={handleNext} className="gap-2 rounded-xl">
+          <Button onClick={handleNext} className="gap-2 rounded-xl text-xs py-2.5 px-4 btn-primary">
             Từ tiếp theo <HiArrowRight />
           </Button>
         </div>

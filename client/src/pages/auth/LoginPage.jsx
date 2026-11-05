@@ -49,7 +49,7 @@ export default function LoginPage() {
 
   return (
     <div>
-      <h2 className="text-center mb-6">Đăng nhập</h2>
+      <h2 className="text-center mb-6 text-2xl font-extrabold text-slate-950 tracking-tight">Đăng Nhập</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
@@ -72,14 +72,14 @@ export default function LoginPage() {
           error={errors.password}
         />
 
-        <Button type="submit" isLoading={isLoading} className="w-full">
+        <Button type="submit" isLoading={isLoading} className="w-full btn-primary py-2.5 rounded-xl">
           Đăng nhập
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-gray-600">
+      <p className="mt-6 text-center text-xs text-slate-600">
         Chưa có tài khoản?{' '}
-        <Link to="/register" className="text-primary-600 hover:underline font-medium">
+        <Link to="/register" className="text-blue-600 hover:underline font-bold">
           Đăng ký ngay
         </Link>
       </p>

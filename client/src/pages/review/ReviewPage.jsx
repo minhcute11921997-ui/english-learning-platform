@@ -12,7 +12,6 @@ import {
   HiCalendar,
   HiBookOpen,
   HiSparkles,
-  HiArrowRight,
   HiLightningBolt,
   HiChevronDown
 } from 'react-icons/hi';
@@ -137,14 +136,13 @@ export default function ReviewPage() {
       await reviewApi.answer(vocab.id, { quality });
 
       toast.success(
-        quality >= 3 ? 'Đã ghi nhận! Lịch ôn đã dời xa hơn.' : 'Đã ghi nhận! Từ sẽ được xếp ôn sớm hơn.'
+        quality >= 3 ? 'Đã ghi nhận! Chu kỳ ghi nhớ được củng cố.' : 'Đã ghi nhận! Hệ thống sẽ xếp lịch ôn sớm hơn.'
       );
 
       setShowAnswer(false);
       if (currentIndex < currentQueue.length - 1) {
         setCurrentIndex(currentIndex + 1);
       } else {
-        // Tải lại để cập nhật hàng đợi mới
         loadReviewData();
       }
     } catch (err) {
@@ -156,39 +154,39 @@ export default function ReviewPage() {
 
   if (isLoading) {
     return (
-      <div className="py-20 flex justify-center">
+      <div className="py-24 flex justify-center">
         <LoadingSpinner size="lg" text="Đang đồng bộ thuật toán ôn tập ngắt quãng SM-2..." />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto pb-12">
-      {/* Editorial Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-7 max-w-4xl mx-auto pb-14">
+      {/* Contemporary Studio Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <span className="text-xs font-bold text-amber-700 uppercase tracking-widest">
+          <span className="font-mono text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
             Spaced Repetition System (SM-2)
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold font-serif text-stone-900 tracking-tight mt-1">
-            Không Gian Ôn Tập Thuật Ngữ
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Phòng Ôn Tập Thuật Ngữ Định Kỳ
           </h1>
-          <p className="text-sm text-stone-600 mt-1 max-w-xl">
-            Tối ưu hóa khả năng ghi nhớ dài hạn các thuật ngữ mỹ thuật, hội họa và mỹ nghệ bằng thuật toán lặp lại ngắt quãng.
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
+            Tối ưu hóa khả năng ghi nhớ dài hạn bằng thuật toán lặp lại ngắt quãng SuperMemo-2
           </p>
         </div>
 
         {/* Source selector */}
         <div className="shrink-0 flex items-center gap-2">
-          <label htmlFor="source-select" className="text-xs font-semibold text-stone-500 hidden sm:inline">
-            Nguồn ôn:
+          <label htmlFor="source-select" className="text-xs font-mono font-bold text-slate-500 hidden sm:inline uppercase">
+            Nguồn:
           </label>
           <div className="relative">
             <select
               id="source-select"
               value={selectedSource}
               onChange={(e) => handleSourceChange(e.target.value)}
-              className="appearance-none bg-white border border-stone-300 hover:border-amber-400 text-stone-800 text-xs sm:text-sm font-medium py-2 pl-3 pr-8 rounded-xl shadow-2xs focus:outline-hidden cursor-pointer"
+              className="appearance-none bg-white border border-slate-300 hover:border-blue-500 text-slate-800 text-xs sm:text-sm font-semibold py-2.5 pl-3.5 pr-8 rounded-xl shadow-xs focus:outline-hidden cursor-pointer"
             >
               <optgroup label="Hàng đợi hệ thống">
                 <option value="due_today">⚡ Cần ôn hôm nay ({dueWords.length} từ)</option>
@@ -204,94 +202,94 @@ export default function ReviewPage() {
                 </optgroup>
               )}
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-stone-500">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-500">
               <HiChevronDown className="w-4 h-4" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+      {/* Stats Cards - Contemporary Gallery Metrics */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div
           onClick={() => handleSourceChange('due_today')}
-          className={`card text-center p-4 cursor-pointer transition-all border rounded-2xl ${
+          className={`card text-center p-5 cursor-pointer transition-all border rounded-2xl ${
             selectedSource === 'due_today' && activeTab === 'queue'
-              ? 'ring-2 ring-amber-600 bg-amber-50/70 border-amber-300 shadow-sm'
-              : 'bg-white hover:bg-amber-50/30 border-stone-200'
+              ? 'ring-2 ring-blue-600 bg-blue-50/60 border-blue-300 shadow-sm'
+              : 'bg-white hover:bg-slate-50 border-slate-200/90'
           }`}
         >
-          <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Cần ôn hôm nay</span>
-          <p className="font-serif text-2xl sm:text-3xl font-bold text-amber-700 mt-1">
+          <span className="font-mono text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Cần ôn hôm nay</span>
+          <p className="text-3xl font-extrabold text-blue-600 mt-1 tracking-tight">
             {stats?.dueCount || 0}
           </p>
         </div>
 
         <div
           onClick={() => handleSourceChange('all_learning')}
-          className={`card text-center p-4 cursor-pointer transition-all border rounded-2xl ${
+          className={`card text-center p-5 cursor-pointer transition-all border rounded-2xl ${
             selectedSource === 'all_learning' && activeTab === 'queue'
-              ? 'ring-2 ring-amber-800 bg-stone-50 border-amber-400 shadow-sm'
-              : 'bg-white hover:bg-stone-50 border-stone-200'
+              ? 'ring-2 ring-blue-600 bg-blue-50/60 border-blue-300 shadow-sm'
+              : 'bg-white hover:bg-slate-50 border-slate-200/90'
           }`}
         >
-          <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Đang học</span>
-          <p className="font-serif text-2xl sm:text-3xl font-bold text-stone-900 mt-1">
+          <span className="font-mono text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Đang học</span>
+          <p className="text-3xl font-extrabold text-slate-900 mt-1 tracking-tight">
             {stats?.learningCount || 0}
           </p>
         </div>
 
-        <div className="card text-center p-4 bg-white border border-stone-200 rounded-2xl">
-          <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Đã thuần thục</span>
-          <p className="font-serif text-2xl sm:text-3xl font-bold text-emerald-700 mt-1">
+        <div className="card text-center p-5 bg-white border border-slate-200/90 rounded-2xl shadow-xs">
+          <span className="font-mono text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Đã thuần thục</span>
+          <p className="text-3xl font-extrabold text-emerald-600 mt-1 tracking-tight">
             {stats?.masteredCount || 0}
           </p>
         </div>
 
-        <div className="card text-center p-4 bg-white border border-stone-200 rounded-2xl">
-          <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Độ chính xác</span>
-          <p className="font-serif text-2xl sm:text-3xl font-bold text-stone-800 mt-1">
+        <div className="card text-center p-5 bg-white border border-slate-200/90 rounded-2xl shadow-xs">
+          <span className="font-mono text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Độ chính xác</span>
+          <p className="text-3xl font-extrabold text-slate-800 mt-1 tracking-tight">
             {stats?.accuracyRate || 0}%
           </p>
         </div>
       </div>
 
-      {/* Tabs Phụ */}
-      <div className="flex border-b border-stone-200 text-xs sm:text-sm font-semibold gap-2">
+      {/* Tabs */}
+      <div className="flex border-b border-slate-200 text-xs sm:text-sm font-bold gap-4">
         <button
           onClick={() => setActiveTab('queue')}
-          className={`py-2.5 px-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+          className={`py-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2 ${
             activeTab === 'queue'
-              ? 'border-amber-700 text-amber-900 font-bold'
-              : 'border-transparent text-stone-500 hover:text-stone-800'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <HiSparkles className="w-4 h-4 text-amber-600" />
-          <span>Thẻ ôn tập ({currentQueue.length})</span>
+          <HiSparkles className="w-4 h-4 text-blue-600" />
+          <span>Thẻ Ôn Tập ({currentQueue.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab('learning_list')}
-          className={`py-2.5 px-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+          className={`py-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2 ${
             activeTab === 'learning_list'
-              ? 'border-amber-700 text-amber-900 font-bold'
-              : 'border-transparent text-stone-500 hover:text-stone-800'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
           <HiBookOpen className="w-4 h-4" />
-          <span>Danh sách từ đang học ({learningWords.length})</span>
+          <span>Danh Sách Từ Đang Học ({learningWords.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab('upcoming')}
-          className={`py-2.5 px-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+          className={`py-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2 ${
             activeTab === 'upcoming'
-              ? 'border-amber-700 text-amber-900 font-bold'
-              : 'border-transparent text-stone-500 hover:text-stone-800'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
           <HiCalendar className="w-4 h-4" />
-          <span>Lịch 7 ngày tới ({upcoming.length})</span>
+          <span>Lịch 7 Ngày Tới ({upcoming.length})</span>
         </button>
       </div>
 
@@ -299,61 +297,61 @@ export default function ReviewPage() {
       {activeTab === 'queue' && (
         <>
           {isListLoading ? (
-            <div className="py-20 flex flex-col items-center justify-center gap-2 text-stone-500 text-xs">
+            <div className="py-20 flex flex-col items-center justify-center gap-2 text-slate-500 text-xs">
               <LoadingSpinner size="md" />
               <span>Đang tải các từ trong sổ từ...</span>
             </div>
           ) : currentQueue.length > 0 && vocab ? (
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm max-w-2xl mx-auto space-y-6">
+            <div className="bg-white rounded-3xl p-6 sm:p-9 border border-slate-200/90 shadow-md max-w-2xl mx-auto space-y-6">
               {/* Badge & Mode Header */}
-              <div className="flex justify-between items-center text-xs font-semibold text-stone-500 pb-3 border-b border-stone-100">
-                <span className="flex items-center gap-1.5 text-amber-800">
-                  <HiClock className="w-4 h-4" />
+              <div className="flex justify-between items-center text-xs font-mono font-bold text-slate-400 pb-3.5 border-b border-slate-100 uppercase tracking-wider">
+                <span className="flex items-center gap-1.5 text-blue-700">
+                  <HiClock className="w-4 h-4 text-blue-600" />
                   {getSourceTitle()}: {currentIndex + 1} / {currentQueue.length}
                 </span>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200 font-medium">
-                  {vocab.topic?.name_vi || 'Mỹ thuật & Mỹ nghệ'}
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold">
+                  {vocab.topic?.name_vi || 'Mỹ thuật'}
                 </span>
               </div>
 
               {/* Front side of card */}
               <div className="text-center py-4 flex flex-col items-center justify-center">
-                <div className="w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-3 rounded-2xl overflow-hidden shadow-2xs border border-stone-200 bg-stone-50 p-1.5">
+                <div className="w-36 h-36 sm:w-44 sm:h-44 mx-auto mb-4 rounded-3xl overflow-hidden shadow-md border border-slate-200 bg-slate-900 p-2">
                   <VocabImage
                     src={vocab.image_url}
                     alt={vocab.image_alt || vocab.word}
                     enableZoom={true}
-                    className="w-full h-full rounded-xl"
+                    className="w-full h-full rounded-2xl"
                   />
                 </div>
 
-                <h2 className="text-3xl sm:text-4xl font-extrabold font-serif text-stone-900 tracking-tight mb-1">
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-950 tracking-tight mb-1">
                   {vocab.word}
                 </h2>
-                <p className="text-sm text-stone-500 font-mono mb-3">{vocab.pronunciation}</p>
+                <p className="text-sm text-slate-500 font-mono mb-4">{vocab.pronunciation}</p>
                 <button
                   type="button"
                   onClick={() => handleSpeak(vocab.word)}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors cursor-pointer"
                 >
-                  <HiVolumeUp className="w-4 h-4 text-amber-700" /> Nghe phát âm
+                  <HiVolumeUp className="w-4 h-4 text-blue-600" /> Nghe phát âm
                 </button>
               </div>
 
               {/* Back side / Answer section */}
               {showAnswer ? (
-                <div className="space-y-6 pt-4 border-t border-stone-100">
+                <div className="space-y-6 pt-5 border-t border-slate-100">
                   <div className="text-center space-y-3">
-                    <p className="text-2xl font-bold font-serif text-amber-900 mb-1">
+                    <p className="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight mb-1">
                       {vocab.meaning_vi}
                     </p>
-                    <span className="text-xs text-stone-400 font-semibold uppercase tracking-wider">
+                    <span className="font-mono text-xs text-blue-600 font-bold uppercase tracking-wider">
                       ({vocab.part_of_speech})
                     </span>
                     {vocab.example_sentence && (
-                      <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200 text-left text-xs sm:text-sm space-y-1">
-                        <p className="font-semibold text-stone-800">"{vocab.example_sentence}"</p>
-                        <p className="text-stone-500 italic">"{vocab.example_translation}"</p>
+                      <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-left text-xs sm:text-sm space-y-1">
+                        <p className="font-bold text-slate-800">"{vocab.example_sentence}"</p>
+                        <p className="text-slate-500 italic">"{vocab.example_translation}"</p>
                       </div>
                     )}
 
@@ -368,44 +366,44 @@ export default function ReviewPage() {
 
                   {/* 4 Assessment Buttons */}
                   <div>
-                    <p className="text-xs font-semibold text-stone-500 text-center uppercase tracking-wider mb-3">
-                      Đánh giá mức độ nhớ của bạn:
+                    <p className="text-xs font-mono font-bold text-slate-500 text-center uppercase tracking-wider mb-3">
+                      Đánh giá mức độ ghi nhớ của bạn:
                     </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                       <button
                         disabled={isSubmitting}
                         onClick={() => handleAnswer(1)}
-                        className="p-3 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-center transition-all cursor-pointer"
+                        className="p-3.5 rounded-2xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-center transition-all cursor-pointer"
                       >
-                        <p className="text-sm font-bold">Chưa nhớ</p>
-                        <p className="text-[11px] text-red-500 mt-0.5">&lt; 1 ngày</p>
+                        <p className="text-xs font-extrabold uppercase">Chưa nhớ</p>
+                        <p className="text-[10px] font-mono text-rose-500 mt-0.5">&lt; 1 ngày</p>
                       </button>
 
                       <button
                         disabled={isSubmitting}
                         onClick={() => handleAnswer(3)}
-                        className="p-3 rounded-xl border border-yellow-200 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 text-center transition-all cursor-pointer"
+                        className="p-3.5 rounded-2xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 text-center transition-all cursor-pointer"
                       >
-                        <p className="text-sm font-bold">Khó nhớ</p>
-                        <p className="text-[11px] text-yellow-600 mt-0.5">~ 2 ngày</p>
+                        <p className="text-xs font-extrabold uppercase">Khó nhớ</p>
+                        <p className="text-[10px] font-mono text-amber-600 mt-0.5">~ 2 ngày</p>
                       </button>
 
                       <button
                         disabled={isSubmitting}
                         onClick={() => handleAnswer(4)}
-                        className="p-3 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-800 text-center transition-all cursor-pointer"
+                        className="p-3.5 rounded-2xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-800 text-center transition-all cursor-pointer"
                       >
-                        <p className="text-sm font-bold">Nhớ tốt</p>
-                        <p className="text-[11px] text-blue-600 mt-0.5">~ 4-6 ngày</p>
+                        <p className="text-xs font-extrabold uppercase">Nhớ tốt</p>
+                        <p className="text-[10px] font-mono text-blue-600 mt-0.5">~ 4-6 ngày</p>
                       </button>
 
                       <button
                         disabled={isSubmitting}
                         onClick={() => handleAnswer(5)}
-                        className="p-3 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-center transition-all cursor-pointer"
+                        className="p-3.5 rounded-2xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-center transition-all cursor-pointer"
                       >
-                        <p className="text-sm font-bold">Rất dễ</p>
-                        <p className="text-[11px] text-emerald-600 mt-0.5">&gt; 7 ngày</p>
+                        <p className="text-xs font-extrabold uppercase">Rất dễ</p>
+                        <p className="text-[10px] font-mono text-emerald-600 mt-0.5">&gt; 7 ngày</p>
                       </button>
                     </div>
                   </div>
@@ -415,7 +413,7 @@ export default function ReviewPage() {
                   <Button
                     onClick={() => setShowAnswer(true)}
                     size="lg"
-                    className="w-full sm:w-auto px-8 bg-amber-800 hover:bg-amber-900 text-white rounded-xl shadow-xs"
+                    className="w-full sm:w-auto px-8 rounded-xl shadow-sm text-xs py-3 btn-primary"
                   >
                     Hiện đáp án &amp; Bối cảnh văn hóa
                   </Button>
@@ -424,11 +422,11 @@ export default function ReviewPage() {
             </div>
           ) : (
             /* Khi không có từ trong hàng đợi hiện tại */
-            <div className="bg-white rounded-3xl border border-stone-200 text-center p-10 max-w-xl mx-auto space-y-4 shadow-sm">
-              <div className="inline-flex p-4 rounded-full bg-amber-50 text-amber-700">
+            <div className="bg-white rounded-3xl border border-slate-200/90 text-center p-12 max-w-xl mx-auto space-y-5 shadow-sm">
+              <div className="inline-flex p-4 rounded-3xl bg-blue-50 text-blue-600">
                 <HiCheckCircle className="w-12 h-12" />
               </div>
-              <h2 className="text-xl font-bold font-serif text-stone-900">
+              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
                 {selectedSource === 'due_today'
                   ? 'Hôm nay chưa có thuật ngữ nào đến hạn ôn'
                   : selectedSource.startsWith('list_')
@@ -438,33 +436,32 @@ export default function ReviewPage() {
 
               {selectedSource === 'due_today' && learningWords.length > 0 ? (
                 <div className="space-y-4">
-                  <p className="text-sm text-stone-600 leading-relaxed">
-                    Hệ thống sẽ tự động nhắc bạn khi não bộ chuẩn bị quên theo thuật toán SM-2. Bạn đang có{' '}
-                    <strong className="text-amber-800 font-bold">{learningWords.length} thuật ngữ đang học</strong>{' '}
-                    và có thể chủ động ôn tập ngay bây giờ!
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Hệ thống sẽ tự động kích hoạt nhắc nhở trước khi trí nhớ suy giảm theo thuật toán SM-2. Bạn đang có{' '}
+                    <strong className="text-blue-600 font-bold">{learningWords.length} thuật ngữ đang học</strong>.
                   </p>
                   <Button
                     onClick={() => handleSourceChange('all_learning')}
-                    className="bg-amber-800 hover:bg-amber-900 text-white gap-2 rounded-xl"
+                    className="btn-primary gap-2 rounded-xl text-xs py-2.5 px-5"
                   >
                     <HiLightningBolt className="w-4 h-4" /> Ôn tập ngay các từ đang học ({learningWords.length})
                   </Button>
                 </div>
               ) : selectedSource.startsWith('list_') && learningWords.length > 0 ? (
                 <div className="space-y-4">
-                  <p className="text-sm text-stone-600 leading-relaxed">
-                    Hãy thêm từ vào sổ từ này trong trang Từ vựng hoặc chuyển sang ôn tất cả từ đang học.
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Hãy thêm từ vào sổ từ này trong trang Chủ đề Mỹ thuật hoặc chuyển sang ôn tất cả từ đang học.
                   </p>
                   <Button
                     onClick={() => handleSourceChange('all_learning')}
-                    className="bg-amber-800 hover:bg-amber-900 text-white gap-2 rounded-xl"
+                    className="btn-primary gap-2 rounded-xl text-xs py-2.5 px-5"
                   >
                     <HiLightningBolt className="w-4 h-4" /> Ôn tập tất cả từ đang học ({learningWords.length})
                   </Button>
                 </div>
               ) : (
-                <p className="text-sm text-stone-500 leading-relaxed">
-                  Hãy vào mục <strong>Từ vựng</strong> để khám phá và thêm các thuật ngữ mỹ thuật mới vào lộ trình học!
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Hãy vào mục <strong>Chủ đề Mỹ thuật</strong> để khám phá và nạp thêm các thuật ngữ mới!
                 </p>
               )}
             </div>
@@ -474,11 +471,11 @@ export default function ReviewPage() {
 
       {/* TAB 2: DANH SÁCH TOÀN BỘ TỪ ĐANG HỌC */}
       {activeTab === 'learning_list' && (
-        <div className="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden space-y-4 p-5">
-          <div className="flex items-center justify-between pb-3 border-b border-stone-100 flex-wrap gap-2">
+        <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden space-y-4 p-6">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
             <div>
-              <h2 className="font-serif text-base font-bold text-stone-900">
-                Toàn bộ từ vựng đang học ({learningWords.length})
+              <h2 className="text-base font-extrabold text-slate-900 tracking-tight">
+                Toàn bộ thuật ngữ đang học ({learningWords.length})
               </h2>
             </div>
 
@@ -486,36 +483,36 @@ export default function ReviewPage() {
               <Button
                 size="sm"
                 onClick={() => handleSourceChange('all_learning')}
-                className="bg-amber-800 hover:bg-amber-900 text-white gap-1.5 text-xs rounded-xl"
+                className="btn-primary gap-1.5 text-xs rounded-xl py-2 px-3.5"
               >
-                <HiLightningBolt className="w-3.5 h-3.5" /> Bắt đầu ôn tập ({learningWords.length} từ)
+                <HiLightningBolt className="w-3.5 h-3.5" /> Bắt đầu ôn ({learningWords.length} từ)
               </Button>
             )}
           </div>
 
           {learningWords.length > 0 ? (
-            <div className="divide-y divide-stone-100 text-sm">
+            <div className="divide-y divide-slate-100 text-sm">
               {learningWords.map((item, idx) => {
                 const v = item.vocabulary;
                 if (!v) return null;
                 const nextDate = item.next_review_at ? new Date(item.next_review_at) : null;
                 return (
-                  <div key={item.id || idx} className="py-3.5 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-stone-200 bg-stone-50 p-1 shrink-0">
-                        <VocabImage src={v.image_url} alt={v.word} className="w-full h-full rounded-lg" />
+                  <div key={item.id || idx} className="py-4 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-14 h-14 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 p-1 shrink-0 shadow-xs">
+                        <VocabImage src={v.image_url} alt={v.word} className="w-full h-full rounded-xl" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-stone-900 text-base">{v.word}</span>
-                          <span className="text-xs text-stone-400 font-mono">{v.pronunciation}</span>
+                          <span className="font-extrabold text-slate-900 text-base">{v.word}</span>
+                          <span className="text-xs text-slate-400 font-mono">{v.pronunciation}</span>
                         </div>
-                        <p className="text-xs text-stone-600 mt-0.5">{v.meaning_vi}</p>
+                        <p className="text-xs text-slate-600 mt-0.5">{v.meaning_vi}</p>
                       </div>
                     </div>
 
                     <div className="text-right shrink-0">
-                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 font-medium">
+                      <span className="font-mono text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-600 font-bold">
                         Lịch ôn: {nextDate ? nextDate.toLocaleDateString('vi-VN', {
                           weekday: 'short',
                           hour: '2-digit',
@@ -530,7 +527,7 @@ export default function ReviewPage() {
               })}
             </div>
           ) : (
-            <div className="p-8 text-center text-sm text-stone-400 italic">
+            <div className="p-8 text-center text-sm text-slate-400 italic">
               Bạn chưa có từ nào trong danh sách đang học.
             </div>
           )}
@@ -539,30 +536,30 @@ export default function ReviewPage() {
 
       {/* TAB 3: UPCOMING REVIEWS (LỊCH 7 NGÀY TỚI) */}
       {activeTab === 'upcoming' && (
-        <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 space-y-4">
-          <div className="flex items-center gap-2 pb-3 border-b border-stone-100">
-            <HiCalendar className="w-5 h-5 text-amber-800" />
-            <h2 className="text-base font-bold font-serif text-stone-900">
+        <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-7 space-y-4">
+          <div className="flex items-center gap-2 pb-4 border-b border-slate-100">
+            <HiCalendar className="w-5 h-5 text-blue-600" />
+            <h2 className="text-base font-extrabold text-slate-900 tracking-tight">
               Lịch ôn tập sắp tới (7 ngày tới)
             </h2>
           </div>
 
           {upcoming.length > 0 ? (
-            <div className="divide-y divide-stone-100 text-sm">
+            <div className="divide-y divide-slate-100 text-sm">
               {upcoming.map((item) => (
-                <div key={item.id} className="py-3 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
+                <div key={item.id} className="py-3.5 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
                     {item.vocabulary?.image_url && (
-                      <div className="w-10 h-10 rounded-lg overflow-hidden border border-stone-200 bg-stone-50 p-0.5 shrink-0">
-                        <VocabImage src={item.vocabulary.image_url} alt="" className="w-full h-full rounded" />
+                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-slate-200 bg-slate-900 p-0.5 shrink-0 shadow-xs">
+                        <VocabImage src={item.vocabulary.image_url} alt="" className="w-full h-full rounded-lg" />
                       </div>
                     )}
                     <div className="flex items-center gap-2.5">
-                      <span className="font-bold text-stone-900">{item.vocabulary?.word}</span>
-                      <span className="text-stone-500 text-xs">({item.vocabulary?.meaning_vi})</span>
+                      <span className="font-extrabold text-slate-900">{item.vocabulary?.word}</span>
+                      <span className="text-slate-500 text-xs">({item.vocabulary?.meaning_vi})</span>
                     </div>
                   </div>
-                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 font-medium">
+                  <span className="font-mono text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-600 font-bold">
                     {new Date(item.scheduled_at).toLocaleDateString('vi-VN', {
                       weekday: 'short',
                       month: 'numeric',
@@ -573,7 +570,7 @@ export default function ReviewPage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-stone-400 italic text-center py-6">
+            <p className="text-xs text-slate-400 italic text-center py-8">
               Chưa có lịch ôn tập nào được lên lịch cho tuần tới.
             </p>
           )}

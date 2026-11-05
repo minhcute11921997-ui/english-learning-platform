@@ -4,23 +4,15 @@ import { vocabListApi, vocabApi } from '../../api/services';
 import {
   HiX,
   HiPlus,
-  HiCheck,
-  HiOutlineFolder,
-  HiOutlineFolderAdd
+  HiOutlineFolder
 } from 'react-icons/hi';
 
 /**
- * Modal thêm từ vựng vào một hoặc nhiều bộ danh sách cá nhân
- * Props:
- * - isOpen: boolean
- * - onClose: () => void
- * - vocab: { id?: number, word: string, meaning_vi?: string, pronunciation?: string, part_of_speech?: string }
- * - onSuccess?: (assignedIds) => void
+ * Modal thêm từ vựng vào một hoặc nhiều bộ danh sách cá nhân - Modern Design Studio
  */
 export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
   const [lists, setLists] = useState([]);
   const [selectedListIds, setSelectedListIds] = useState([]);
-  const [initialListIds, setInitialListIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showCreateInput, setShowCreateInput] = useState(false);
@@ -52,8 +44,7 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
 
       setLists(userLists);
       setSelectedListIds(currentMemberIds);
-      setInitialListIds(currentMemberIds);
-    } catch (err) {
+    } catch {
       toast.error('Không thể tải danh sách bộ từ');
     } finally {
       setIsLoading(false);
@@ -78,7 +69,6 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
       });
       const created = res.data;
       setLists((prev) => [created, ...prev]);
-      // Tự động tích chọn danh sách vừa tạo
       setSelectedListIds((prev) => [...prev, created.id]);
       setNewListName('');
       setShowCreateInput(false);
@@ -108,7 +98,7 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
         try {
           await vocabApi.markAsLearned(vocab.id);
         } catch {
-          // ignore if already learned
+          // ignore
         }
       }
 
@@ -132,45 +122,45 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-150">
       <div
-        className="bg-white rounded-2xl shadow-2xl border border-[#E8E4DC] w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-150"
+        className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-[#ECE7DC] flex items-center justify-between bg-[#FAF8F5]">
+        <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="min-w-0 pr-2">
-            <h3 className="font-serif text-lg font-bold text-[#16201B] truncate">
-              Lưu vào bộ từ cá nhân
+            <h3 className="text-lg font-extrabold text-slate-950 truncate tracking-tight">
+              Lưu vào Bộ Sưu Tập Cá Nhân
             </h3>
-            <p className="text-xs text-[#6C726E] mt-0.5 truncate">
-              Từ: <strong className="text-[#195646] font-serif text-sm">{vocab?.word}</strong>
+            <p className="text-xs text-slate-500 mt-0.5 truncate">
+              Thuật ngữ: <strong className="text-blue-600 font-bold">{vocab?.word}</strong>
               {vocab?.meaning_vi ? ` — ${vocab.meaning_vi}` : ''}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl hover:bg-[#EBE7DF] text-[#787E7B] transition-colors cursor-pointer"
+            className="p-2 rounded-xl hover:bg-slate-200 text-slate-500 transition-colors cursor-pointer"
           >
             <HiX className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-4 sm:p-5 space-y-4 max-h-[60vh] overflow-y-auto">
+        <div className="p-5 space-y-4 max-h-[60vh] overflow-y-auto">
           {isLoading ? (
-            <div className="py-8 flex flex-col items-center justify-center gap-2 text-xs text-[#7B827E]">
-              <div className="w-5 h-5 border-2 border-[#195646] border-t-transparent rounded-full animate-spin" />
-              <span>Đang tải các bộ từ...</span>
+            <div className="py-8 flex flex-col items-center justify-center gap-2 text-xs text-slate-500">
+              <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+              <span>Đang tải các bộ sưu tập...</span>
             </div>
           ) : (
             <>
               {/* Danh sách các bộ từ */}
               <div className="space-y-2">
                 {lists.length === 0 ? (
-                  <div className="text-center py-6 px-4 bg-[#FAF8F5] rounded-xl border border-dashed border-[#DFD9CD] text-xs text-[#7B827E] space-y-2">
-                    <HiOutlineFolder className="w-8 h-8 text-[#A4AAA6] mx-auto" />
-                    <p>Bạn chưa có danh sách từ nào. Hãy tạo danh sách đầu tiên!</p>
+                  <div className="text-center py-8 px-4 bg-slate-50 rounded-2xl border border-dashed border-slate-300 text-xs text-slate-500 space-y-2">
+                    <HiOutlineFolder className="w-8 h-8 text-slate-400 mx-auto" />
+                    <p>Bạn chưa có danh sách từ nào. Hãy tạo bộ sưu tập đầu tiên!</p>
                   </div>
                 ) : (
                   lists.map((list) => {
@@ -178,10 +168,10 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
                     return (
                       <label
                         key={list.id}
-                        className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
+                        className={`flex items-center justify-between p-3.5 rounded-2xl border transition-all cursor-pointer ${
                           isChecked
-                            ? 'bg-[#F0F7F4] border-[#195646] shadow-xs'
-                            : 'bg-white border-[#E8E4DC] hover:border-[#CCD5D0] hover:bg-[#FAF8F5]'
+                            ? 'bg-blue-50/70 border-blue-400 shadow-xs'
+                            : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                         }`}
                       >
                         <div className="flex items-center gap-3 min-w-0 pr-2">
@@ -189,21 +179,21 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
                             type="checkbox"
                             checked={isChecked}
                             onChange={() => handleToggleList(list.id)}
-                            className="w-4 h-4 rounded text-[#195646] focus:ring-[#195646] border-[#CCD5D0] cursor-pointer"
+                            className="w-4 h-4 rounded text-blue-600 focus:ring-blue-600 border-slate-300 cursor-pointer"
                           />
                           <div className="min-w-0">
-                            <p className="text-sm font-semibold text-[#16201B] truncate">
+                            <p className="text-sm font-bold text-slate-900 truncate">
                               {list.name}
                             </p>
                             {list.description && (
-                              <p className="text-xs text-[#7B827E] truncate">
+                              <p className="text-xs text-slate-500 truncate">
                                 {list.description}
                               </p>
                             )}
                           </div>
                         </div>
 
-                        <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#FAF5EC] text-[#8C6D3B] border border-[#EFE5D0] flex-shrink-0">
+                        <span className="font-mono text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
                           {list.vocab_count || 0} từ
                         </span>
                       </label>
@@ -214,30 +204,30 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
 
               {/* Khu vực tạo bộ từ mới nhanh */}
               {showCreateInput ? (
-                <form onSubmit={handleCreateNewList} className="space-y-2 pt-2 border-t border-[#ECE7DC]">
-                  <label className="text-xs font-semibold text-[#16201B]">
+                <form onSubmit={handleCreateNewList} className="space-y-2 pt-3 border-t border-slate-100">
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                     Tên bộ danh sách mới:
                   </label>
                   <div className="flex gap-2">
                     <input
                       type="text"
                       autoFocus
-                      placeholder="Ví dụ: Từ vựng IELTS khó, Unit 1..."
+                      placeholder="Ví dụ: Kỹ thuật Phục Hưng, Gốm Bát Tràng..."
                       value={newListName}
                       onChange={(e) => setNewListName(e.target.value)}
-                      className="input py-1.5 px-3 text-xs flex-1 border-[#CCD5D0] focus:border-[#195646]"
+                      className="input py-2 px-3 text-xs flex-1"
                     />
                     <button
                       type="submit"
                       disabled={isCreatingList || !newListName.trim()}
-                      className="btn btn-primary py-1.5 px-3 text-xs flex-shrink-0 cursor-pointer disabled:opacity-50"
+                      className="btn btn-primary py-2 px-4 text-xs cursor-pointer disabled:opacity-50 rounded-xl"
                     >
                       {isCreatingList ? 'Đang tạo...' : 'Tạo'}
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowCreateInput(false)}
-                      className="btn btn-outline py-1.5 px-2.5 text-xs text-[#7B827E] cursor-pointer"
+                      className="btn btn-secondary py-2 px-3 text-xs text-slate-600 cursor-pointer rounded-xl"
                     >
                       Hủy
                     </button>
@@ -247,7 +237,7 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
                 <button
                   type="button"
                   onClick={() => setShowCreateInput(true)}
-                  className="w-full py-2 px-3 border border-dashed border-[#B8D4C8] hover:border-[#195646] rounded-xl text-xs font-semibold text-[#195646] hover:bg-[#F0F7F4] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full py-2.5 px-3 border border-dashed border-blue-300 hover:border-blue-500 rounded-2xl text-xs font-bold text-blue-600 hover:bg-blue-50 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <HiPlus className="w-4 h-4" />
                   <span>+ Tạo danh sách mới</span>
@@ -258,16 +248,16 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 sm:p-5 border-t border-[#ECE7DC] bg-[#FAF8F5] flex items-center justify-between gap-3">
-          <span className="text-xs text-[#7B827E]">
-            Đã chọn: <strong className="text-[#195646]">{selectedListIds.length}</strong> danh sách
+        <div className="p-5 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-3">
+          <span className="text-xs text-slate-500 font-mono">
+            Đã chọn: <strong className="text-blue-600 font-bold">{selectedListIds.length}</strong> bộ
           </span>
 
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="btn btn-outline py-1.5 px-3 text-xs cursor-pointer"
+              className="btn btn-secondary py-2 px-4 text-xs cursor-pointer rounded-xl"
             >
               Đóng
             </button>
@@ -275,7 +265,7 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
               type="button"
               onClick={handleSave}
               disabled={isSaving || isLoading}
-              className="btn btn-primary py-1.5 px-4 text-xs cursor-pointer disabled:opacity-50"
+              className="btn btn-primary py-2 px-5 text-xs cursor-pointer disabled:opacity-50 rounded-xl"
             >
               {isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
             </button>

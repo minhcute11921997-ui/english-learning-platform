@@ -1,45 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
   <defs>
-    <linearGradient id="grad_14" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#831843"/>
-      <stop offset="100%" stop-color="#be185d"/>
+    <linearGradient id="bg_brushstroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="100%" stop-color="#0f172a"/>
     </linearGradient>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-opacity="0.3"/>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
+    <filter id="drop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+    <clipPath id="canvasClip">
+      <rect x="24" y="24" width="452" height="452" rx="20"/>
+    </clipPath>
   </defs>
 
-  <!-- Background Canvas -->
-  <rect width="400" height="400" rx="28" fill="url(#grad_14)"/>
-  
-  <!-- Subtle Canvas Texture / Geometric Motif -->
-  <circle cx="50" cy="50" r="120" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
-  <circle cx="350" cy="350" r="140" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
-  <rect x="20" y="20" width="360" height="360" rx="20" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-dasharray="8,6"/>
+  <!-- Outer Exhibition Bezel -->
+  <rect width="500" height="500" rx="24" fill="#0c1017"/>
+  <rect x="20" y="20" width="460" height="460" rx="22" fill="none" stroke="#222b3d" stroke-width="1.5"/>
 
-  <!-- Category Pill Badge -->
-  <g transform="translate(200, 52)">
-    <rect x="-85" y="-14" width="170" height="28" rx="14" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-    <text x="0" y="4" font-family="'Cinzel', 'Times New Roman', Georgia, serif" font-size="10" font-weight="bold" fill="#fbcfe8" text-anchor="middle" letter-spacing="2">TYPES OF PAINTINGS</text>
-  </g>
-
-  <!-- Central Discipline Illustration -->
-  <g filter="url(#shadow)">
+  <!-- Main Artwork Canvas with Clipping -->
+  <g clip-path="url(#canvasClip)">
+    <rect x="24" y="24" width="452" height="452" fill="url(#bg_brushstroke)"/>
     
-      <!-- Paint palette and brush -->
-      <path d="M160 220 C140 180, 180 140, 220 140 C260 140, 290 170, 290 200 C290 230, 260 250, 230 250 C210 250, 200 240, 190 240 C180 240, 170 250, 160 250 C140 250, 140 230, 160 220 Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="4" stroke-linejoin="round"/>
-      <circle cx="200" cy="170" r="12" fill="#ef4444"/>
-      <circle cx="240" cy="170" r="12" fill="#3b82f6"/>
-      <circle cx="260" cy="205" r="12" fill="#eab308"/>
-      <line x1="140" y1="270" x2="260" y2="150" stroke="#fef08a" stroke-width="8" stroke-linecap="round"/>
-      <polygon points="260,150 275,135 285,145 270,160" fill="#f59e0b"/>
+      <!-- Monumental High-Velocity Calligraphic Brushstroke -->
+      <path d="M60 380 Q180 120 340 160 T440 110" stroke="#f43f5e" stroke-width="48" fill="none" stroke-linecap="round" filter="url(#softGlow)"/>
+      <path d="M80 390 Q190 140 330 170 T420 125" stroke="#ffffff" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <path d="M120 410 Q220 200 360 210" stroke="#fda4af" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <!-- Bristle flyaway flecks -->
+      <circle cx="380" cy="90" r="6" fill="#f43f5e"/>
+      <circle cx="430" cy="80" r="4" fill="#f43f5e"/>
     
+    <!-- Inner Gallery Vignette / Lighting Accent -->
+    <rect x="24" y="24" width="452" height="452" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
   </g>
-
-  <!-- English Vocabulary Title -->
-  <text x="200" y="325" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="28" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1">BRUSHSTROKE</text>
-
-  <!-- Vietnamese Meaning & Reference Tag -->
-  <text x="200" y="352" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="14" font-weight="500" fill="rgba(255,255,255,0.92)" text-anchor="middle">nét cọ, nét bút vẽ</text>
-  <text x="200" y="374" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="11" font-weight="400" fill="#fbcfe8" text-anchor="middle" font-style="italic">Ref: Tate Art Glossary</text>
 </svg>

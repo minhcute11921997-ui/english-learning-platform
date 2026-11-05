@@ -84,84 +84,97 @@ export default function TopicsPage() {
 
   if (isLoading) {
     return (
-      <div className="py-20 flex justify-center">
-        <LoadingSpinner size="lg" />
+      <div className="py-24 flex justify-center">
+        <LoadingSpinner size="lg" text="Đang chuẩn bị không gian triển lãm..." />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Header & Tabs */}
-      <div className="border-b border-[#E8E4DC] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-7 pb-14">
+      {/* Header & Contemporary Tab Switcher */}
+      <div className="border-b border-slate-200 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#16201B]">
-            Học Từ Vựng
+          <span className="font-mono text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
+            Gallery Collections
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Chuyên đề Thuật ngữ Mỹ thuật
           </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Học sâu các thuật ngữ tiếng Anh mỹ thuật &amp; kỹ nghệ thủ công qua tranh trực quan
+          </p>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex items-center gap-1.5 p-1 bg-[#F0EDE6] rounded-xl self-start sm:self-auto">
+        <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-2xl self-start sm:self-auto border border-slate-200/80">
           <button
             type="button"
             onClick={() => setActiveTab('topics')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'topics'
-                ? 'bg-white text-[#195646] shadow-xs'
-                : 'text-[#6C726E] hover:text-[#16201B]'
+                ? 'bg-white text-blue-600 shadow-sm shadow-slate-900/5'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            Chủ đề hệ thống
+            Chủ đề Hệ thống
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('my-lists')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'my-lists'
-                ? 'bg-white text-[#195646] shadow-xs'
-                : 'text-[#6C726E] hover:text-[#16201B]'
+                ? 'bg-white text-blue-600 shadow-sm shadow-slate-900/5'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            Sổ từ của tôi
+            Sổ từ Cá nhân ({myLists.length})
           </button>
         </div>
       </div>
 
       {/* TAB 1: CHỦ ĐỀ HỆ THỐNG */}
       {activeTab === 'topics' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {topics.map((t) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {topics.map((t, idx) => {
             const IconComponent = iconMap[t.icon] || HiOutlineBookOpen;
             return (
               <div
                 key={t.id}
-                className="card card-hover p-5 border-[#E8E4DC] flex flex-col justify-between group"
+                className="card card-hover p-6 border-slate-200/90 rounded-3xl flex flex-col justify-between group bg-white shadow-sm"
               >
                 <div>
                   {/* Header thẻ: Icon & Số lượng từ */}
-                  <div className="flex items-center justify-between mb-3.5">
-                    <div className="w-10 h-10 rounded-xl bg-[#F0F7F4] text-[#195646] flex items-center justify-center group-hover:scale-105 transition-transform">
-                      <IconComponent className="w-5 h-5" />
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-105 transition-transform border border-blue-100 shadow-xs">
+                      <IconComponent className="w-6 h-6" />
                     </div>
-                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#F4F1EA] text-[#69706C]">
-                      {t.vocab_count} từ
+                    <span className="font-mono text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">
+                      {t.vocab_count} Thuật ngữ
                     </span>
                   </div>
 
                   {/* Tên chủ đề */}
-                  <h2 className="font-serif text-lg font-bold text-[#16201B] group-hover:text-[#195646] transition-colors leading-snug">
+                  <span className="font-mono text-[10px] font-bold text-blue-600 uppercase tracking-wider block mb-1">
+                    Exhibition Hall 0{idx + 1}
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug tracking-tight">
                     {t.name_vi}
                   </h2>
+                  <p className="font-mono text-xs text-slate-400 mt-0.5">({t.name})</p>
+                  <p className="text-xs text-slate-600 mt-3 line-clamp-2 leading-relaxed">
+                    {t.description}
+                  </p>
 
-                  {/* Thanh tiến độ học gọn gàng */}
-                  <div className="mt-4 pt-3 border-t border-[#F2EEE6]">
-                    <div className="flex justify-between text-[11px] font-semibold text-[#7C827E] mb-1.5">
-                      <span>Tiến độ: {t.learned_count}/{t.vocab_count}</span>
-                      <span>{t.progress_percent}%</span>
+                  {/* Thanh tiến độ học */}
+                  <div className="mt-5 pt-4 border-t border-slate-100">
+                    <div className="flex justify-between text-xs font-bold text-slate-600 mb-2">
+                      <span>Tiến độ: {t.learned_count} / {t.vocab_count} từ</span>
+                      <span className="font-mono text-blue-600">{t.progress_percent}%</span>
                     </div>
-                    <div className="h-1.5 bg-[#EFECE5] rounded-full overflow-hidden">
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[#195646] rounded-full transition-all duration-300"
+                        className="h-full bg-blue-600 rounded-full transition-all duration-500 shadow-xs"
                         style={{ width: `${t.progress_percent}%` }}
                       />
                     </div>
@@ -169,19 +182,20 @@ export default function TopicsPage() {
                 </div>
 
                 {/* Nút hành động */}
-                <div className="mt-5 pt-3 border-t border-[#F2EEE6] flex items-center justify-between gap-2">
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
                   <Link
                     to={`/topics/${t.id}/flashcards`}
-                    className="text-xs font-semibold text-[#195646] hover:text-[#123F33] hover:underline"
+                    className="text-xs font-bold text-slate-700 hover:text-blue-600 hover:underline flex items-center gap-1.5"
                   >
-                    Flashcard
+                    <HiOutlineSparkles className="w-4 h-4 text-blue-600" />
+                    Thẻ Flashcard 3D
                   </Link>
 
                   <Link
                     to={`/topics/${t.id}`}
-                    className="btn btn-primary py-1.5 px-3 text-xs gap-1 flex items-center"
+                    className="btn btn-primary py-2 px-4 text-xs gap-1.5 flex items-center rounded-xl shadow-xs"
                   >
-                    <span>Vào học</span>
+                    <span>Vào phòng triển lãm</span>
                     <HiOutlineArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
@@ -193,70 +207,74 @@ export default function TopicsPage() {
 
       {/* TAB 2: SỔ TỪ CỦA TÔI (BỘ TỪ TỰ TẠO) */}
       {activeTab === 'my-lists' && (
-        <div className="space-y-5">
+        <div className="space-y-6">
           {/* Action bar for My Lists */}
-          <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-[#E8E4DC]">
+          <div className="flex items-center justify-between bg-white p-5 rounded-3xl border border-slate-200/90 shadow-sm">
             <div>
-              <h2 className="font-serif text-base font-bold text-[#16201B]">
-                Các bộ từ vựng cá nhân
+              <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">
+                Bộ sưu tập thuật ngữ cá nhân
               </h2>
+              <p className="text-xs text-slate-500">Tự do phân loại từ vựng theo dự án hoặc trường phái yêu thích</p>
             </div>
             <button
               type="button"
               onClick={() => setShowCreateModal(true)}
-              className="btn btn-primary py-2 px-3.5 text-xs gap-1.5 flex items-center flex-shrink-0 cursor-pointer"
+              className="btn btn-primary py-2.5 px-4 text-xs gap-2 flex items-center cursor-pointer rounded-xl"
             >
               <HiOutlinePlus className="w-4 h-4" />
-              <span>+ Tạo bộ từ mới</span>
+              <span>Tạo bộ từ mới</span>
             </button>
           </div>
 
           {/* Grid danh sách bộ từ cá nhân */}
           {myLists.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {myLists.map((list) => {
                 const count = parseInt(list.vocab_count || 0);
                 return (
                   <div
                     key={list.id}
-                    className="card card-hover p-5 border-[#E8E4DC] flex flex-col justify-between group bg-white"
+                    className="card card-hover p-6 border-slate-200/90 rounded-3xl flex flex-col justify-between group bg-white shadow-sm"
                   >
                     <div>
                       {/* Top icon and count */}
-                      <div className="flex items-center justify-between mb-3.5">
-                        <div className="w-10 h-10 rounded-xl bg-[#FAF5EC] text-[#8C6D3B] flex items-center justify-center group-hover:scale-105 transition-transform border border-[#EFE5D0]">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-105 transition-transform border border-blue-100">
                           <HiOutlineFolder className="w-5 h-5" />
                         </div>
-                        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#FAF5EC] text-[#8C6D3B] border border-[#EFE5D0]">
-                          {count} từ vựng
+                        <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                          {count} từ
                         </span>
                       </div>
 
                       {/* Title */}
                       <Link to={`/vocab-lists/${list.id}`}>
-                        <h3 className="font-serif text-lg font-bold text-[#16201B] group-hover:text-[#195646] transition-colors leading-snug">
+                        <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
                           {list.name}
                         </h3>
                       </Link>
+                      {list.description && (
+                        <p className="text-xs text-slate-500 mt-1 line-clamp-2">{list.description}</p>
+                      )}
                     </div>
 
                     {/* Action buttons */}
-                    <div className="mt-5 pt-3 border-t border-[#F2EEE6] flex items-center justify-between gap-2">
+                    <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
                       {count > 0 ? (
                         <Link
                           to={`/vocab-lists/${list.id}/flashcards`}
-                          className="text-xs font-semibold text-[#195646] hover:text-[#123F33] hover:underline flex items-center gap-1"
+                          className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1.5"
                         >
-                          <HiOutlineBookOpen className="w-3.5 h-3.5" />
-                          <span>Luyện Flashcard</span>
+                          <HiOutlineBookOpen className="w-4 h-4" />
+                          <span>Flashcard</span>
                         </Link>
                       ) : (
-                        <span className="text-xs text-[#A0A6A2] italic">Chưa có từ</span>
+                        <span className="text-xs text-slate-400 italic font-mono">Chưa có từ</span>
                       )}
 
                       <Link
                         to={`/vocab-lists/${list.id}`}
-                        className="btn btn-outline py-1.5 px-3 text-xs gap-1 flex items-center"
+                        className="btn btn-secondary py-1.5 px-3.5 text-xs gap-1.5 flex items-center rounded-xl"
                       >
                         <span>Chi tiết</span>
                         <HiOutlineArrowRight className="w-3.5 h-3.5" />
@@ -268,21 +286,21 @@ export default function TopicsPage() {
             </div>
           ) : (
             /* Empty state for custom lists */
-            <div className="card p-12 text-center border-dashed border-[#DFD9CD] bg-[#FAF8F5] space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#EBE7DF] text-[#6C726E] flex items-center justify-center mx-auto">
-                <HiOutlineFolderPlus className="w-6 h-6" />
+            <div className="card p-12 text-center border-dashed border-slate-300 bg-slate-50 rounded-3xl space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto border border-blue-100">
+                <HiOutlineFolderPlus className="w-7 h-7" />
               </div>
-              <h3 className="font-serif text-lg font-bold text-[#16201B]">
-                Bạn chưa có bộ danh sách từ nào
+              <h3 className="text-lg font-extrabold text-slate-900">
+                Bạn chưa có bộ sưu tập từ nào
               </h3>
-              <p className="text-xs text-[#6C726E] max-w-md mx-auto leading-relaxed">
-                Hãy tạo bộ danh sách đầu tiên (ví dụ: &ldquo;Từ vựng IELTS khó&rdquo;, &ldquo;Từ vựng hay gặp&rdquo;...) để tự gom từ và ôn tập theo cách của riêng bạn.
+              <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                Tạo danh sách đầu tiên (ví dụ: &ldquo;Sơn dầu Phục hưng&rdquo;, &ldquo;Gốm sứ Cổ truyền&rdquo;...) để lưu và ôn tập theo ý muốn.
               </p>
               <div className="pt-2">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(true)}
-                  className="btn btn-primary text-xs py-2 px-4 cursor-pointer"
+                  className="btn btn-primary text-xs py-2.5 px-5 rounded-xl cursor-pointer"
                 >
                   + Tạo bộ từ đầu tiên
                 </button>
@@ -294,61 +312,61 @@ export default function TopicsPage() {
 
       {/* MODAL TẠO BỘ TỪ MỚI */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
           <div
-            className="bg-white rounded-2xl shadow-2xl border border-[#E8E4DC] w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-150"
+            className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-5 border-b border-[#ECE7DC] bg-[#FAF8F5]">
-              <h3 className="font-serif text-lg font-bold text-[#16201B]">
-                Tạo bộ danh sách từ mới
+            <div className="p-6 border-b border-slate-100 bg-slate-50">
+              <h3 className="text-lg font-extrabold text-slate-900">
+                Tạo bộ sưu tập từ mới
               </h3>
-              <p className="text-xs text-[#6C726E] mt-0.5">
-                Đặt tên danh sách theo mục đích ôn tập của bạn.
+              <p className="text-xs text-slate-500 mt-1">
+                Đặt tên danh sách theo mục đích hoặc trường phái nghệ thuật.
               </p>
             </div>
 
-            <form onSubmit={handleCreateList} className="p-5 space-y-4">
+            <form onSubmit={handleCreateList} className="p-6 space-y-4">
               <div>
-                <label className="text-xs font-semibold text-[#16201B] block mb-1">
-                  Tên danh sách: <span className="text-red-500">*</span>
+                <label className="text-xs font-bold text-slate-700 block mb-1.5 uppercase tracking-wider">
+                  Tên bộ sưu tập <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
                   autoFocus
                   required
-                  placeholder="Ví dụ: Hội họa Phục hưng, Gốm sứ Bát Tràng, Thuật ngữ điêu khắc..."
+                  placeholder="Ví dụ: Hội họa Trừu tượng, Kỹ nghệ Đúc đồng..."
                   value={newListName}
                   onChange={(e) => setNewListName(e.target.value)}
-                  className="input py-2 px-3 text-xs w-full border-[#CCD5D0] focus:border-[#195646]"
+                  className="input py-2.5 px-3.5 text-xs w-full"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#16201B] block mb-1">
-                  Mô tả (tùy chọn):
+                <label className="text-xs font-bold text-slate-700 block mb-1.5 uppercase tracking-wider">
+                  Mô tả (tùy chọn)
                 </label>
                 <textarea
-                  rows="2"
-                  placeholder="Ghi chú mục đích của bộ từ này..."
+                  rows="3"
+                  placeholder="Ghi chú về nhóm từ vựng này..."
                   value={newListDesc}
                   onChange={(e) => setNewListDesc(e.target.value)}
-                  className="input py-2 px-3 text-xs w-full border-[#CCD5D0] focus:border-[#195646]"
+                  className="input py-2.5 px-3.5 text-xs w-full"
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#ECE7DC]">
+              <div className="pt-3 flex items-center justify-end gap-2.5 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="btn btn-outline py-1.5 px-3 text-xs cursor-pointer"
+                  className="btn btn-secondary py-2 px-4 text-xs cursor-pointer rounded-xl"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={isCreating || !newListName.trim()}
-                  className="btn btn-primary py-1.5 px-4 text-xs cursor-pointer disabled:opacity-50"
+                  className="btn btn-primary py-2 px-5 text-xs cursor-pointer disabled:opacity-50 rounded-xl"
                 >
                   {isCreating ? 'Đang tạo...' : 'Tạo bộ từ'}
                 </button>

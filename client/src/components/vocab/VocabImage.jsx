@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
+import { HiOutlineMagnifyingGlassPlus, HiXMark } from 'react-icons/hi2';
 
 const FALLBACK_SRC = '/images/vocab/_placeholder.svg';
 
 /**
  * Component hiển thị hình ảnh minh họa thuật ngữ Mỹ thuật & Mỹ nghệ
- * Có cơ chế tự động xử lý lỗi, skeleton loading và fallback ảnh chuẩn
+ * Phong cách Phòng Trưng Bày Đương Đại (Contemporary Art Gallery Matting)
  */
 export default function VocabImage({
   src,
-  alt = 'Minh họa mỹ thuật',
+  alt = 'Tác phẩm mỹ thuật',
   className = '',
   imgClassName = '',
   showCaption = false,
@@ -19,7 +20,6 @@ export default function VocabImage({
   const [isLoading, setIsLoading] = useState(true);
   const [isZoomed, setIsZoomed] = useState(false);
 
-  // Reset trạng thái lỗi & loading khi src thay đổi (ví dụ khi lật qua từ mới)
   useEffect(() => {
     setHasError(false);
     setIsLoading(true);
@@ -29,10 +29,10 @@ export default function VocabImage({
 
   return (
     <>
-      <div className={`relative overflow-hidden bg-stone-50 select-none ${className}`}>
+      <div className={`relative overflow-hidden group select-none ${className}`}>
         {/* Loading skeleton */}
         {isLoading && (
-          <div className="absolute inset-0 bg-gradient-to-r from-stone-100 via-stone-200 to-stone-100 animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 animate-pulse" />
         )}
 
         <img
@@ -47,40 +47,52 @@ export default function VocabImage({
           onClick={() => {
             if (enableZoom && !hasError) setIsZoomed(true);
           }}
-          className={`w-full h-full object-contain transition-transform duration-300 ${
-            enableZoom && !hasError ? 'cursor-zoom-in hover:scale-105' : ''
+          className={`w-full h-full object-contain transition-all duration-300 ${
+            enableZoom && !hasError ? 'cursor-zoom-in group-hover:scale-[1.03]' : ''
           } ${imgClassName}`}
         />
 
+        {/* Hover zoom indicator */}
+        {enableZoom && !hasError && !isLoading && (
+          <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-slate-900/80 backdrop-blur-xs text-white p-1.5 rounded-lg shadow-sm">
+            <HiOutlineMagnifyingGlassPlus className="w-4 h-4" />
+          </div>
+        )}
+
         {showCaption && caption && (
-          <div className="absolute bottom-0 inset-x-0 bg-stone-900/60 backdrop-blur-xs text-[11px] text-white/90 px-2.5 py-1 truncate text-center">
+          <div className="absolute bottom-0 inset-x-0 bg-slate-900/80 backdrop-blur-xs text-[11px] font-mono text-slate-200 px-3 py-1.5 truncate text-center">
             {caption}
           </div>
         )}
       </div>
 
-      {/* Modal Zoom preview */}
+      {/* Darkroom Exhibition Modal */}
       {isZoomed && (
         <div
-          className="fixed inset-0 z-50 bg-stone-950/80 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
           onClick={() => setIsZoomed(false)}
         >
           <div
-            className="relative max-w-2xl max-h-[85vh] bg-white rounded-2xl p-4 shadow-2xl overflow-hidden"
+            className="relative max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setIsZoomed(false)}
-              className="absolute top-3 right-3 p-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 transition-colors"
-              title="Đóng xem lớn"
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
+              title="Đóng"
             >
-              ✕
+              <HiXMark className="w-5 h-5" />
             </button>
-            <div className="max-h-[70vh] flex items-center justify-center overflow-hidden rounded-xl bg-stone-50 p-2">
-              <img src={finalSrc} alt={alt} className="max-w-full max-h-[65vh] object-contain" />
+            <div className="flex items-center justify-center p-2 rounded-2xl bg-black/40 overflow-hidden">
+              <img src={finalSrc} alt={alt} className="max-w-full max-h-[70vh] object-contain rounded-xl" />
             </div>
             {alt && (
-              <p className="mt-3 text-sm text-stone-700 font-medium text-center">{alt}</p>
+              <div className="mt-4 text-center">
+                <span className="inline-block px-2.5 py-0.5 rounded-md bg-blue-500/20 text-blue-400 font-mono text-[11px] uppercase tracking-wider mb-1">
+                  Exhibition Preview
+                </span>
+                <p className="text-sm text-slate-200 font-medium">{alt}</p>
+              </div>
             )}
           </div>
         </div>

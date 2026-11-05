@@ -1,10 +1,11 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { HiUser, HiLogout, HiMenu, HiX } from 'react-icons/hi';
+import { HiSparkles, HiSquares2X2 } from 'react-icons/hi2';
 import { useState } from 'react';
 import useAuthStore from '../../stores/authStore';
 
 /**
- * Header navigation component - Fine Arts & Crafts Studio Design
+ * Header navigation component - Contemporary Art Studio Architecture
  */
 export default function Header() {
   const { user, isAuthenticated, logout } = useAuthStore();
@@ -17,41 +18,41 @@ export default function Header() {
   };
 
   const navLinkClass = ({ isActive }) =>
-    `text-sm font-medium px-3.5 py-1.5 rounded-xl transition-all ${
+    `text-sm font-semibold px-3.5 py-1.5 rounded-xl transition-all duration-200 ${
       isActive
-        ? 'text-amber-950 bg-amber-100/70 font-bold border border-amber-200/80 shadow-2xs'
-        : 'text-stone-600 hover:text-amber-900 hover:bg-stone-100/80'
+        ? 'text-white bg-blue-600 shadow-sm shadow-blue-600/30'
+        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
     }`;
 
   const mobileNavLinkClass = ({ isActive }) =>
-    `text-sm font-medium px-3.5 py-2 rounded-xl transition-all ${
+    `text-sm font-semibold px-4 py-2.5 rounded-xl transition-all duration-200 ${
       isActive
-        ? 'text-amber-950 bg-amber-100/70 font-bold border border-amber-200/80'
-        : 'text-stone-600 hover:text-amber-900 hover:bg-stone-100/80'
+        ? 'text-white bg-blue-600'
+        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
     }`;
 
   return (
-    <header className="bg-white/95 backdrop-blur-md border-b border-stone-200 sticky top-0 z-50">
+    <header className="bg-white/90 backdrop-blur-xl border-b border-slate-200/90 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-amber-700 text-white flex items-center justify-center font-serif text-lg font-bold shadow-xs transition-transform group-hover:scale-105">
-              🎨
+          {/* Brand Logo - Modern Gallery Identity */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm shadow-blue-500/30 transition-transform group-hover:scale-105">
+              <HiSparkles className="w-5 h-5 text-blue-200" />
             </div>
             <div className="flex flex-col">
-              <span className="font-serif text-xl font-extrabold tracking-tight text-stone-900 leading-tight">
-                EngLearn
+              <span className="font-extrabold text-xl tracking-tight text-slate-950 leading-tight">
+                EngLearn<span className="text-blue-600">.art</span>
               </span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-amber-800 -mt-0.5">
-                Fine Arts &amp; Crafts
+              <span className="text-[10px] uppercase font-mono font-bold tracking-wider text-slate-500 -mt-0.5">
+                Contemporary Atelier
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           {isAuthenticated && (
-            <nav className="hidden md:flex items-center gap-1.5">
+            <nav className="hidden md:flex items-center gap-2">
               <NavLink to="/dashboard" className={navLinkClass}>Bảng điều khiển</NavLink>
               <NavLink to="/topics" className={navLinkClass}>Chủ đề Mỹ thuật</NavLink>
               <NavLink to="/review" className={navLinkClass}>Ôn tập hôm nay (SM-2)</NavLink>
@@ -59,10 +60,10 @@ export default function Header() {
                 <NavLink
                   to="/admin"
                   className={({ isActive }) =>
-                    `text-xs font-semibold px-2.5 py-1 rounded-full border transition-all ${
+                    `text-xs font-bold px-3 py-1 rounded-full border transition-all ${
                       isActive
-                        ? 'bg-amber-100 text-amber-900 border-amber-300 font-bold'
-                        : 'bg-stone-100 text-stone-700 border-stone-200 hover:bg-stone-200'
+                        ? 'bg-blue-50 text-blue-700 border-blue-300'
+                        : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
                     }`
                   }
                 >
@@ -78,29 +79,29 @@ export default function Header() {
               <div className="flex items-center gap-2">
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-stone-100 text-stone-800 transition-colors"
+                  className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl hover:bg-slate-100 text-slate-800 transition-colors border border-transparent hover:border-slate-200"
                 >
-                  <div className="w-7 h-7 rounded-full bg-amber-100 text-amber-900 font-bold text-xs flex items-center justify-center border border-amber-200">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center border border-blue-200">
                     {(user?.full_name || user?.username || 'U')[0].toUpperCase()}
                   </div>
-                  <span className="hidden sm:inline text-xs font-semibold max-w-[120px] truncate">
+                  <span className="hidden sm:inline text-xs font-semibold text-slate-800 max-w-[120px] truncate">
                     {user?.full_name || user?.username}
                   </span>
                 </Link>
                 <button
                   onClick={handleLogout}
                   title="Đăng xuất"
-                  className="p-2 text-stone-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
+                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
                 >
-                  <HiLogout className="h-4.5 w-4.5" />
+                  <HiLogout className="h-5 w-5" />
                 </button>
               </div>
             ) : (
               <div className="flex items-center gap-2.5">
-                <Link to="/login" className="btn btn-secondary text-xs px-3.5 py-2 rounded-xl">
+                <Link to="/login" className="btn btn-secondary text-xs px-4 py-2 rounded-xl">
                   Đăng nhập
                 </Link>
-                <Link to="/register" className="btn btn-primary text-xs px-3.5 py-2 rounded-xl">
+                <Link to="/register" className="btn btn-primary text-xs px-4 py-2 rounded-xl">
                   Bắt đầu học
                 </Link>
               </div>
@@ -108,35 +109,47 @@ export default function Header() {
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden p-2 text-stone-600 hover:bg-stone-100 rounded-xl"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle Navigation Menu"
+              className="md:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
             >
               {mobileMenuOpen ? <HiX className="h-6 w-6" /> : <HiMenu className="h-6 w-6" />}
             </button>
           </div>
         </div>
-
-        {/* Mobile Navigation Dropdown */}
-        {mobileMenuOpen && isAuthenticated && (
-          <nav className="md:hidden py-3 border-t border-stone-200 flex flex-col gap-1">
-            <NavLink to="/dashboard" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>
-              Bảng điều khiển
-            </NavLink>
-            <NavLink to="/topics" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>
-              Chủ đề Mỹ thuật
-            </NavLink>
-            <NavLink to="/review" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>
-              Ôn tập hôm nay (SM-2)
-            </NavLink>
-            {user?.role === 'admin' && (
-              <NavLink to="/admin" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>
-                Quản trị hệ thống
-              </NavLink>
-            )}
-          </nav>
-        )}
       </div>
+
+      {/* Mobile menu dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-slate-200 bg-white/95 px-4 pt-3 pb-4 space-y-1.5">
+          {isAuthenticated ? (
+            <>
+              <NavLink to="/dashboard" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>
+                Bảng điều khiển
+              </NavLink>
+              <NavLink to="/topics" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>
+                Chủ đề Mỹ thuật
+              </NavLink>
+              <NavLink to="/review" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>
+                Ôn tập hôm nay (SM-2)
+              </NavLink>
+              {user?.role === 'admin' && (
+                <NavLink to="/admin" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>
+                  Quản trị hệ thống
+                </NavLink>
+              )}
+            </>
+          ) : (
+            <div className="grid grid-cols-2 gap-2 pt-2">
+              <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="btn btn-secondary text-center text-xs">
+                Đăng nhập
+              </Link>
+              <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary text-center text-xs">
+                Đăng ký
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </header>
   );
 }
