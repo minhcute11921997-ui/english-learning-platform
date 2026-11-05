@@ -58,7 +58,7 @@ class SrsService {
   /**
    * Cập nhật tiến độ học từ vựng khi ôn tập
    */
-  static async recordReviewAnswer(userId, vocabularyId, quality, source = 'personal', groupVocabSetId = null) {
+  static async recordReviewAnswer(userId, vocabularyId, quality) {
     let progress = await UserVocabProgress.findOne({
       where: { user_id: userId, vocabulary_id: vocabularyId }
     });
@@ -91,7 +91,7 @@ class SrsService {
     await sequelize.transaction(async (t) => {
       await progress.save({ transaction: t });
 
-      // Đánh dấu lịch ôn tập cũ là đã hoàn thành và dọn dẹp các mục cũ không cần thiết
+      // Đánh dấu lịch ôn tập cũ là đã hoàn thành và dọn dẹp các mục cũ
       await ReviewSchedule.destroy({
         where: {
           user_id: userId,
@@ -106,8 +106,7 @@ class SrsService {
         vocabulary_id: vocabularyId,
         scheduled_at: sm2Result.next_review_at,
         is_completed: false,
-        source,
-        group_vocab_set_id: groupVocabSetId
+        source: 'personal'
       }, { transaction: t });
     });
 
@@ -183,7 +182,7 @@ class SrsService {
         {
           model: Vocabulary,
           as: 'vocabulary',
-          attributes: ['id', 'word', 'meaning_vi', 'part_of_speech', 'difficulty']
+          attributes: ['id', 'word', 'meaning_vi', 'part_of_speech', 'difficulty', 'image_url', 'cultural_note', 'related_artist', 'source_ref']
         }
       ],
       order: [['scheduled_at', 'ASC']]

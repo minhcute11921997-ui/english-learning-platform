@@ -1,12 +1,9 @@
 const {
   User,
   Vocabulary,
-  Reading,
-  Group,
-  CommunityPost,
   UserVocabProgress,
-  UserReadingAttempt,
-  ReviewSchedule
+  ReviewSchedule,
+  Topic
 } = require('../models');
 const { Op } = require('sequelize');
 const ApiResponse = require('../utils/apiResponse');
@@ -16,15 +13,11 @@ const getOverviewStats = catchAsync(async (req, res) => {
   const [
     totalUsers,
     totalVocab,
-    totalReadings,
-    totalGroups,
-    totalCommunityPosts
+    totalTopics
   ] = await Promise.all([
     User.count(),
     Vocabulary.count({ where: { is_approved: true } }),
-    Reading.count({ where: { is_approved: true } }),
-    Group.count({ where: { is_active: true } }),
-    CommunityPost.count({ where: { status: 'approved' } })
+    Topic.count()
   ]);
 
   return ApiResponse.success(
@@ -32,9 +25,7 @@ const getOverviewStats = catchAsync(async (req, res) => {
     {
       totalUsers,
       totalVocab,
-      totalReadings,
-      totalGroups,
-      totalCommunityPosts
+      totalTopics
     },
     'Lấy thống kê tổng quan thành công'
   );
@@ -48,8 +39,7 @@ const getMyProgress = catchAsync(async (req, res) => {
     learnedCount,
     masteredCount,
     dueTodayCount,
-    completedReadingsCount,
-    readingAttempts
+    allProgress
   ] = await Promise.all([
     UserVocabProgress.count({ where: { user_id: userId } }),
     UserVocabProgress.count({ where: { user_id: userId, status: 'mastered' } }),
@@ -59,27 +49,20 @@ const getMyProgress = catchAsync(async (req, res) => {
         next_review_at: { [Op.lte]: now }
       }
     }),
-    // Fix: Dùng COUNT DISTINCT thay vì load toàn bộ data vào memory
-    UserReadingAttempt.count({
+    UserVocabProgress.findAll({
       where: { user_id: userId },
-      distinct: true,
-      col: 'reading_id'
-    }),
-    UserReadingAttempt.findAll({
-      where: { user_id: userId },
-      attributes: ['score', 'total_questions']
+      attributes: ['correct_count', 'incorrect_count']
     })
   ]);
 
-  let totalReadingScore = 0;
-  let totalReadingQuestions = 0;
-  readingAttempts.forEach((a) => {
-    totalReadingScore += a.score;
-    totalReadingQuestions += a.total_questions;
+  let totalCorrect = 0;
+  let totalAttempts = 0;
+  allProgress.forEach((p) => {
+    totalCorrect += p.correct_count || 0;
+    totalAttempts += (p.correct_count || 0) + (p.incorrect_count || 0);
   });
 
-  const readingAccuracy =
-    totalReadingQuestions > 0 ? Math.round((totalReadingScore / totalReadingQuestions) * 100) : 0;
+  const vocabAccuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
 
   return ApiResponse.success(
     res,
@@ -88,11 +71,10 @@ const getMyProgress = catchAsync(async (req, res) => {
       masteredCount,
       learningCount: Math.max(0, learnedCount - masteredCount),
       dueTodayCount,
-      completedReadingsCount,
-      readingAccuracy,
-      totalAttempts: readingAttempts.length
+      accuracyRate: vocabAccuracy,
+      totalAttempts
     },
-    'Lấy tiến độ học tập cá nhân thành công'
+    'Lấy tiến độ học tập từ vựng cá nhân thành công'
   );
 });
 

@@ -12,18 +12,9 @@ router.get('/users', adminController.getUsers);
 router.put('/users/:id/role', adminController.updateUserRole);
 router.put('/users/:id/status', adminController.toggleUserStatus);
 
-// Quản trị từ vựng
+// Quản trị từ vựng mỹ thuật & mỹ nghệ
 router.post('/vocabularies', adminController.createVocabulary);
 router.put('/vocabularies/:id', adminController.updateVocabulary);
 router.delete('/vocabularies/:id', adminController.deleteVocabulary);
-
-// Quản trị bài đọc
-router.post('/readings', adminController.createReading);
-router.put('/readings/:id', adminController.updateReading);
-router.delete('/readings/:id', adminController.deleteReading);
-
-// Kiểm duyệt cộng đồng
-router.get('/community/pending', adminController.getPendingCommunityPosts);
-router.put('/community/:id/review', adminController.reviewCommunityPost);
 
 module.exports = router;

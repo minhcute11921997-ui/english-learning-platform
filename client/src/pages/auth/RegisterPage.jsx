@@ -42,7 +42,7 @@ export default function RegisterPage() {
       const { confirmPassword, ...data } = formData;
       await register(data);
       toast.success('Đăng ký thành công!');
-      navigate('/assessment', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       toast.error(error.message || 'Đăng ký thất bại');
     } finally {
@@ -52,7 +52,7 @@ export default function RegisterPage() {
 
   return (
     <div>
-      <h2 className="text-center mb-6">Tạo tài khoản</h2>
+      <h2 className="text-center mb-6 font-serif text-2xl font-bold text-stone-900">Tạo tài khoản học Mỹ thuật</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input label="Họ và tên" name="full_name" placeholder="Nguyễn Văn A" value={formData.full_name} onChange={handleChange} error={errors.full_name} />
@@ -61,14 +61,14 @@ export default function RegisterPage() {
         <Input label="Mật khẩu" type="password" name="password" placeholder="Tối thiểu 6 ký tự" value={formData.password} onChange={handleChange} error={errors.password} />
         <Input label="Xác nhận mật khẩu" type="password" name="confirmPassword" placeholder="Nhập lại mật khẩu" value={formData.confirmPassword} onChange={handleChange} error={errors.confirmPassword} />
 
-        <Button type="submit" isLoading={isLoading} className="w-full">
-          Đăng ký
+        <Button type="submit" className="w-full rounded-xl" isLoading={isLoading}>
+          Đăng ký &amp; Khám phá
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-gray-600">
+      <p className="text-center text-sm text-stone-500 mt-6">
         Đã có tài khoản?{' '}
-        <Link to="/login" className="text-primary-600 hover:underline font-medium">
+        <Link to="/login" className="text-amber-800 font-semibold hover:underline">
           Đăng nhập
         </Link>
       </p>

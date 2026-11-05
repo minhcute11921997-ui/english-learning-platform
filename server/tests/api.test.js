@@ -2,7 +2,7 @@ const request = require('supertest');
 const app = require('../src/app');
 const { sequelize, Vocabulary } = require('../src/models');
 
-describe('EngLearn Backend Integration Test Suite', () => {
+describe('EngLearn Fine Arts Vocabulary Test Suite', () => {
   let authToken = '';
   let adminToken = '';
   let sampleVocabId = 1;
@@ -51,19 +51,26 @@ describe('EngLearn Backend Integration Test Suite', () => {
     });
   });
 
-  describe('2. Topics & Vocabulary APIs', () => {
+  describe('2. Fine Arts Topics & Vocabulary with Cultural Notes & Visuals', () => {
     test('GET /api/topics should return 2 fine arts topics', async () => {
       const res = await request(app).get('/api/topics');
       expect(res.status).toBe(200);
       expect(res.body.data.length).toBe(2);
+      expect(res.body.data.map(t => t.name)).toContain('Types of Paintings');
+      expect(res.body.data.map(t => t.name)).toContain('Fine Arts & Crafts Professions');
     });
 
-    test('GET /api/vocabularies/topic/1 should return words with examples', async () => {
+    test('GET /api/vocabularies/topic/1 should return words with cultural notes and image URLs', async () => {
       const res = await request(app).get('/api/vocabularies/topic/1');
       expect(res.status).toBe(200);
       expect(res.body.data.length).toBeGreaterThan(0);
-      expect(res.body.data[0]).toHaveProperty('word');
-      expect(res.body.data[0]).toHaveProperty('meaning_vi');
+      const first = res.body.data[0];
+      expect(first).toHaveProperty('word');
+      expect(first).toHaveProperty('meaning_vi');
+      expect(first).toHaveProperty('image_url');
+      expect(first).toHaveProperty('cultural_note');
+      expect(first).toHaveProperty('related_artist');
+      expect(first).toHaveProperty('source_ref');
     });
 
     test('POST /api/vocabularies/:id/learn should record learning progress', async () => {
@@ -75,31 +82,7 @@ describe('EngLearn Backend Integration Test Suite', () => {
     });
   });
 
-  describe('3. Placement Assessment APIs', () => {
-    test('GET /api/assessment/start should return 30 questions without exposing answers', async () => {
-      const res = await request(app).get('/api/assessment/start');
-      expect(res.status).toBe(200);
-      expect(res.body.data.length).toBe(30);
-      expect(res.body.data[0]).not.toHaveProperty('correct_option');
-    });
-
-    test('POST /api/assessment/submit should score and assign level', async () => {
-      const answers = Array.from({ length: 30 }, (_, i) => ({
-        question_id: i,
-        selected_option: 0
-      }));
-      const res = await request(app)
-        .post('/api/assessment/submit')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({ answers });
-
-      expect(res.status).toBe(201);
-      expect(res.body.data).toHaveProperty('score');
-      expect(res.body.data).toHaveProperty('result_level');
-    });
-  });
-
-  describe('4. Spaced Repetition (SRS) Review APIs', () => {
+  describe('3. Spaced Repetition (SRS) Review APIs', () => {
     test('POST /api/reviews/:vocabId/answer should update SM-2 schedule', async () => {
       const res = await request(app)
         .post(`/api/reviews/${sampleVocabId}/answer`)
@@ -118,37 +101,69 @@ describe('EngLearn Backend Integration Test Suite', () => {
       expect(res.status).toBe(200);
       expect(res.body.data).toHaveProperty('learningCount');
     });
+
+    test('GET /api/reviews/learning should return on-demand review list', async () => {
+      const res = await request(app)
+        .get('/api/reviews/learning')
+        .set('Authorization', `Bearer ${authToken}`);
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.data)).toBe(true);
+    });
   });
 
-  describe('5. Reading & Recommendation APIs', () => {
-    test('GET /api/readings should return passages list', async () => {
-      const res = await request(app).get('/api/readings');
+  describe('4. Vocab Exercises & Image Recognition Quiz APIs', () => {
+    test('GET /api/exercises/vocab/1 should generate questions including image recognition', async () => {
+      const res = await request(app)
+        .get('/api/exercises/vocab/1?count=8')
+        .set('Authorization', `Bearer ${authToken}`);
+
       expect(res.status).toBe(200);
       expect(res.body.data.length).toBeGreaterThan(0);
+      expect(res.body.data[0]).toHaveProperty('question');
+      expect(res.body.data[0]).toHaveProperty('options');
+      expect(res.body.data[0].options.length).toBe(4);
     });
 
-    test('GET /api/readings/recommended should return customized reading suggestions', async () => {
+    test('POST /api/exercises/vocab/submit should score quiz and update progress', async () => {
       const res = await request(app)
-        .get('/api/readings/recommended')
-        .set('Authorization', `Bearer ${authToken}`);
+        .post('/api/exercises/vocab/submit')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({
+          results: [
+            { vocabulary_id: sampleVocabId, is_correct: true, quality: 4 }
+          ]
+        });
 
       expect(res.status).toBe(200);
-      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data).toHaveProperty('correct');
+      expect(res.body.data.correct).toBe(1);
     });
   });
 
-  describe('6. Study Group APIs', () => {
-    test('GET /api/groups/my should return user groups', async () => {
+  describe('5. Stats APIs', () => {
+    test('GET /api/stats/overview should return total vocab and topics', async () => {
       const res = await request(app)
-        .get('/api/groups/my')
+        .get('/api/stats/overview')
         .set('Authorization', `Bearer ${authToken}`);
 
       expect(res.status).toBe(200);
-      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data.totalVocab).toBeGreaterThan(0);
+      expect(res.body.data.totalTopics).toBe(2);
+    });
+
+    test('GET /api/stats/my-progress should return user learning progress', async () => {
+      const res = await request(app)
+        .get('/api/stats/my-progress')
+        .set('Authorization', `Bearer ${authToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty('learnedCount');
+      expect(res.body.data).toHaveProperty('dueTodayCount');
     });
   });
 
-  describe('7. Admin Protection APIs', () => {
+  describe('6. Admin Protection & Management APIs', () => {
     test('Non-admin user accessing /api/admin/users should get 403 Forbidden', async () => {
       const res = await request(app)
         .get('/api/admin/users')

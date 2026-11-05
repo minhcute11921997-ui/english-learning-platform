@@ -4,7 +4,7 @@ import { useState } from 'react';
 import useAuthStore from '../../stores/authStore';
 
 /**
- * Header navigation component - Editorial Scholar Studio Design
+ * Header navigation component - Fine Arts & Crafts Studio Design
  */
 export default function Header() {
   const { user, isAuthenticated, logout } = useAuthStore();
@@ -17,50 +17,52 @@ export default function Header() {
   };
 
   const navLinkClass = ({ isActive }) =>
-    `text-sm font-medium px-3 py-1.5 rounded-lg transition-all ${
+    `text-sm font-medium px-3.5 py-1.5 rounded-xl transition-all ${
       isActive
-        ? 'text-[#195646] bg-[#EBE7DF] font-semibold'
-        : 'text-[#4A504C] hover:text-[#195646] hover:bg-[#F2EFE8]'
+        ? 'text-amber-950 bg-amber-100/70 font-bold border border-amber-200/80 shadow-2xs'
+        : 'text-stone-600 hover:text-amber-900 hover:bg-stone-100/80'
     }`;
 
   const mobileNavLinkClass = ({ isActive }) =>
-    `text-sm font-medium px-3 py-2 rounded-lg transition-all ${
+    `text-sm font-medium px-3.5 py-2 rounded-xl transition-all ${
       isActive
-        ? 'text-[#195646] bg-[#EBE7DF] font-semibold'
-        : 'text-[#4A504C] hover:text-[#195646] hover:bg-[#F2EFE8]'
+        ? 'text-amber-950 bg-amber-100/70 font-bold border border-amber-200/80'
+        : 'text-stone-600 hover:text-amber-900 hover:bg-stone-100/80'
     }`;
 
   return (
-    <header className="bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#E8E4DC] sticky top-0 z-50">
+    <header className="bg-white/95 backdrop-blur-md border-b border-stone-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Brand Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-[#195646] text-white flex items-center justify-center font-serif text-lg font-bold shadow-[0_2px_6px_rgba(25,86,70,0.3)] transition-transform group-hover:scale-105">
-              E
+            <div className="w-9 h-9 rounded-xl bg-amber-700 text-white flex items-center justify-center font-serif text-lg font-bold shadow-xs transition-transform group-hover:scale-105">
+              🎨
             </div>
-            <span className="font-serif text-xl font-bold tracking-tight text-[#16201B]">
-              EngLearn
-            </span>
+            <div className="flex flex-col">
+              <span className="font-serif text-xl font-extrabold tracking-tight text-stone-900 leading-tight">
+                EngLearn
+              </span>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-amber-800 -mt-0.5">
+                Fine Arts &amp; Crafts
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
           {isAuthenticated && (
             <nav className="hidden md:flex items-center gap-1.5">
-              <NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink>
-              <NavLink to="/topics" className={navLinkClass}>Từ vựng</NavLink>
-              <NavLink to="/readings" className={navLinkClass}>Đọc hiểu</NavLink>
-              <NavLink to="/review" className={navLinkClass}>Ôn tập hôm nay</NavLink>
-              <NavLink to="/groups" className={navLinkClass}>Nhóm học</NavLink>
-              <NavLink to="/community" className={navLinkClass}>Cộng đồng</NavLink>
+              <NavLink to="/dashboard" className={navLinkClass}>Bảng điều khiển</NavLink>
+              <NavLink to="/topics" className={navLinkClass}>Chủ đề Mỹ thuật</NavLink>
+              <NavLink to="/review" className={navLinkClass}>Ôn tập hôm nay (SM-2)</NavLink>
               {user?.role === 'admin' && (
                 <NavLink
                   to="/admin"
                   className={({ isActive }) =>
                     `text-xs font-semibold px-2.5 py-1 rounded-full border transition-all ${
                       isActive
-                        ? 'bg-purple-100 text-purple-800 border-purple-300'
-                        : 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100'
+                        ? 'bg-amber-100 text-amber-900 border-amber-300 font-bold'
+                        : 'bg-stone-100 text-stone-700 border-stone-200 hover:bg-stone-200'
                     }`
                   }
                 >
@@ -76,9 +78,9 @@ export default function Header() {
               <div className="flex items-center gap-2">
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-[#EFECE5] text-[#2C332F] transition-colors"
+                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-stone-100 text-stone-800 transition-colors"
                 >
-                  <div className="w-7 h-7 rounded-full bg-[#E5DFD3] text-[#195646] font-bold text-xs flex items-center justify-center border border-[#D5CEC0]">
+                  <div className="w-7 h-7 rounded-full bg-amber-100 text-amber-900 font-bold text-xs flex items-center justify-center border border-amber-200">
                     {(user?.full_name || user?.username || 'U')[0].toUpperCase()}
                   </div>
                   <span className="hidden sm:inline text-xs font-semibold max-w-[120px] truncate">
@@ -88,17 +90,17 @@ export default function Header() {
                 <button
                   onClick={handleLogout}
                   title="Đăng xuất"
-                  className="p-2 text-[#7E7A71] hover:text-[#BE123C] hover:bg-rose-50 rounded-xl transition-colors"
+                  className="p-2 text-stone-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
                 >
                   <HiLogout className="h-4.5 w-4.5" />
                 </button>
               </div>
             ) : (
               <div className="flex items-center gap-2.5">
-                <Link to="/login" className="btn btn-secondary text-xs px-3.5 py-2">
+                <Link to="/login" className="btn btn-secondary text-xs px-3.5 py-2 rounded-xl">
                   Đăng nhập
                 </Link>
-                <Link to="/register" className="btn btn-primary text-xs px-3.5 py-2">
+                <Link to="/register" className="btn btn-primary text-xs px-3.5 py-2 rounded-xl">
                   Bắt đầu học
                 </Link>
               </div>
@@ -106,7 +108,7 @@ export default function Header() {
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden p-2 text-[#4A504C] hover:bg-[#EFECE5] rounded-xl"
+              className="md:hidden p-2 text-stone-600 hover:bg-stone-100 rounded-xl"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle Navigation Menu"
             >
@@ -117,15 +119,20 @@ export default function Header() {
 
         {/* Mobile Navigation Dropdown */}
         {mobileMenuOpen && isAuthenticated && (
-          <nav className="md:hidden py-3 border-t border-[#E8E4DC] flex flex-col gap-1">
-            <NavLink to="/dashboard" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Dashboard</NavLink>
-            <NavLink to="/topics" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Từ vựng</NavLink>
-            <NavLink to="/readings" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Đọc hiểu</NavLink>
-            <NavLink to="/review" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Ôn tập hôm nay</NavLink>
-            <NavLink to="/groups" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Nhóm học</NavLink>
-            <NavLink to="/community" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Cộng đồng</NavLink>
+          <nav className="md:hidden py-3 border-t border-stone-200 flex flex-col gap-1">
+            <NavLink to="/dashboard" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>
+              Bảng điều khiển
+            </NavLink>
+            <NavLink to="/topics" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>
+              Chủ đề Mỹ thuật
+            </NavLink>
+            <NavLink to="/review" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>
+              Ôn tập hôm nay (SM-2)
+            </NavLink>
             {user?.role === 'admin' && (
-              <NavLink to="/admin" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>Quản trị hệ thống</NavLink>
+              <NavLink to="/admin" className={mobileNavLinkClass} onClick={() => setMobileMenuOpen(false)}>
+                Quản trị hệ thống
+              </NavLink>
             )}
           </nav>
         )}

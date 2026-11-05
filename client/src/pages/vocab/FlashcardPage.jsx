@@ -4,6 +4,8 @@ import { toast } from 'react-hot-toast';
 import { vocabApi, topicApi, vocabListApi } from '../../api/services';
 import Button from '../../components/ui/Button';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import VocabImage from '../../components/vocab/VocabImage';
+import VocabSidebarInfo from '../../components/vocab/VocabSidebarInfo';
 import {
   HiVolumeUp,
   HiArrowLeft,
@@ -85,7 +87,7 @@ export default function FlashcardPage() {
     if (!current) return;
     try {
       await vocabApi.markAsLearned(current.id);
-      toast.success(`Đã lưu "${current.word}" vào lịch ôn tập!`);
+      toast.success(`Đã lưu "${current.word}" vào lịch ôn tập hôm nay!`);
       handleNext();
     } catch (err) {
       toast.error(err.message || 'Không thể lưu tiến độ');
@@ -104,15 +106,14 @@ export default function FlashcardPage() {
         handlePrev();
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNext, handlePrev]);
 
   if (isLoading) {
     return (
-      <div className="py-20 flex justify-center">
-        <LoadingSpinner size="lg" />
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <LoadingSpinner size="lg" text="Đang chuẩn bị bộ thẻ học mỹ thuật..." />
       </div>
     );
   }
@@ -120,33 +121,29 @@ export default function FlashcardPage() {
   const current = vocabs[currentIndex];
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      {/* Top bar */}
+    <div className="max-w-2xl mx-auto space-y-6 pb-12">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <Link
           to={isCustomList ? `/vocab-lists/${id}` : `/topics/${id}`}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-primary-600"
+          className="btn btn-ghost text-sm gap-2"
         >
-          <HiArrowLeft /> Quay lại {isCustomList ? 'danh sách từ' : 'chủ đề'}
+          <HiArrowLeft /> Quay lại danh sách
         </Link>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-gray-600">
+          <Button variant="ghost" size="sm" onClick={handleShuffle} title="Xáo trộn thứ tự từ">
+            <HiRefresh className="w-4 h-4" /> Xáo thẻ
+          </Button>
+          <span className="text-sm font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
             {currentIndex + 1} / {vocabs.length}
           </span>
-          <button
-            onClick={handleShuffle}
-            title="Xáo trộn thẻ"
-            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 cursor-pointer"
-          >
-            <HiRefresh className="w-5 h-5" />
-          </button>
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="w-full bg-gray-200 rounded-full h-1.5">
+      <div className="w-full bg-gray-200 rounded-full h-2">
         <div
-          className="bg-primary-600 h-1.5 rounded-full transition-all duration-300"
+          className="bg-primary-600 h-2 rounded-full transition-all duration-300"
           style={{ width: `${vocabs.length > 0 ? Math.round(((currentIndex + 1) / vocabs.length) * 100) : 0}%` }}
         />
       </div>
@@ -154,86 +151,95 @@ export default function FlashcardPage() {
       {/* 3D Flip Flashcard */}
       {current ? (
         <div
-          className="perspective-1000 min-h-[380px] cursor-pointer"
+          className="perspective-1000 min-h-[460px] cursor-pointer"
           onClick={() => setIsFlipped(!isFlipped)}
         >
           <div
-            className={`w-full min-h-[380px] rounded-2xl shadow-md border-2 p-8 transition-transform duration-500 transform-style-3d flex flex-col justify-between select-none ${
+            className={`w-full min-h-[460px] rounded-3xl shadow-lg border-2 p-6 sm:p-8 transition-all duration-500 flex flex-col justify-between select-none ${
               isFlipped
-                ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-primary-300'
-                : 'bg-white border-gray-200 hover:border-primary-400'
+                ? 'bg-gradient-to-br from-amber-50/70 via-stone-50 to-orange-50/40 border-amber-300'
+                : 'bg-white border-stone-200 hover:border-amber-400'
             }`}
           >
             {/* Header of card */}
-            <div className="flex justify-between items-center text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              <span>{isFlipped ? 'Mặt sau (Nghĩa tiếng Việt)' : 'Mặt trước (Tiếng Anh)'}</span>
+            <div className="flex justify-between items-center text-xs font-semibold text-stone-400 uppercase tracking-wider">
+              <span>{isFlipped ? 'Mặt sau • Nghĩa & Bối cảnh nghệ thuật' : 'Mặt trước • Thuật ngữ tiếng Anh'}</span>
               <div className="flex items-center gap-2">
                 {current.source_ref && (
-                  <span className="text-[10px] text-stone-500 bg-stone-100 px-2 py-0.5 rounded-full border border-stone-200">
-                    Ref: {current.source_ref}
+                  <span className="text-[10px] text-stone-500 bg-stone-100 px-2.5 py-0.5 rounded-full border border-stone-200 font-medium">
+                    {current.source_ref}
                   </span>
                 )}
-                <span className="badge bg-primary-100 text-primary-700">{current.part_of_speech}</span>
+                <span className="badge bg-amber-100 text-amber-900 border border-amber-200 font-semibold">{current.part_of_speech}</span>
               </div>
             </div>
 
             {/* Content Front vs Back */}
             {!isFlipped ? (
-              <div className="text-center py-4">
-                {current.image_url && (
-                  <div className="w-28 h-28 sm:w-36 sm:h-36 mx-auto mb-3 rounded-2xl overflow-hidden shadow-sm border border-stone-200/80 bg-white p-1">
-                    <img
-                      src={current.image_url}
-                      alt={current.word}
-                      className="w-full h-full object-contain rounded-xl"
-                      onError={(e) => { e.target.style.display = 'none'; }}
-                    />
-                  </div>
-                )}
-                <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-900 mb-2 tracking-tight">
+              <div className="text-center py-4 flex flex-col items-center justify-center flex-1">
+                {/* Visual Image */}
+                <div className="w-36 h-36 sm:w-44 sm:h-44 mx-auto mb-4 rounded-2xl overflow-hidden shadow-xs border border-stone-200/90 bg-white p-2">
+                  <VocabImage
+                    src={current.image_url}
+                    alt={current.image_alt || current.word}
+                    enableZoom={false}
+                    className="w-full h-full rounded-xl"
+                  />
+                </div>
+
+                <h2 className="text-3xl sm:text-5xl font-extrabold text-stone-900 mb-2 tracking-tight">
                   {current.word}
                 </h2>
-                <p className="text-base text-gray-500 font-mono mb-4">{current.pronunciation}</p>
+                <p className="text-base text-stone-500 font-mono mb-4">{current.pronunciation}</p>
                 <button
                   onClick={(e) => handleSpeak(current.word, e)}
-                  className="btn btn-secondary text-sm gap-2 mx-auto"
+                  className="btn btn-secondary text-sm gap-2 mx-auto rounded-xl shadow-2xs hover:bg-stone-100"
                 >
-                  <HiVolumeUp className="w-5 h-5 text-primary-600" /> Nghe phát âm
+                  <HiVolumeUp className="w-5 h-5 text-amber-700" /> Nghe phát âm chuẩn
                 </button>
               </div>
             ) : (
-              <div className="text-center py-3 space-y-3">
-                {current.image_url && (
-                  <div className="w-20 h-20 mx-auto rounded-xl overflow-hidden border border-stone-200/80 bg-white p-1 shadow-xs">
-                    <img
+              <div className="text-center py-2 space-y-4 flex flex-col justify-center flex-1">
+                <div className="flex items-center justify-center gap-3">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden border border-amber-200 bg-white p-1 shadow-2xs shrink-0">
+                    <VocabImage
                       src={current.image_url}
-                      alt={current.word}
-                      className="w-full h-full object-contain rounded-lg"
-                      onError={(e) => { e.target.style.display = 'none'; }}
+                      alt={current.image_alt || current.word}
+                      className="w-full h-full rounded-lg"
                     />
                   </div>
-                )}
-                <p className="text-2xl sm:text-3xl font-bold text-primary-700">{current.meaning_vi}</p>
+                  <div className="text-left">
+                    <p className="text-2xl sm:text-3xl font-extrabold text-amber-900">{current.meaning_vi}</p>
+                    <p className="text-xs text-stone-500 font-mono">{current.word} • {current.pronunciation}</p>
+                  </div>
+                </div>
+
+                {/* Example sentence */}
                 {current.example_sentence && (
-                  <div className="p-3.5 rounded-xl bg-white/90 border border-primary-100 text-left space-y-1.5 shadow-2xs">
-                    <p className="text-sm font-semibold text-gray-800">"{current.example_sentence}"</p>
-                    <p className="text-sm text-gray-600 italic">"{current.example_translation}"</p>
+                  <div className="p-3.5 rounded-2xl bg-white/90 border border-amber-200/80 text-left space-y-1 shadow-2xs">
+                    <p className="text-sm font-semibold text-stone-800">"{current.example_sentence}"</p>
+                    <p className="text-xs sm:text-sm text-stone-600 italic">"{current.example_translation}"</p>
                   </div>
                 )}
-                {current.source_ref && (
-                  <p className="text-xs text-stone-500 italic">Nguồn tham chiếu chuẩn: {current.source_ref}</p>
-                )}
+
+                {/* Rich Cultural Side-Notes */}
+                <VocabSidebarInfo
+                  culturalNote={current.cultural_note}
+                  relatedArtist={current.related_artist}
+                  sourceRef={current.source_ref}
+                  imageCredit={current.image_credit}
+                />
               </div>
             )}
 
             {/* Footer tip */}
-            <div className="flex justify-between items-center pt-4 border-t border-gray-200/60 text-xs text-gray-500">
-              <span className="flex items-center gap-1">
-                <HiLightBulb className="w-4 h-4 text-yellow-500" /> Nhấn chuột hoặc phím Cách để lật thẻ
+            <div className="flex justify-between items-center pt-4 border-t border-stone-200/70 text-xs text-stone-500">
+              <span className="flex items-center gap-1.5">
+                <HiLightBulb className="w-4 h-4 text-amber-500" /> Nhấn thẻ hoặc phím Cách để lật
               </span>
               <button
                 onClick={handleMarkLearned}
-                className="btn btn-success text-xs py-1.5 px-3 gap-1"
+                className="btn btn-success text-xs py-1.5 px-3.5 gap-1.5 rounded-xl shadow-xs"
               >
                 <HiCheck className="w-4 h-4" /> Đã nhớ từ này
               </button>
@@ -249,10 +255,10 @@ export default function FlashcardPage() {
       {/* Navigation buttons */}
       {vocabs.length > 0 && (
         <div className="flex justify-between items-center pt-2">
-          <Button variant="secondary" onClick={handlePrev} className="gap-2">
+          <Button variant="secondary" onClick={handlePrev} className="gap-2 rounded-xl">
             <HiArrowLeft /> Từ trước
           </Button>
-          <Button onClick={handleNext} className="gap-2">
+          <Button onClick={handleNext} className="gap-2 rounded-xl">
             Từ tiếp theo <HiArrowRight />
           </Button>
         </div>

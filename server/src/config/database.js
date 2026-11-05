@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 module.exports = {
   development: {
@@ -46,15 +47,14 @@ module.exports = {
     logging: false,
     define: {
       timestamps: true,
-      underscored: true,
-      charset: 'utf8mb4',
-      collate: 'utf8mb4_unicode_ci'
+      underscored: true
     },
     pool: {
-      max: 20,
-      min: 5,
+      max: parseInt(process.env.DB_POOL_MAX) || 50,
+      min: parseInt(process.env.DB_POOL_MIN) || 5,
       acquire: 30000,
-      idle: 10000
+      idle: 10000,
+      evict: 1000
     }
   }
 };

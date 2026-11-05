@@ -33,13 +33,37 @@ const getVocabExercises = catchAsync(async (req, res) => {
 
   for (let i = 0; i < selectedWords.length; i++) {
     const target = selectedWords[i];
-    const type = i % 3; // 0: en-vi, 1: vi-en, 2: fill-blank
+    // 0: en-vi, 1: vi-en, 2: fill-blank, 3: image_to_word (nếu có ảnh)
+    let type = i % 4;
+    if (type === 3 && !target.image_url) {
+      type = 0;
+    }
 
     // Lấy 3 distractors
     const otherWords = allWords.filter((w) => w.id !== target.id);
     const distractors = shuffle(otherWords).slice(0, 3);
 
-    if (type === 0) {
+    if (type === 3 && target.image_url) {
+      // Nhìn tranh đoán từ vựng / thuật ngữ
+      const options = shuffle([
+        target.word,
+        distractors[0].word,
+        distractors[1].word,
+        distractors[2].word
+      ]);
+      exercises.push({
+        id: i + 1,
+        vocabulary_id: target.id,
+        type: 'image_to_word',
+        question: 'Hình ảnh minh họa sau đây thể hiện thuật ngữ mỹ thuật/thủ công nào?',
+        image_url: target.image_url,
+        meaning_vi: target.meaning_vi,
+        cultural_note: target.cultural_note,
+        related_artist: target.related_artist,
+        options,
+        correct_option: options.indexOf(target.word)
+      });
+    } else if (type === 0) {
       // English to Vietnamese
       const options = shuffle([
         target.meaning_vi,
@@ -51,9 +75,12 @@ const getVocabExercises = catchAsync(async (req, res) => {
         id: i + 1,
         vocabulary_id: target.id,
         type: 'en_to_vi',
-        question: `Nghĩa của từ "${target.word}" là gì?`,
+        question: `Thuật ngữ "${target.word}" có nghĩa là gì?`,
         pronunciation: target.pronunciation,
         part_of_speech: target.part_of_speech,
+        image_url: target.image_url,
+        cultural_note: target.cultural_note,
+        related_artist: target.related_artist,
         options,
         correct_option: options.indexOf(target.meaning_vi)
       });
@@ -69,8 +96,11 @@ const getVocabExercises = catchAsync(async (req, res) => {
         id: i + 1,
         vocabulary_id: target.id,
         type: 'vi_to_en',
-        question: `Từ tiếng Anh nào có nghĩa là: "${target.meaning_vi}"?`,
+        question: `Thuật ngữ tiếng Anh nào diễn đạt: "${target.meaning_vi}"?`,
         part_of_speech: target.part_of_speech,
+        image_url: target.image_url,
+        cultural_note: target.cultural_note,
+        related_artist: target.related_artist,
         options,
         correct_option: options.indexOf(target.word)
       });
@@ -91,13 +121,15 @@ const getVocabExercises = catchAsync(async (req, res) => {
           id: i + 1,
           vocabulary_id: target.id,
           type: 'fill_blank',
-          question: `Điền từ thích hợp vào chỗ trống:\n"${blankSentence}"`,
+          question: `Điền từ thích hợp vào chỗ trống trong ngữ cảnh mỹ thuật:\n"${blankSentence}"`,
           translation: target.example_translation,
+          image_url: target.image_url,
+          cultural_note: target.cultural_note,
+          related_artist: target.related_artist,
           options,
           correct_option: options.indexOf(target.word)
         });
       } else {
-        // Fallback to en_to_vi
         const options = shuffle([
           target.meaning_vi,
           distractors[0].meaning_vi,
@@ -108,7 +140,10 @@ const getVocabExercises = catchAsync(async (req, res) => {
           id: i + 1,
           vocabulary_id: target.id,
           type: 'en_to_vi',
-          question: `Nghĩa của từ "${target.word}" là gì?`,
+          question: `Thuật ngữ "${target.word}" có nghĩa là gì?`,
+          image_url: target.image_url,
+          cultural_note: target.cultural_note,
+          related_artist: target.related_artist,
           options,
           correct_option: options.indexOf(target.meaning_vi)
         });

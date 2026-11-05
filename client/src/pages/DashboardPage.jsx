@@ -2,24 +2,25 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   HiOutlineBookOpen,
-  HiOutlineAcademicCap,
-  HiOutlineArrowPath,
-  HiOutlineUserGroup,
   HiOutlineSparkles,
   HiOutlineArrowRight,
   HiOutlineClock,
   HiOutlineCheckBadge,
   HiOutlineBookmark,
+  HiOutlinePaintBrush,
   HiOutlineLightBulb
 } from 'react-icons/hi2';
 import useAuthStore from '../stores/authStore';
-import { statsApi, readingApi, reviewApi } from '../api/services';
+import { statsApi, reviewApi, topicApi, vocabApi } from '../api/services';
+import VocabImage from '../components/vocab/VocabImage';
+import VocabSidebarInfo from '../components/vocab/VocabSidebarInfo';
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
   const [stats, setStats] = useState(null);
-  const [recommended, setRecommended] = useState([]);
   const [reviewStats, setReviewStats] = useState(null);
+  const [topics, setTopics] = useState([]);
+  const [featuredVocab, setFeaturedVocab] = useState(null);
 
   useEffect(() => {
     loadDashboardData();
@@ -27,14 +28,24 @@ export default function DashboardPage() {
 
   const loadDashboardData = async () => {
     try {
-      const [sRes, rRes, revRes] = await Promise.all([
+      const [sRes, revRes, topRes] = await Promise.all([
         statsApi.getMyProgress(),
-        readingApi.getRecommended(),
-        reviewApi.getStats()
+        reviewApi.getStats(),
+        topicApi.getAll()
       ]);
       setStats(sRes.data);
-      setRecommended(rRes.data || []);
       setReviewStats(revRes.data);
+      const loadedTopics = topRes.data || [];
+      setTopics(loadedTopics);
+
+      // Lấy ngẫu nhiên một từ tiêu điểm mỹ thuật
+      if (loadedTopics.length > 0) {
+        const vRes = await vocabApi.getByTopic(loadedTopics[0].id, { limit: 10 });
+        const list = vRes.data || [];
+        if (list.length > 0) {
+          setFeaturedVocab(list[0]);
+        }
+      }
     } catch {
       // ignore
     }
@@ -42,250 +53,210 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Header gọn gàng, thoáng mắt */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 pb-4 border-b border-[#E8E4DC]">
+      {/* Header gọn gàng, đậm chất mỹ thuật */}
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 pb-4 border-b border-stone-200">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#16201B]">
+          <span className="text-xs font-bold text-amber-800 uppercase tracking-widest flex items-center gap-1.5">
+            <HiOutlinePaintBrush className="w-4 h-4 text-amber-600" />
+            Không gian học thuật ngữ Mỹ thuật &amp; Mỹ nghệ
+          </span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-extrabold text-stone-900 mt-0.5">
             Xin chào, {user?.full_name || user?.username}!
           </h1>
         </div>
 
-        {/* Level badge */}
         <div>
-          {user?.initial_level === null || user?.initial_level === undefined ? (
-            <Link
-              to="/assessment"
-              className="btn btn-primary text-xs gap-1.5 py-2 px-3.5"
-            >
-              <HiOutlineSparkles className="w-4 h-4 text-emerald-200" />
-              Đánh giá đầu vào
-            </Link>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#F4F1EA] text-[#195646] text-xs font-semibold border border-[#E5DECD]">
-              Trình độ:{' '}
-              {user.initial_level >= 75
-                ? 'Pre-Intermediate'
-                : user.initial_level >= 50
-                ? 'Elementary'
-                : 'Beginner'}
-            </span>
-          )}
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-900 text-xs font-semibold border border-amber-200">
+            Học viên Mỹ thuật
+          </span>
         </div>
       </div>
 
-      {/* Dải thống kê tối giản (Gọn gàng, không thừa chữ) */}
-      <div className="bg-white rounded-xl border border-[#E8E4DC] overflow-hidden">
-        <div className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#EFECE5]">
-          <div className="p-4 text-center sm:text-left">
-            <span className="text-[11px] font-semibold text-[#828884] uppercase">Từ đã học</span>
-            <p className="font-serif text-2xl sm:text-3xl font-bold text-[#16201B] mt-1">
+      {/* Dải thống kê từ vựng mỹ thuật & tiến độ SM-2 */}
+      <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-2xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-stone-100">
+          <div className="p-4 sm:p-5 text-center sm:text-left">
+            <span className="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Thuật ngữ đã học</span>
+            <p className="font-serif text-2xl sm:text-3xl font-bold text-stone-900 mt-1">
               {stats?.learnedCount || 0}
             </p>
           </div>
 
-          <div className="p-4 text-center sm:text-left">
-            <span className="text-[11px] font-semibold text-[#828884] uppercase">Thuần thục</span>
-            <p className="font-serif text-2xl sm:text-3xl font-bold text-[#195646] mt-1">
+          <div className="p-4 sm:p-5 text-center sm:text-left">
+            <span className="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Đã thuần thục</span>
+            <p className="font-serif text-2xl sm:text-3xl font-bold text-emerald-700 mt-1">
               {stats?.masteredCount || 0}
             </p>
           </div>
 
-          <div className="p-4 text-center sm:text-left bg-[#FEFAF6]">
-            <span className="text-[11px] font-semibold text-[#9C5A35] uppercase">Cần ôn hôm nay</span>
-            <p className="font-serif text-2xl sm:text-3xl font-bold text-[#D96237] mt-1">
+          <div className="p-4 sm:p-5 text-center sm:text-left bg-amber-50/40">
+            <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Cần ôn hôm nay</span>
+            <p className="font-serif text-2xl sm:text-3xl font-bold text-amber-700 mt-1">
               {reviewStats?.dueCount || 0}
             </p>
           </div>
 
-          <div className="p-4 text-center sm:text-left">
-            <span className="text-[11px] font-semibold text-[#828884] uppercase">Bài đọc xong</span>
-            <p className="font-serif text-2xl sm:text-3xl font-bold text-[#16201B] mt-1">
-              {stats?.completedReadingsCount || 0}
+          <div className="p-4 sm:p-5 text-center sm:text-left">
+            <span className="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Độ chính xác</span>
+            <p className="font-serif text-2xl sm:text-3xl font-bold text-stone-900 mt-1">
+              {stats?.accuracyRate || 0}%
             </p>
           </div>
         </div>
       </div>
 
-      {/* 4 Danh mục học tập chính - Rất ít chữ, thoáng và dễ bấm */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
-        <Link
-          to="/topics"
-          className="card card-hover p-4 sm:p-5 border-[#E8E4DC] group flex flex-col justify-between"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#F0F7F4] text-[#195646] flex items-center justify-center group-hover:scale-105 transition-transform">
-              <HiOutlineBookOpen className="w-5 h-5" />
-            </div>
-            <HiOutlineArrowRight className="w-4 h-4 text-[#A0A6A2] group-hover:text-[#195646] group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <div>
-            <h3 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#195646] transition-colors">
-              Từ vựng
-            </h3>
-          </div>
-        </Link>
+      {/* 2 Danh mục chủ đề mỹ thuật chính */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-serif text-lg font-bold text-stone-900 flex items-center gap-2">
+            <HiOutlineBookOpen className="w-5 h-5 text-amber-700" />
+            Chuyên đề học tập
+          </h2>
+          <Link to="/topics" className="text-xs font-semibold text-amber-800 hover:text-amber-900 hover:underline">
+            Tất cả chủ đề →
+          </Link>
+        </div>
 
-        <Link
-          to="/readings"
-          className="card card-hover p-4 sm:p-5 border-[#E8E4DC] group flex flex-col justify-between"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#FDF5F2] text-[#D96237] flex items-center justify-center group-hover:scale-105 transition-transform">
-              <HiOutlineAcademicCap className="w-5 h-5" />
-            </div>
-            <HiOutlineArrowRight className="w-4 h-4 text-[#A0A6A2] group-hover:text-[#D96237] group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <div>
-            <h3 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#D96237] transition-colors">
-              Đọc hiểu
-            </h3>
-          </div>
-        </Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {topics.map((t) => (
+            <Link
+              key={t.id}
+              to={`/topics/${t.id}`}
+              className="card card-hover p-5 border-stone-200 group flex items-start justify-between rounded-2xl bg-white shadow-2xs"
+            >
+              <div className="space-y-1.5">
+                <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider">
+                  Chủ đề {t.id}
+                </span>
+                <h3 className="font-serif text-lg font-bold text-stone-900 group-hover:text-amber-800 transition-colors">
+                  {t.name_vi}
+                </h3>
+                <p className="text-xs text-stone-500 font-mono">({t.name})</p>
+                <p className="text-xs text-stone-600 line-clamp-2 mt-1">{t.description}</p>
+              </div>
 
-        <Link
-          to="/review"
-          className="card card-hover p-4 sm:p-5 border-[#E8E4DC] group flex flex-col justify-between"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#FBF6EA] text-[#B88728] flex items-center justify-center group-hover:scale-105 transition-transform">
-              <HiOutlineArrowPath className="w-5 h-5" />
-            </div>
-            <HiOutlineArrowRight className="w-4 h-4 text-[#A0A6A2] group-hover:text-[#B88728] group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <div>
-            <h3 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#B88728] transition-colors">
-              Ôn tập hôm nay
-            </h3>
-          </div>
-        </Link>
-
-        <Link
-          to="/groups"
-          className="card card-hover p-4 sm:p-5 border-[#E8E4DC] group flex flex-col justify-between"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#F4F2FA] text-[#6952A3] flex items-center justify-center group-hover:scale-105 transition-transform">
-              <HiOutlineUserGroup className="w-5 h-5" />
-            </div>
-            <HiOutlineArrowRight className="w-4 h-4 text-[#A0A6A2] group-hover:text-[#6952A3] group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <div>
-            <h3 className="font-serif text-base font-bold text-[#16201B] group-hover:text-[#6952A3] transition-colors">
-              Nhóm học
-            </h3>
-          </div>
-        </Link>
+              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <HiOutlineArrowRight className="w-5 h-5" />
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
-      {/* Khu vực trọng tâm: SRS Ôn Tập & Bài Đọc Đề Xuất */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-2">
-        {/* Cột trái: Lịch ôn tập hoặc Trạng thái ôn (7 cols) */}
-        <div className="lg:col-span-7 space-y-4">
+      {/* Khu vực trọng tâm: SRS Ôn Tập & Thuật ngữ tiêu điểm */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-1">
+        {/* Cột trái: Lịch ôn tập ngắt quãng (6 cols) */}
+        <div className="lg:col-span-6 space-y-4">
           {reviewStats && reviewStats.dueCount > 0 ? (
-            <div className="card p-5 bg-[#FDF9F4] border-[#E8D9C5] flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+            <div className="card p-6 bg-gradient-to-br from-amber-50/80 to-stone-50 border-amber-200/90 rounded-2xl shadow-xs flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#B84E26] mb-1">
-                  <HiOutlineClock className="w-4 h-4" />
-                  LỊCH ÔN ĐẾN HẠN
+                <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
+                  <HiOutlineClock className="w-4 h-4 text-amber-700" />
+                  Chu kỳ ôn tập SM-2 đến hạn
                 </div>
-                <h3 className="font-serif text-lg font-bold text-[#2A1E14]">
-                  {reviewStats.dueCount} từ vựng cần ôn hôm nay
+                <h3 className="font-serif text-xl font-bold text-stone-900">
+                  {reviewStats.dueCount} thuật ngữ cần ôn hôm nay
                 </h3>
-                <p className="text-xs text-[#6C5B4E] mt-0.5">
-                  Ôn đúng chu kỳ để giữ từ trong trí nhớ dài hạn.
+                <p className="text-xs sm:text-sm text-stone-600 mt-1 leading-relaxed">
+                  Ôn lại ngay trước khi não bộ suy giảm ghi nhớ để đưa thuật ngữ vào trí nhớ dài hạn.
                 </p>
               </div>
-              <Link to="/review" className="btn btn-accent text-xs whitespace-nowrap self-start sm:self-auto py-2 px-4">
-                Ôn ngay
-              </Link>
+              <div className="mt-5">
+                <Link to="/review" className="btn btn-primary text-xs py-2.5 px-5 rounded-xl shadow-xs inline-flex items-center gap-2">
+                  <HiOutlineSparkles className="w-4 h-4" /> Bắt đầu ôn ngay
+                </Link>
+              </div>
             </div>
           ) : (
-            <div className="card p-5 bg-[#F4F9F6] border-[#D1E6DC] flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+            <div className="card p-6 bg-stone-50 border-stone-200 rounded-2xl shadow-xs flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-1.5 text-[#195646] text-xs font-bold mb-1">
+                <div className="flex items-center gap-1.5 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-2">
                   <HiOutlineCheckBadge className="w-4 h-4" />
-                  TIẾN ĐỘ TỐT
+                  Tiến độ tối ưu
                 </div>
-                <h3 className="font-serif text-base font-bold text-[#11382E]">
-                  Đã hoàn thành mọi lượt ôn tập hôm nay
+                <h3 className="font-serif text-lg font-bold text-stone-900">
+                  Đã hoàn thành các lượt ôn tập hôm nay!
                 </h3>
+                <p className="text-xs text-stone-500 mt-1">
+                  Bạn có thể vào Khám phá Chủ đề để nạp thêm các thuật ngữ mỹ nghệ mới.
+                </p>
               </div>
-              <Link to="/topics" className="btn btn-primary text-xs whitespace-nowrap self-start sm:self-auto py-2 px-3.5">
-                Học từ mới
-              </Link>
+              <div className="mt-4">
+                <Link to="/topics" className="btn btn-secondary text-xs py-2 px-4 rounded-xl">
+                  Học từ mới →
+                </Link>
+              </div>
             </div>
           )}
 
-          {/* Từ vựng tiêu điểm hôm nay - Ngắn gọn, súc tích */}
-          <div className="card p-5 border-[#E8E4DC]">
-            <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#F0ECE4]">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#8A8478]">
-                <HiOutlineLightBulb className="w-4 h-4 text-[#C98A2C]" />
-                Từ vựng hôm nay
+          {/* Quick link tới sổ từ cá nhân */}
+          <div className="card p-5 border-stone-200 rounded-2xl bg-white shadow-2xs flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center">
+                <HiOutlineBookmark className="w-5 h-5" />
               </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FAF5ED] text-[#9A7332] border border-[#EBDDC7]">
-                B2
-              </span>
+              <div>
+                <h4 className="font-bold text-stone-900 text-sm">Sổ từ vựng cá nhân</h4>
+                <p className="text-xs text-stone-500">Quản lý các danh sách thuật ngữ tự phân loại</p>
+              </div>
             </div>
-            <div className="flex flex-wrap items-baseline gap-2.5">
-              <span className="font-serif text-xl font-bold text-[#16201B]">Perseverance</span>
-              <span className="text-xs font-mono text-[#737A75]">/ˌpɜː.sɪˈvɪə.rəns/</span>
-              <span className="text-xs text-[#8A8478]">(n)</span>
-            </div>
-            <p className="text-xs sm:text-sm text-[#4A504C] mt-1.5">
-              Sự kiên trì, bền bỉ để đạt được mục tiêu lâu dài.
-            </p>
+            <Link to="/review" className="text-xs font-semibold text-amber-800 hover:underline">
+              Vào ôn tập →
+            </Link>
           </div>
         </div>
 
-        {/* Cột phải: Bài đọc đề xuất (5 cols) */}
-        <div className="lg:col-span-5">
-          <div className="card p-5 border-[#E8E4DC] h-full flex flex-col justify-between">
+        {/* Cột phải: Thuật ngữ mỹ thuật tiêu điểm hôm nay (6 cols) */}
+        <div className="lg:col-span-6">
+          <div className="card p-6 border-stone-200 rounded-2xl bg-white shadow-xs h-full flex flex-col justify-between space-y-4">
             <div>
-              <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#F0ECE4]">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#7E8581]">
-                  <HiOutlineBookmark className="w-4 h-4 text-[#195646]" />
-                  Bài đọc đề xuất
+              <div className="flex items-center justify-between pb-2 mb-3 border-b border-stone-100">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-amber-800">
+                  <HiOutlineLightBulb className="w-4 h-4 text-amber-600" />
+                  Thuật ngữ tiêu điểm trong ngày
                 </div>
-                <Link to="/readings" className="text-xs font-semibold text-[#195646] hover:underline">
-                  Xem tất cả
-                </Link>
+                {featuredVocab?.source_ref && (
+                  <span className="text-[10px] text-stone-500 font-medium bg-stone-100 px-2 py-0.5 rounded-full">
+                    {featuredVocab.source_ref}
+                  </span>
+                )}
               </div>
 
-              {recommended.length > 0 ? (
-                <div className="space-y-2.5">
-                  {recommended.slice(0, 2).map((item) => (
-                    <Link
-                      key={item.id}
-                      to={`/readings/${item.id}`}
-                      className="block p-3 rounded-xl border border-[#ECE7DC] bg-[#FCFBF8] hover:bg-white hover:border-[#D5CEC0] transition-all group"
-                    >
-                      <div className="flex items-center justify-between text-[10px] text-[#8E9490] mb-1">
-                        <span className="font-medium text-[#195646] bg-[#EBF4F0] px-2 py-0.5 rounded-full">
-                          {item.topic?.name_vi || 'Bài đọc'}
-                        </span>
-                        <span>~4 phút</span>
-                      </div>
-                      <h4 className="font-serif text-sm font-bold text-[#1A211D] group-hover:text-[#195646] transition-colors line-clamp-1">
-                        {item.title}
-                      </h4>
-                      <p className="text-xs text-[#727874] mt-0.5 line-clamp-1 italic">
-                        {item.title_vi}
-                      </p>
-                    </Link>
-                  ))}
+              {featuredVocab ? (
+                <div className="space-y-4">
+                  <div className="flex items-start gap-4">
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden border border-stone-200 bg-stone-50 p-1 shrink-0 shadow-2xs">
+                      <VocabImage
+                        src={featuredVocab.image_url}
+                        alt={featuredVocab.word}
+                        className="w-full h-full rounded-xl"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-2xl font-bold text-stone-900">
+                        {featuredVocab.word}
+                      </h3>
+                      <p className="text-xs text-stone-500 font-mono mt-0.5">{featuredVocab.pronunciation}</p>
+                      <p className="text-base font-bold text-amber-900 mt-1">{featuredVocab.meaning_vi}</p>
+                    </div>
+                  </div>
+
+                  {/* Cultural note */}
+                  <VocabSidebarInfo
+                    culturalNote={featuredVocab.cultural_note}
+                    relatedArtist={featuredVocab.related_artist}
+                    imageCredit={featuredVocab.image_credit}
+                  />
                 </div>
               ) : (
-                <p className="text-xs text-[#8E9490] py-6 text-center">
-                  Chưa có bài đọc đề xuất.
-                </p>
+                <p className="text-xs text-stone-400 py-6 text-center">Đang tải thuật ngữ tiêu điểm...</p>
               )}
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[#F0ECE4] text-[11px] text-[#767D79] flex items-center justify-between">
-              <span>Đọc đều đặn để tăng phản xạ ngữ cảnh</span>
-              <Link to="/readings" className="font-semibold text-[#195646] hover:underline">
-                Vào thư viện →
+            <div className="pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
+              <span>Đắm mình trong di sản nghệ thuật mỗi ngày</span>
+              <Link to="/topics/1/flashcards" className="font-semibold text-amber-800 hover:underline">
+                Mở Flashcards →
               </Link>
             </div>
           </div>

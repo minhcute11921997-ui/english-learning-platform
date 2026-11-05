@@ -3,24 +3,14 @@ const {
   Topic,
   Vocabulary,
   VocabExample,
-  Reading,
-  Question,
-  Group,
-  GroupMember,
-  GroupVocabSet,
-  GroupVocabItem,
-  GroupReadingSet,
   UserVocabProgress,
   ReviewSchedule,
+  UserVocabList,
   UserVocabListItem,
-  UserReadingAttempt,
-  UserAnswer,
   sequelize
 } = require('../models');
 
 const { topicsData, vocabByTopic } = require('./artVocabData');
-const { readingsData } = require('./artReadingsData');
-const { placementQuestionsData } = require('./artPlacementData');
 
 // Test users to seed
 const usersData = [
@@ -29,9 +19,9 @@ const usersData = [
     username: 'admin',
     email: 'admin@enlearn.com',
     password_hash: 'Admin@123',
-    full_name: 'Quản Trị Viên Hệ Thống',
+    full_name: 'Quản Trị Viên Mỹ Thuật',
     role: 'admin',
-    learning_goal: 'Quản trị và phát triển hệ thống học tiếng Anh chuyên đề Mỹ thuật toàn diện.',
+    learning_goal: 'Quản trị và phát triển hệ thống học thuật ngữ tiếng Anh chuyên ngành Mỹ thuật & Mỹ nghệ.',
     initial_level: 100
   },
   {
@@ -39,9 +29,9 @@ const usersData = [
     username: 'teacher01',
     email: 'teacher@enlearn.com',
     password_hash: 'Teacher@123',
-    full_name: 'Cô Giáo Mai Lan',
+    full_name: 'Họa sĩ / Giảng viên Mai Lan',
     role: 'group_owner',
-    learning_goal: 'Biên soạn tài liệu thuật ngữ Mỹ thuật & hướng dẫn học viên thực hành.',
+    learning_goal: 'Biên soạn thuật ngữ Mỹ thuật & hướng dẫn học viên nghiên cứu lịch sử nghệ thuật.',
     initial_level: 95
   },
   {
@@ -61,7 +51,7 @@ const usersData = [
     password_hash: 'Student@123',
     full_name: 'Trần Thị Hà',
     role: 'learner',
-    learning_goal: 'Trau dồi thuật ngữ mỹ nghệ truyền thống và kỹ năng đọc hiểu chuyên ngành.',
+    learning_goal: 'Trau dồi thuật ngữ thủ công mỹ nghệ truyền thống và di sản văn hóa.',
     initial_level: 60
   }
 ];
@@ -69,26 +59,29 @@ const usersData = [
 async function seed() {
   console.log('🎨 Starting Fine Arts & Crafts Database Seeding...');
 
-  // Ensure tables sync
-  await sequelize.sync();
-
   // Temporarily disable foreign keys for clean data refresh
   await sequelize.query('SET FOREIGN_KEY_CHECKS = 0;');
 
-  // Clean old topics > 2 and their dependent items
   try {
-    await sequelize.query('DELETE FROM questions WHERE reading_id IN (SELECT id FROM readings WHERE topic_id > 2);');
-    await sequelize.query('DELETE FROM group_reading_sets WHERE reading_id IN (SELECT id FROM readings WHERE topic_id > 2);');
-    await sequelize.query('DELETE FROM user_reading_attempts WHERE reading_id IN (SELECT id FROM readings WHERE topic_id > 2);');
-    await sequelize.query('DELETE FROM readings WHERE topic_id > 2;');
+    // Drop obsolete tables if they still exist in database
+    await sequelize.query('DROP TABLE IF EXISTS group_reading_sets;');
+    await sequelize.query('DROP TABLE IF EXISTS group_vocab_items;');
+    await sequelize.query('DROP TABLE IF EXISTS group_vocab_sets;');
+    await sequelize.query('DROP TABLE IF EXISTS group_members;');
+    await sequelize.query('DROP TABLE IF EXISTS `groups`;');
+    await sequelize.query('DROP TABLE IF EXISTS user_answers;');
+    await sequelize.query('DROP TABLE IF EXISTS user_reading_attempts;');
+    await sequelize.query('DROP TABLE IF EXISTS questions;');
+    await sequelize.query('DROP TABLE IF EXISTS readings;');
+    await sequelize.query('DROP TABLE IF EXISTS community_posts;');
+    await sequelize.query('DROP TABLE IF EXISTS level_assessments;');
 
+    // Clean old topics > 2 and their dependent items
     await sequelize.query('DELETE FROM vocab_examples WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
     await sequelize.query('DELETE FROM user_vocab_progress WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
     await sequelize.query('DELETE FROM review_schedules WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
     await sequelize.query('DELETE FROM user_vocab_list_items WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
-    await sequelize.query('DELETE FROM group_vocab_items WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
     await sequelize.query('DELETE FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL;');
-
     await sequelize.query('DELETE FROM topics WHERE id > 2;');
   } catch (cleanErr) {
     console.warn('⚠️ Non-critical notice during table clean:', cleanErr.message);
@@ -96,8 +89,12 @@ async function seed() {
 
   await sequelize.query('SET FOREIGN_KEY_CHECKS = 1;');
 
+  // Sync schema alterations (adds new columns: image_alt, image_credit, cultural_note, related_artist)
+  console.log('🔄 Syncing schema alterations...');
+  await sequelize.sync({ alter: true });
+
   // 1. Seed Topics (2 Fine Arts topics)
-  console.log('📌 Seeding 2 Fine Arts Topics...');
+  console.log('📌 Seeding 2 Fine Arts & Crafts Topics...');
   for (const topic of topicsData) {
     await Topic.upsert(topic);
   }
@@ -111,8 +108,8 @@ async function seed() {
     }
   }
 
-  // 3. Seed Vocabularies with source_ref and image_url
-  console.log('📚 Seeding 60 Fine Arts Vocabularies with images & references...');
+  // 3. Seed Vocabularies with rich cultural notes, artists, images & references
+  console.log('📚 Seeding 60 Fine Arts Vocabularies with images & cultural side-notes...');
   let vocabCount = 0;
   for (const [topicId, words] of Object.entries(vocabByTopic)) {
     for (const item of words) {
@@ -127,6 +124,10 @@ async function seed() {
           example_sentence: item.example_sentence,
           example_translation: item.example_translation,
           image_url: item.image_url,
+          image_alt: item.image_alt,
+          image_credit: item.image_credit,
+          cultural_note: item.cultural_note,
+          related_artist: item.related_artist,
           source_ref: item.source_ref,
           difficulty: item.difficulty,
           source_type: 'system',
@@ -142,6 +143,10 @@ async function seed() {
           example_sentence: item.example_sentence,
           example_translation: item.example_translation,
           image_url: item.image_url,
+          image_alt: item.image_alt,
+          image_credit: item.image_credit,
+          cultural_note: item.cultural_note,
+          related_artist: item.related_artist,
           source_ref: item.source_ref,
           difficulty: item.difficulty
         });
@@ -160,107 +165,39 @@ async function seed() {
       vocabCount++;
     }
   }
-  console.log(`✅ Seeded/Updated ${vocabCount} vocabularies`);
+  console.log(`✅ Seeded/Updated ${vocabCount} vocabularies with cultural notes & artwork visuals`);
 
-  // 4. Seed Readings and Questions
-  console.log('📖 Seeding 6 Fine Arts Readings with 24 comprehension questions...');
-  for (const r of readingsData) {
-    const { questions, ...readingInfo } = r;
-    const [reading] = await Reading.findOrCreate({
-      where: { title: readingInfo.title },
-      defaults: {
-        ...readingInfo,
-        source_type: 'system',
-        is_approved: true
-      }
-    });
-
-    for (let i = 0; i < questions.length; i++) {
-      const q = questions[i];
-      await Question.findOrCreate({
-        where: { reading_id: reading.id, display_order: i },
+  // 4. Seed sample progress for student01
+  const student = await User.findOne({ where: { username: 'student01' } });
+  if (student) {
+    const sampleWords = await Vocabulary.findAll({ limit: 8 });
+    for (let i = 0; i < sampleWords.length; i++) {
+      const w = sampleWords[i];
+      const isMastered = i < 3;
+      await UserVocabProgress.findOrCreate({
+        where: { user_id: student.id, vocabulary_id: w.id },
         defaults: {
-          reading_id: reading.id,
-          question_text: q.question_text,
-          question_text_vi: q.question_text_vi,
-          options: q.options,
-          correct_option: q.correct_option,
-          explanation_vi: q.explanation_vi,
-          display_order: i
+          user_id: student.id,
+          vocabulary_id: w.id,
+          status: isMastered ? 'mastered' : 'learning',
+          correct_count: isMastered ? 5 : 2,
+          incorrect_count: 0,
+          ease_factor: 2.5,
+          interval_days: isMastered ? 16 : 1,
+          repetition_count: isMastered ? 4 : 1,
+          last_reviewed_at: new Date(),
+          next_review_at: new Date(Date.now() + (isMastered ? 86400000 * 5 : -3600000))
         }
       });
-    }
-  }
 
-  // 5. Seed Sample Study Group
-  console.log('👥 Seeding Fine Arts Study Group & Vocab Set...');
-  const teacher = await User.findOne({ where: { username: 'teacher01' } });
-  const student1 = await User.findOne({ where: { username: 'student01' } });
-  const student2 = await User.findOne({ where: { username: 'student02' } });
-
-  if (teacher) {
-    const [group] = await Group.findOrCreate({
-      where: { invite_code: 'ART101' },
-      defaults: {
-        owner_id: teacher.id,
-        name: 'CLB Mỹ Thuật & Di Sản Thủ Công',
-        description: 'Nhóm học tập, thảo luận thuật ngữ nghệ thuật thị giác và phân tích tác phẩm hội họa.',
-        invite_code: 'ART101',
-        is_active: true
-      }
-    });
-
-    await GroupMember.findOrCreate({
-      where: { group_id: group.id, user_id: teacher.id },
-      defaults: { group_id: group.id, user_id: teacher.id, role: 'owner' }
-    });
-
-    if (student1) {
-      await GroupMember.findOrCreate({
-        where: { group_id: group.id, user_id: student1.id },
-        defaults: { group_id: group.id, user_id: student1.id, role: 'member' }
-      });
-    }
-
-    if (student2) {
-      await GroupMember.findOrCreate({
-        where: { group_id: group.id, user_id: student2.id },
-        defaults: { group_id: group.id, user_id: student2.id, role: 'member' }
-      });
-    }
-
-    const [vocabSet] = await GroupVocabSet.findOrCreate({
-      where: { group_id: group.id, title: 'Thuật Ngữ Hội Họa Kinh Điển' },
-      defaults: {
-        group_id: group.id,
-        created_by: teacher.id,
-        title: 'Thuật Ngữ Hội Họa Kinh Điển',
-        description: 'Bộ 10 thuật ngữ nền tảng về thể loại tranh và kỹ thuật vẽ chuyên nghiệp.',
-        is_published: true
-      }
-    });
-
-    const sampleVocabs = await Vocabulary.findAll({ where: { topic_id: 1 }, limit: 10 });
-    for (let idx = 0; idx < sampleVocabs.length; idx++) {
-      await GroupVocabItem.findOrCreate({
-        where: { vocab_set_id: vocabSet.id, vocabulary_id: sampleVocabs[idx].id },
+      await ReviewSchedule.findOrCreate({
+        where: { user_id: student.id, vocabulary_id: w.id },
         defaults: {
-          vocab_set_id: vocabSet.id,
-          vocabulary_id: sampleVocabs[idx].id,
-          display_order: idx
-        }
-      });
-    }
-
-    const sampleReading = await Reading.findOne({ where: { topic_id: 1 } });
-    if (sampleReading) {
-      await GroupReadingSet.findOrCreate({
-        where: { group_id: group.id, reading_id: sampleReading.id },
-        defaults: {
-          group_id: group.id,
-          reading_id: sampleReading.id,
-          created_by: teacher.id,
-          is_published: true
+          user_id: student.id,
+          vocabulary_id: w.id,
+          scheduled_at: new Date(Date.now() + (isMastered ? 86400000 * 5 : -3600000)),
+          is_completed: false,
+          source: 'personal'
         }
       });
     }
@@ -269,7 +206,7 @@ async function seed() {
   console.log('🎉 Fine Arts Database Seeding completed successfully!');
 }
 
-module.exports = { seed, placementQuestionsData };
+module.exports = { seed };
 
 if (require.main === module) {
   seed()

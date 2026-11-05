@@ -27,15 +27,9 @@ module.exports = (sequelize) => {
       defaultValue: false
     },
     source: {
-      type: DataTypes.ENUM('personal', 'group'),
+      type: DataTypes.STRING(20),
       defaultValue: 'personal',
-      comment: 'Nguồn: cá nhân hoặc từ nhóm'
-    },
-    group_vocab_set_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: { model: 'group_vocab_sets', key: 'id' },
-      comment: 'ID bộ từ nhóm (nếu source = group)'
+      comment: 'Nguồn ôn tập (mặc định: cá nhân)'
     }
   }, {
     tableName: 'review_schedules',

@@ -4,6 +4,8 @@ import { toast } from 'react-hot-toast';
 import { exerciseApi, topicApi } from '../../api/services';
 import Button from '../../components/ui/Button';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import VocabImage from '../../components/vocab/VocabImage';
+import VocabSidebarInfo from '../../components/vocab/VocabSidebarInfo';
 import {
   HiCheckCircle,
   HiXCircle,
@@ -12,6 +14,7 @@ import {
   HiLightningBolt,
   HiRefresh
 } from 'react-icons/hi';
+import { HiOutlineSparkles } from 'react-icons/hi2';
 
 export default function ExercisePage() {
   const { id } = useParams();
@@ -125,7 +128,7 @@ export default function ExercisePage() {
   if (isLoading) {
     return (
       <div className="py-20 flex justify-center">
-        <LoadingSpinner size="lg" />
+        <LoadingSpinner size="lg" text="Đang chuẩn bị đề luyện tập mỹ thuật & mỹ nghệ..." />
       </div>
     );
   }
@@ -133,17 +136,19 @@ export default function ExercisePage() {
   // Kết quả sau khi nộp
   if (results) {
     return (
-      <div className="max-w-2xl mx-auto space-y-8 py-6">
-        <div className="card text-center p-8 border">
-          <div className="inline-flex p-4 rounded-full bg-primary-50 text-primary-600 mb-4">
+      <div className="max-w-2xl mx-auto space-y-8 py-6 pb-12">
+        <div className="card text-center p-8 border border-stone-200 shadow-sm rounded-3xl bg-white">
+          <div className="inline-flex p-4 rounded-full bg-amber-50 text-amber-700 mb-4 border border-amber-200">
             <HiLightningBolt className="w-10 h-10" />
           </div>
-          <h1 className="text-2xl font-bold mb-2">Hoàn Thành Bài Luyện Tập!</h1>
-          <p className="text-gray-600 mb-6">Chủ đề: {topic?.name_vi} ({topic?.name})</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold mb-2 font-serif text-stone-900">
+            Hoàn Thành Bài Luyện Tập Mỹ Thuật!
+          </h1>
+          <p className="text-stone-600 mb-6">Chủ đề: {topic?.name_vi} ({topic?.name})</p>
 
-          <div className="p-6 rounded-2xl bg-gray-50 border inline-block mx-auto mb-6 text-center">
-            <p className="text-4xl font-extrabold text-primary-600 mb-1">{results.percentage}%</p>
-            <p className="text-sm font-semibold text-gray-600">
+          <div className="p-6 rounded-2xl bg-amber-50/50 border border-amber-200/80 inline-block mx-auto mb-6 text-center">
+            <p className="text-4xl font-extrabold text-amber-800 mb-1">{results.percentage}%</p>
+            <p className="text-sm font-semibold text-stone-700">
               Đúng {results.correct} / {results.total} câu
             </p>
           </div>
@@ -156,50 +161,72 @@ export default function ExercisePage() {
                 setAnswers({});
                 loadData();
               }}
-              className="gap-2"
+              className="gap-2 rounded-xl"
             >
-              <HiRefresh /> Làm lại bài mới
+              <HiRefresh /> Luyện tập đề mới
             </Button>
-            <Button onClick={() => navigate(`/topics/${id}`)}>
-              Về danh sách từ vựng
+            <Button onClick={() => navigate(`/topics/${id}`)} className="rounded-xl">
+              Về danh mục thuật ngữ
             </Button>
           </div>
         </div>
 
-        <h2 className="text-lg font-bold">Chi tiết từng câu hỏi</h2>
-        <div className="space-y-4">
+        <h2 className="text-lg font-bold text-stone-900 font-serif">Giải thích chi tiết &amp; Bối cảnh văn hóa</h2>
+        <div className="space-y-5">
           {results.detail?.map((item, idx) => (
-            <div key={idx} className="card p-5 border">
-              <div className="flex justify-between items-start mb-2">
-                <p className="font-semibold text-gray-900">
-                  Câu {idx + 1}: {item.question}
-                </p>
+            <div key={idx} className="card p-5 border border-stone-200 rounded-2xl shadow-2xs space-y-3">
+              <div className="flex justify-between items-start gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-stone-100 flex items-center justify-center text-xs font-bold text-stone-700">
+                    {idx + 1}
+                  </span>
+                  <p className="font-semibold text-stone-900 text-sm sm:text-base">
+                    {item.question}
+                  </p>
+                </div>
                 {item.is_correct ? (
-                  <span className="flex items-center gap-1 text-sm font-semibold text-green-600">
+                  <span className="flex items-center gap-1 text-sm font-semibold text-emerald-600 shrink-0">
                     <HiCheckCircle className="w-5 h-5" /> Đúng
                   </span>
                 ) : (
-                  <span className="flex items-center gap-1 text-sm font-semibold text-red-500">
+                  <span className="flex items-center gap-1 text-sm font-semibold text-rose-500 shrink-0">
                     <HiXCircle className="w-5 h-5" /> Sai
                   </span>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 text-sm">
+              {/* Artwork thumbnail if question had an image */}
+              {item.image_url && (
+                <div className="w-24 h-24 rounded-xl overflow-hidden border border-stone-200 bg-stone-50 p-1 shadow-2xs">
+                  <VocabImage src={item.image_url} alt="Minh họa" className="w-full h-full rounded-lg" />
+                </div>
+              )}
+
+              {/* Options */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm">
                 {item.options.map((opt, oIdx) => {
-                  let cls = 'border-gray-200 bg-gray-50';
+                  let cls = 'border-stone-200 bg-stone-50/60 text-stone-700';
                   if (oIdx === item.correct_option) {
-                    cls = 'border-green-500 bg-green-50 text-green-800 font-medium';
+                    cls = 'border-emerald-500 bg-emerald-50 text-emerald-900 font-bold';
                   } else if (oIdx === item.selected_option && !item.is_correct) {
-                    cls = 'border-red-400 bg-red-50 text-red-700';
+                    cls = 'border-rose-400 bg-rose-50 text-rose-800 line-through';
                   }
                   return (
-                    <div key={oIdx} className={`p-2.5 rounded-lg border ${cls}`}>
-                      <span className="font-semibold mr-1">{String.fromCharCode(65 + oIdx)}.</span> {opt}
+                    <div key={oIdx} className={`p-2.5 rounded-xl border ${cls}`}>
+                      <span className="font-semibold mr-1.5">{String.fromCharCode(65 + oIdx)}.</span> {opt}
                     </div>
                   );
                 })}
               </div>
+
+              {/* Cultural Context Note */}
+              {(item.cultural_note || item.related_artist) && (
+                <VocabSidebarInfo
+                  culturalNote={item.cultural_note}
+                  relatedArtist={item.related_artist}
+                  className="mt-2 text-xs"
+                />
+              )}
             </div>
           ))}
         </div>
@@ -212,9 +239,9 @@ export default function ExercisePage() {
 
   if (exercises.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto py-12 text-center card space-y-4">
-        <p className="text-gray-600">Chưa có bài tập nào cho chủ đề này.</p>
-        <Link to={`/topics/${id}`} className="btn btn-primary inline-flex items-center gap-1.5">
+      <div className="max-w-2xl mx-auto py-12 text-center card space-y-4 rounded-2xl border-stone-200">
+        <p className="text-stone-600">Chưa có bài tập nào cho chủ đề này.</p>
+        <Link to={`/topics/${id}`} className="btn btn-primary inline-flex items-center gap-1.5 rounded-xl">
           <HiArrowLeft /> Quay lại chủ đề
         </Link>
       </div>
@@ -222,47 +249,62 @@ export default function ExercisePage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 py-6">
+    <div className="max-w-2xl mx-auto space-y-6 py-6 pb-12">
       {/* Top bar */}
       <div className="flex items-center justify-between">
         <Link
           to={`/topics/${id}`}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-primary-600"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-stone-500 hover:text-amber-800 transition-colors"
         >
           <HiArrowLeft /> Thoát bài tập
         </Link>
-        <span className="text-sm font-semibold text-gray-600">
+        <span className="text-sm font-semibold text-stone-600 bg-stone-100 px-3 py-1 rounded-full">
           Câu {currentIndex + 1} / {exercises.length}
         </span>
       </div>
 
       {/* Progress bar */}
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="w-full bg-stone-200 rounded-full h-2">
         <div
-          className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+          className="bg-amber-600 h-2 rounded-full transition-all duration-300"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
 
       {/* Question Card */}
       {currentQ && (
-        <div className="card p-6 sm:p-8 space-y-6">
+        <div className="card p-6 sm:p-8 space-y-5 rounded-3xl border border-stone-200 shadow-sm bg-white">
           <div>
-            <span className="badge bg-primary-100 text-primary-700 text-xs font-semibold uppercase mb-2">
-              {currentQ.type === 'en_to_vi'
+            <span className="badge bg-amber-100 text-amber-900 border border-amber-200 text-xs font-semibold uppercase mb-2">
+              {currentQ.type === 'image_to_word'
+                ? '🖼️ Nhìn tranh đoán thuật ngữ'
+                : currentQ.type === 'en_to_vi'
                 ? 'Tiếng Anh sang Tiếng Việt'
                 : currentQ.type === 'vi_to_en'
                 ? 'Tiếng Việt sang Tiếng Anh'
-                : 'Điền từ vào chỗ trống'}
+                : 'Điền từ vào ngữ cảnh'}
             </span>
-            <h2 className="text-xl font-bold text-gray-900 mt-2 whitespace-pre-line">
+            <h2 className="text-xl font-bold text-stone-900 mt-2 whitespace-pre-line font-serif">
               {currentQ.question}
             </h2>
             {currentQ.translation && (
-              <p className="text-sm text-gray-500 italic mt-1">"{currentQ.translation}"</p>
+              <p className="text-xs sm:text-sm text-stone-500 italic mt-1 font-serif">"{currentQ.translation}"</p>
             )}
           </div>
 
+          {/* Visual Artwork Box for image questions or questions with an image */}
+          {currentQ.image_url && (
+            <div className="w-44 h-44 sm:w-52 sm:h-52 mx-auto rounded-2xl overflow-hidden border border-stone-200 bg-stone-50 p-2 shadow-xs">
+              <VocabImage
+                src={currentQ.image_url}
+                alt="Minh họa câu hỏi"
+                enableZoom={true}
+                className="w-full h-full rounded-xl"
+              />
+            </div>
+          )}
+
+          {/* Answer choices */}
           <div className="space-y-3">
             {currentQ.options.map((option, oIdx) => {
               const isSelected = answers[currentIndex] === oIdx;
@@ -271,25 +313,25 @@ export default function ExercisePage() {
                   key={oIdx}
                   type="button"
                   onClick={() => handleSelectOption(oIdx)}
-                  className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between cursor-pointer ${
+                  className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-center justify-between cursor-pointer ${
                     isSelected
-                      ? 'border-primary-600 bg-primary-50 text-primary-900 font-semibold'
-                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-800'
+                      ? 'border-amber-600 bg-amber-50 text-amber-950 font-semibold shadow-xs'
+                      : 'border-stone-200 hover:border-amber-300 hover:bg-stone-50 text-stone-800'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <span
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
                         isSelected
-                          ? 'bg-primary-600 text-white'
-                          : 'bg-gray-100 text-gray-600'
+                          ? 'bg-amber-600 text-white'
+                          : 'bg-stone-100 text-stone-600'
                       }`}
                     >
                       {String.fromCharCode(65 + oIdx)}
                     </span>
-                    <span>{option}</span>
+                    <span className="text-sm sm:text-base">{option}</span>
                   </div>
-                  {isSelected && <HiCheckCircle className="w-6 h-6 text-primary-600" />}
+                  {isSelected && <HiCheckCircle className="w-6 h-6 text-amber-600" />}
                 </button>
               );
             })}
@@ -299,12 +341,12 @@ export default function ExercisePage() {
 
       {/* Navigation */}
       <div className="flex justify-between items-center">
-        <Button variant="secondary" onClick={handlePrev} disabled={currentIndex === 0}>
+        <Button variant="secondary" onClick={handlePrev} disabled={currentIndex === 0} className="rounded-xl">
           Câu trước
         </Button>
 
         {currentIndex < exercises.length - 1 ? (
-          <Button onClick={handleNext}>
+          <Button onClick={handleNext} className="rounded-xl">
             Câu tiếp theo
           </Button>
         ) : (
@@ -312,6 +354,7 @@ export default function ExercisePage() {
             variant="success"
             onClick={handleSubmit}
             isLoading={isSubmitting}
+            className="rounded-xl shadow-xs"
           >
             Nộp bài ({Object.keys(answers).length}/{exercises.length} câu)
           </Button>

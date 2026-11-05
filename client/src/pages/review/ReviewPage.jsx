@@ -3,6 +3,8 @@ import { toast } from 'react-hot-toast';
 import { reviewApi, vocabListApi } from '../../api/services';
 import Button from '../../components/ui/Button';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import VocabImage from '../../components/vocab/VocabImage';
+import VocabSidebarInfo from '../../components/vocab/VocabSidebarInfo';
 import {
   HiVolumeUp,
   HiClock,
@@ -52,7 +54,6 @@ export default function ReviewPage() {
       setUpcoming(uRes.data || []);
       setMyLists(listsRes.data || []);
 
-      // Mặc định chọn nguồn: nếu có từ đến hạn thì chọn due_today, nếu không thì all_learning
       if (due.length > 0) {
         setSelectedSource('due_today');
       } else {
@@ -118,14 +119,14 @@ export default function ReviewPage() {
   const vocab = currentItem?.vocabulary;
 
   const getSourceTitle = () => {
-    if (selectedSource === 'due_today') return 'Đang ôn từ đến hạn';
-    if (selectedSource === 'all_learning') return 'Đang ôn tất cả từ đang học';
+    if (selectedSource === 'due_today') return 'Cần ôn hôm nay';
+    if (selectedSource === 'all_learning') return 'Toàn bộ từ đang học';
     if (selectedSource.startsWith('list_')) {
       const listId = selectedSource.replace('list_', '');
-      const list = myLists.find((l) => String(l.id) === String(listId));
-      return list ? `Sổ từ: ${list.name}` : 'Sổ từ cá nhân';
+      const found = myLists.find((l) => String(l.id) === String(listId));
+      return found ? `Sổ từ: ${found.name}` : 'Sổ từ cá nhân';
     }
-    return 'Ôn tập';
+    return 'Luyện tập';
   };
 
   const handleAnswer = async (quality) => {
@@ -133,25 +134,21 @@ export default function ReviewPage() {
 
     try {
       setIsSubmitting(true);
-      await reviewApi.answerReview(vocab.id, { quality });
+      await reviewApi.answer(vocab.id, { quality });
 
-      const qualityLabels = {
-        1: 'Chưa nhớ - Sẽ ôn lại sớm!',
-        3: 'Khó nhớ - Đã cập nhật lịch ôn!',
-        4: 'Nhớ tốt - Tiến độ tăng!',
-        5: 'Rất dễ - Xuất sắc!'
-      };
-      toast.success(qualityLabels[quality] || 'Đã ghi nhận kết quả ôn tập!');
+      toast.success(
+        quality >= 3 ? 'Đã ghi nhận! Lịch ôn đã dời xa hơn.' : 'Đã ghi nhận! Từ sẽ được xếp ôn sớm hơn.'
+      );
 
       setShowAnswer(false);
       if (currentIndex < currentQueue.length - 1) {
         setCurrentIndex(currentIndex + 1);
       } else {
-        toast.success('Bạn đã hoàn thành phiên ôn tập này!');
-        await loadReviewData();
+        // Tải lại để cập nhật hàng đợi mới
+        loadReviewData();
       }
     } catch (err) {
-      toast.error(err.message || 'Ghi nhận thất bại');
+      toast.error(err.message || 'Lỗi khi cập nhật lịch ôn tập');
     } finally {
       setIsSubmitting(false);
     }
@@ -159,41 +156,44 @@ export default function ReviewPage() {
 
   if (isLoading) {
     return (
-      <div className="py-24 flex flex-col items-center justify-center gap-3">
-        <LoadingSpinner size="lg" />
-        <p className="text-xs text-stone-500 font-medium">Đang tải lịch ôn tập...</p>
+      <div className="py-20 flex justify-center">
+        <LoadingSpinner size="lg" text="Đang đồng bộ thuật toán ôn tập ngắt quãng SM-2..." />
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200">
+    <div className="space-y-6 max-w-4xl mx-auto pb-12">
+      {/* Editorial Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-stone-900">
-            Ôn Tập Hôm Nay
+          <span className="text-xs font-bold text-amber-700 uppercase tracking-widest">
+            Spaced Repetition System (SM-2)
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold font-serif text-stone-900 tracking-tight mt-1">
+            Không Gian Ôn Tập Thuật Ngữ
           </h1>
+          <p className="text-sm text-stone-600 mt-1 max-w-xl">
+            Tối ưu hóa khả năng ghi nhớ dài hạn các thuật ngữ mỹ thuật, hội họa và mỹ nghệ bằng thuật toán lặp lại ngắt quãng.
+          </p>
         </div>
 
-        {/* Nguồn ôn tập Selector (Option thống nhất) */}
-        <div className="flex items-center gap-2">
-          <label htmlFor="review-source" className="text-xs font-semibold text-stone-600 hidden sm:inline">
+        {/* Source selector */}
+        <div className="shrink-0 flex items-center gap-2">
+          <label htmlFor="source-select" className="text-xs font-semibold text-stone-500 hidden sm:inline">
             Nguồn ôn:
           </label>
           <div className="relative">
             <select
-              id="review-source"
+              id="source-select"
               value={selectedSource}
               onChange={(e) => handleSourceChange(e.target.value)}
-              className="py-1.5 pl-3 pr-8 rounded-xl text-xs font-semibold border border-stone-300 bg-white text-stone-800 shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-700 cursor-pointer appearance-none"
+              className="appearance-none bg-white border border-stone-300 hover:border-amber-400 text-stone-800 text-xs sm:text-sm font-medium py-2 pl-3 pr-8 rounded-xl shadow-2xs focus:outline-hidden cursor-pointer"
             >
-              <option value="all_learning">
-                ★ Tất cả từ đang học ({learningWords.length} từ)
-              </option>
-              <option value="due_today">
-                ⏰ Chỉ từ đến hạn hôm nay ({dueWords.length} từ)
-              </option>
+              <optgroup label="Hàng đợi hệ thống">
+                <option value="due_today">⚡ Cần ôn hôm nay ({dueWords.length} từ)</option>
+                <option value="all_learning">📚 Tất cả từ đang học ({learningWords.length} từ)</option>
+              </optgroup>
               {myLists.length > 0 && (
                 <optgroup label="Sổ từ cá nhân">
                   {myLists.map((list) => (
@@ -211,44 +211,44 @@ export default function ReviewPage() {
         </div>
       </div>
 
-      {/* Stats Cards - Có thể click để chọn nguồn ôn */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
         <div
           onClick={() => handleSourceChange('due_today')}
-          className={`card text-center p-4 cursor-pointer transition-all border ${
+          className={`card text-center p-4 cursor-pointer transition-all border rounded-2xl ${
             selectedSource === 'due_today' && activeTab === 'queue'
-              ? 'ring-2 ring-orange-500 bg-orange-50/70 border-orange-300 shadow-sm'
-              : 'bg-white hover:bg-orange-50/30 border-stone-200'
+              ? 'ring-2 ring-amber-600 bg-amber-50/70 border-amber-300 shadow-sm'
+              : 'bg-white hover:bg-amber-50/30 border-stone-200'
           }`}
         >
           <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Cần ôn hôm nay</span>
-          <p className="font-serif text-2xl sm:text-3xl font-bold text-orange-600 mt-1">
+          <p className="font-serif text-2xl sm:text-3xl font-bold text-amber-700 mt-1">
             {stats?.dueCount || 0}
           </p>
         </div>
 
         <div
           onClick={() => handleSourceChange('all_learning')}
-          className={`card text-center p-4 cursor-pointer transition-all border ${
+          className={`card text-center p-4 cursor-pointer transition-all border rounded-2xl ${
             selectedSource === 'all_learning' && activeTab === 'queue'
-              ? 'ring-2 ring-emerald-600 bg-emerald-50/70 border-emerald-300 shadow-sm'
-              : 'bg-white hover:bg-emerald-50/30 border-stone-200'
+              ? 'ring-2 ring-amber-800 bg-stone-50 border-amber-400 shadow-sm'
+              : 'bg-white hover:bg-stone-50 border-stone-200'
           }`}
         >
           <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Đang học</span>
-          <p className="font-serif text-2xl sm:text-3xl font-bold text-emerald-800 mt-1">
+          <p className="font-serif text-2xl sm:text-3xl font-bold text-stone-900 mt-1">
             {stats?.learningCount || 0}
           </p>
         </div>
 
-        <div className="card text-center p-4 bg-white border border-stone-200">
+        <div className="card text-center p-4 bg-white border border-stone-200 rounded-2xl">
           <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Đã thuần thục</span>
-          <p className="font-serif text-2xl sm:text-3xl font-bold text-stone-800 mt-1">
+          <p className="font-serif text-2xl sm:text-3xl font-bold text-emerald-700 mt-1">
             {stats?.masteredCount || 0}
           </p>
         </div>
 
-        <div className="card text-center p-4 bg-white border border-stone-200">
+        <div className="card text-center p-4 bg-white border border-stone-200 rounded-2xl">
           <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Độ chính xác</span>
           <p className="font-serif text-2xl sm:text-3xl font-bold text-stone-800 mt-1">
             {stats?.accuracyRate || 0}%
@@ -256,27 +256,25 @@ export default function ReviewPage() {
         </div>
       </div>
 
-      {/* Tabs Phụ: Thẻ ôn tập | Danh sách từ đang học | Lịch sắp tới */}
+      {/* Tabs Phụ */}
       <div className="flex border-b border-stone-200 text-xs sm:text-sm font-semibold gap-2">
         <button
           onClick={() => setActiveTab('queue')}
           className={`py-2.5 px-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'queue'
-              ? 'border-emerald-800 text-emerald-800 font-bold'
+              ? 'border-amber-700 text-amber-900 font-bold'
               : 'border-transparent text-stone-500 hover:text-stone-800'
           }`}
         >
-          <HiSparkles className="w-4 h-4" />
-          <span>
-            Thẻ ôn tập ({currentQueue.length})
-          </span>
+          <HiSparkles className="w-4 h-4 text-amber-600" />
+          <span>Thẻ ôn tập ({currentQueue.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab('learning_list')}
           className={`py-2.5 px-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'learning_list'
-              ? 'border-emerald-800 text-emerald-800 font-bold'
+              ? 'border-amber-700 text-amber-900 font-bold'
               : 'border-transparent text-stone-500 hover:text-stone-800'
           }`}
         >
@@ -288,7 +286,7 @@ export default function ReviewPage() {
           onClick={() => setActiveTab('upcoming')}
           className={`py-2.5 px-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'upcoming'
-              ? 'border-emerald-800 text-emerald-800 font-bold'
+              ? 'border-amber-700 text-amber-900 font-bold'
               : 'border-transparent text-stone-500 hover:text-stone-800'
           }`}
         >
@@ -306,49 +304,66 @@ export default function ReviewPage() {
               <span>Đang tải các từ trong sổ từ...</span>
             </div>
           ) : currentQueue.length > 0 && vocab ? (
-            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-sm max-w-2xl mx-auto space-y-6">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm max-w-2xl mx-auto space-y-6">
               {/* Badge & Mode Header */}
               <div className="flex justify-between items-center text-xs font-semibold text-stone-500 pb-3 border-b border-stone-100">
-                <span className="flex items-center gap-1.5 text-emerald-800">
+                <span className="flex items-center gap-1.5 text-amber-800">
                   <HiClock className="w-4 h-4" />
                   {getSourceTitle()}: {currentIndex + 1} / {currentQueue.length}
                 </span>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200 font-medium">
-                  {vocab.topic?.name_vi || 'Từ vựng'}
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200 font-medium">
+                  {vocab.topic?.name_vi || 'Mỹ thuật & Mỹ nghệ'}
                 </span>
               </div>
 
               {/* Front side of card */}
-              <div className="text-center py-6">
-                <h2 className="text-4xl sm:text-5xl font-extrabold font-serif text-stone-900 tracking-tight mb-2">
+              <div className="text-center py-4 flex flex-col items-center justify-center">
+                <div className="w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-3 rounded-2xl overflow-hidden shadow-2xs border border-stone-200 bg-stone-50 p-1.5">
+                  <VocabImage
+                    src={vocab.image_url}
+                    alt={vocab.image_alt || vocab.word}
+                    enableZoom={true}
+                    className="w-full h-full rounded-xl"
+                  />
+                </div>
+
+                <h2 className="text-3xl sm:text-4xl font-extrabold font-serif text-stone-900 tracking-tight mb-1">
                   {vocab.word}
                 </h2>
-                <p className="text-sm text-stone-500 font-mono mb-4">{vocab.pronunciation}</p>
+                <p className="text-sm text-stone-500 font-mono mb-3">{vocab.pronunciation}</p>
                 <button
                   type="button"
                   onClick={() => handleSpeak(vocab.word)}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors cursor-pointer"
                 >
-                  <HiVolumeUp className="w-4 h-4 text-emerald-800" /> Nghe phát âm
+                  <HiVolumeUp className="w-4 h-4 text-amber-700" /> Nghe phát âm
                 </button>
               </div>
 
               {/* Back side / Answer section */}
               {showAnswer ? (
                 <div className="space-y-6 pt-4 border-t border-stone-100">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold font-serif text-emerald-800 mb-1">
+                  <div className="text-center space-y-3">
+                    <p className="text-2xl font-bold font-serif text-amber-900 mb-1">
                       {vocab.meaning_vi}
                     </p>
                     <span className="text-xs text-stone-400 font-semibold uppercase tracking-wider">
                       ({vocab.part_of_speech})
                     </span>
                     {vocab.example_sentence && (
-                      <div className="mt-4 p-4 rounded-xl bg-stone-50 border border-stone-200 text-left text-sm space-y-1">
+                      <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200 text-left text-xs sm:text-sm space-y-1">
                         <p className="font-semibold text-stone-800">"{vocab.example_sentence}"</p>
                         <p className="text-stone-500 italic">"{vocab.example_translation}"</p>
                       </div>
                     )}
+
+                    {/* Cultural Side-Notes */}
+                    <VocabSidebarInfo
+                      culturalNote={vocab.cultural_note}
+                      relatedArtist={vocab.related_artist}
+                      sourceRef={vocab.source_ref}
+                      imageCredit={vocab.image_credit}
+                    />
                   </div>
 
                   {/* 4 Assessment Buttons */}
@@ -400,22 +415,22 @@ export default function ReviewPage() {
                   <Button
                     onClick={() => setShowAnswer(true)}
                     size="lg"
-                    className="w-full sm:w-auto px-8 bg-emerald-800 hover:bg-emerald-900 text-white"
+                    className="w-full sm:w-auto px-8 bg-amber-800 hover:bg-amber-900 text-white rounded-xl shadow-xs"
                   >
-                    Hiện đáp án & Nghĩa
+                    Hiện đáp án &amp; Bối cảnh văn hóa
                   </Button>
                 </div>
               )}
             </div>
           ) : (
             /* Khi không có từ trong hàng đợi hiện tại */
-            <div className="bg-white rounded-2xl border border-stone-200 text-center p-10 max-w-xl mx-auto space-y-4 shadow-sm">
-              <div className="inline-flex p-4 rounded-full bg-emerald-50 text-emerald-700">
+            <div className="bg-white rounded-3xl border border-stone-200 text-center p-10 max-w-xl mx-auto space-y-4 shadow-sm">
+              <div className="inline-flex p-4 rounded-full bg-amber-50 text-amber-700">
                 <HiCheckCircle className="w-12 h-12" />
               </div>
               <h2 className="text-xl font-bold font-serif text-stone-900">
                 {selectedSource === 'due_today'
-                  ? 'Hôm nay chưa có từ nào đến hạn ôn'
+                  ? 'Hôm nay chưa có thuật ngữ nào đến hạn ôn'
                   : selectedSource.startsWith('list_')
                   ? 'Sổ từ này hiện chưa có từ vựng nào'
                   : 'Bạn chưa có từ nào trong danh sách đang học'}
@@ -424,13 +439,13 @@ export default function ReviewPage() {
               {selectedSource === 'due_today' && learningWords.length > 0 ? (
                 <div className="space-y-4">
                   <p className="text-sm text-stone-600 leading-relaxed">
-                    Hệ thống sẽ tự động nhắc bạn khi não bộ chuẩn bị quên theo thuật toán ngắt quãng. Tuy nhiên, bạn đang có{' '}
-                    <strong className="text-emerald-800 font-bold">{learningWords.length} từ đang học</strong>{' '}
+                    Hệ thống sẽ tự động nhắc bạn khi não bộ chuẩn bị quên theo thuật toán SM-2. Bạn đang có{' '}
+                    <strong className="text-amber-800 font-bold">{learningWords.length} thuật ngữ đang học</strong>{' '}
                     và có thể chủ động ôn tập ngay bây giờ!
                   </p>
                   <Button
                     onClick={() => handleSourceChange('all_learning')}
-                    className="bg-emerald-800 hover:bg-emerald-900 text-white gap-2"
+                    className="bg-amber-800 hover:bg-amber-900 text-white gap-2 rounded-xl"
                   >
                     <HiLightningBolt className="w-4 h-4" /> Ôn tập ngay các từ đang học ({learningWords.length})
                   </Button>
@@ -442,14 +457,14 @@ export default function ReviewPage() {
                   </p>
                   <Button
                     onClick={() => handleSourceChange('all_learning')}
-                    className="bg-emerald-800 hover:bg-emerald-900 text-white gap-2"
+                    className="bg-amber-800 hover:bg-amber-900 text-white gap-2 rounded-xl"
                   >
                     <HiLightningBolt className="w-4 h-4" /> Ôn tập tất cả từ đang học ({learningWords.length})
                   </Button>
                 </div>
               ) : (
                 <p className="text-sm text-stone-500 leading-relaxed">
-                  Hãy vào mục <strong>Từ vựng</strong> để thêm các từ mới vào danh sách học của bạn!
+                  Hãy vào mục <strong>Từ vựng</strong> để khám phá và thêm các thuật ngữ mỹ thuật mới vào lộ trình học!
                 </p>
               )}
             </div>
@@ -471,7 +486,7 @@ export default function ReviewPage() {
               <Button
                 size="sm"
                 onClick={() => handleSourceChange('all_learning')}
-                className="bg-emerald-800 hover:bg-emerald-900 text-white gap-1.5 text-xs"
+                className="bg-amber-800 hover:bg-amber-900 text-white gap-1.5 text-xs rounded-xl"
               >
                 <HiLightningBolt className="w-3.5 h-3.5" /> Bắt đầu ôn tập ({learningWords.length} từ)
               </Button>
@@ -487,14 +502,9 @@ export default function ReviewPage() {
                 return (
                   <div key={item.id || idx} className="py-3.5 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => handleSpeak(v.word)}
-                        className="p-1.5 rounded-lg text-stone-400 hover:text-emerald-800 hover:bg-stone-50 transition-colors"
-                        title="Nghe phát âm"
-                      >
-                        <HiVolumeUp className="w-4 h-4" />
-                      </button>
+                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-stone-200 bg-stone-50 p-1 shrink-0">
+                        <VocabImage src={v.image_url} alt={v.word} className="w-full h-full rounded-lg" />
+                      </div>
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-stone-900 text-base">{v.word}</span>
@@ -531,7 +541,7 @@ export default function ReviewPage() {
       {activeTab === 'upcoming' && (
         <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 space-y-4">
           <div className="flex items-center gap-2 pb-3 border-b border-stone-100">
-            <HiCalendar className="w-5 h-5 text-emerald-800" />
+            <HiCalendar className="w-5 h-5 text-amber-800" />
             <h2 className="text-base font-bold font-serif text-stone-900">
               Lịch ôn tập sắp tới (7 ngày tới)
             </h2>
@@ -541,9 +551,16 @@ export default function ReviewPage() {
             <div className="divide-y divide-stone-100 text-sm">
               {upcoming.map((item) => (
                 <div key={item.id} className="py-3 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-2.5">
-                    <span className="font-bold text-stone-900">{item.vocabulary?.word}</span>
-                    <span className="text-stone-500 text-xs">({item.vocabulary?.meaning_vi})</span>
+                  <div className="flex items-center gap-3">
+                    {item.vocabulary?.image_url && (
+                      <div className="w-10 h-10 rounded-lg overflow-hidden border border-stone-200 bg-stone-50 p-0.5 shrink-0">
+                        <VocabImage src={item.vocabulary.image_url} alt="" className="w-full h-full rounded" />
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2.5">
+                      <span className="font-bold text-stone-900">{item.vocabulary?.word}</span>
+                      <span className="text-stone-500 text-xs">({item.vocabulary?.meaning_vi})</span>
+                    </div>
                   </div>
                   <span className="text-xs px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 font-medium">
                     {new Date(item.scheduled_at).toLocaleDateString('vi-VN', {

@@ -47,6 +47,26 @@ module.exports = (sequelize) => {
       allowNull: true,
       comment: 'URL hình ảnh minh họa'
     },
+    image_alt: {
+      type: DataTypes.STRING(300),
+      allowNull: true,
+      comment: 'Mô tả hình ảnh phục vụ trợ năng (alt text)'
+    },
+    image_credit: {
+      type: DataTypes.STRING(300),
+      allowNull: true,
+      comment: 'Nguồn hoặc giấy phép bản quyền hình ảnh'
+    },
+    cultural_note: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      comment: 'Bối cảnh văn hóa – lịch sử, nguồn gốc kỹ thuật hoặc phong trào nghệ thuật'
+    },
+    related_artist: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      comment: 'Nghệ sĩ, tác phẩm hoặc làng nghề thủ công tiêu biểu liên quan'
+    },
     audio_url: {
       type: DataTypes.STRING(500),
       allowNull: true,
@@ -60,7 +80,7 @@ module.exports = (sequelize) => {
     source_ref: {
       type: DataTypes.STRING(255),
       allowNull: true,
-      comment: 'Nguồn từ điển tham chiếu chuẩn xác (Duden, Oxford Art, etc.)'
+      comment: 'Nguồn từ điển tham chiếu chuẩn xác (Oxford Art, Tate, MoMA, etc.)'
     },
     source_type: {
       type: DataTypes.ENUM('system', 'community'),

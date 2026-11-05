@@ -30,20 +30,14 @@ const getUpcomingReviews = catchAsync(async (req, res) => {
 const answerReview = catchAsync(async (req, res) => {
   const userId = req.user.id;
   const vocabId = parseInt(req.params.vocabId);
-  const { quality, source, group_vocab_set_id } = req.body;
+  const { quality } = req.body;
 
   const q = Number(quality);
   if (isNaN(q) || q < 0 || q > 5) {
     throw new AppError('Điểm chất lượng (quality) phải là số từ 0 đến 5.', 400);
   }
 
-  const updatedProgress = await SrsService.recordReviewAnswer(
-    userId,
-    vocabId,
-    q,
-    source || 'personal',
-    group_vocab_set_id || null
-  );
+  const updatedProgress = await SrsService.recordReviewAnswer(userId, vocabId, q);
 
   return ApiResponse.success(res, updatedProgress, 'Đã ghi nhận kết quả ôn tập và cập nhật lịch ôn');
 });

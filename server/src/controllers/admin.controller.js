@@ -1,9 +1,6 @@
 const {
   User,
   Vocabulary,
-  Reading,
-  Question,
-  CommunityPost,
   Topic,
   VocabExample,
   sequelize
@@ -68,7 +65,7 @@ const toggleUserStatus = catchAsync(async (req, res) => {
   return ApiResponse.success(res, user, `Tài khoản đã ${user.is_active ? 'mở khóa' : 'bị khóa'}`);
 });
 
-// === QUẢN TRỊ TỪ VỰNG ===
+// === QUẢN TRỊ TỪ VỰNG MỸ THUẬT & MỸ NGHỆ ===
 
 const createVocabulary = catchAsync(async (req, res) => {
   const {
@@ -80,6 +77,11 @@ const createVocabulary = catchAsync(async (req, res) => {
     example_sentence,
     example_translation,
     image_url,
+    image_alt,
+    image_credit,
+    cultural_note,
+    related_artist,
+    source_ref,
     difficulty
   } = req.body;
 
@@ -92,6 +94,11 @@ const createVocabulary = catchAsync(async (req, res) => {
     example_sentence,
     example_translation,
     image_url,
+    image_alt,
+    image_credit,
+    cultural_note,
+    related_artist,
+    source_ref,
     difficulty: difficulty || 'easy',
     source_type: 'system',
     is_approved: true
@@ -126,103 +133,11 @@ const deleteVocabulary = catchAsync(async (req, res) => {
   return ApiResponse.success(res, null, 'Xóa từ vựng thành công');
 });
 
-// === QUẢN TRỊ BÀI ĐỌC & CÂU HỎI ===
-
-const createReading = catchAsync(async (req, res) => {
-  const { topic_id, title, title_vi, content, content_vi, difficulty, questions = [] } = req.body;
-
-  const reading = await sequelize.transaction(async (t) => {
-    const newReading = await Reading.create({
-      topic_id,
-      title,
-      title_vi,
-      content,
-      content_vi,
-      difficulty: difficulty || 'easy',
-      word_count: content ? content.split(/\s+/).length : 0,
-      estimated_time_minutes: Math.ceil((content ? content.split(/\s+/).length : 0) / 40),
-      source_type: 'system',
-      is_approved: true
-    }, { transaction: t });
-
-    for (let i = 0; i < questions.length; i++) {
-      const q = questions[i];
-      await Question.create({
-        reading_id: newReading.id,
-        question_text: q.question_text,
-        question_text_vi: q.question_text_vi,
-        options: q.options,
-        correct_option: q.correct_option,
-        explanation_vi: q.explanation_vi,
-        display_order: i
-      }, { transaction: t });
-    }
-
-    return newReading;
-  });
-
-  return ApiResponse.created(res, reading, 'Tạo bài đọc mới thành công');
-});
-
-const updateReading = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const reading = await Reading.findByPk(id);
-  if (!reading) throw new AppError('Không tìm thấy bài đọc.', 404);
-
-  await reading.update(req.body);
-  return ApiResponse.success(res, reading, 'Cập nhật bài đọc thành công');
-});
-
-const deleteReading = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const reading = await Reading.findByPk(id);
-  if (!reading) throw new AppError('Không tìm thấy bài đọc.', 404);
-
-  await reading.destroy();
-  return ApiResponse.success(res, null, 'Xóa bài đọc thành công');
-});
-
-// === KIỂM DUYỆT BÀI CỘNG ĐỒNG ===
-
-const getPendingCommunityPosts = catchAsync(async (req, res) => {
-  const posts = await CommunityPost.findAll({
-    where: { status: 'pending' },
-    include: [{ model: User, as: 'author', attributes: ['id', 'username', 'full_name', 'email'] }],
-    order: [['created_at', 'ASC']]
-  });
-
-  return ApiResponse.success(res, posts, 'Lấy danh sách bài chờ duyệt thành công');
-});
-
-const reviewCommunityPost = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const { status, admin_note } = req.body; // status: 'approved' | 'rejected'
-
-  if (!['approved', 'rejected'].includes(status)) {
-    throw new AppError('Trạng thái duyệt phải là "approved" hoặc "rejected".', 400);
-  }
-
-  const post = await CommunityPost.findByPk(id);
-  if (!post) throw new AppError('Không tìm thấy bài đăng.', 404);
-
-  post.status = status;
-  post.admin_note = admin_note || null;
-  post.reviewed_at = new Date();
-  await post.save();
-
-  return ApiResponse.success(res, post, `Bài đăng đã được ${status === 'approved' ? 'phê duyệt' : 'từ chối'}`);
-});
-
 module.exports = {
   getUsers,
   updateUserRole,
   toggleUserStatus,
   createVocabulary,
   updateVocabulary,
-  deleteVocabulary,
-  createReading,
-  updateReading,
-  deleteReading,
-  getPendingCommunityPosts,
-  reviewCommunityPost
+  deleteVocabulary
 };
