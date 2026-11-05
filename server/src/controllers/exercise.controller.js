@@ -44,7 +44,7 @@ const getVocabExercises = catchAsync(async (req, res) => {
     const distractors = shuffle(otherWords).slice(0, 3);
 
     if (type === 3 && target.image_url) {
-      // Nhìn tranh đoán từ vựng / thuật ngữ
+      // Nhìn tranh đoán từ vựng / thuật ngữ (KHÔNG gửi meaning_vi hoặc cultural_note trước khi trả lời)
       const options = shuffle([
         target.word,
         distractors[0].word,
@@ -57,14 +57,11 @@ const getVocabExercises = catchAsync(async (req, res) => {
         type: 'image_to_word',
         question: 'Hình ảnh minh họa sau đây thể hiện thuật ngữ mỹ thuật/thủ công nào?',
         image_url: target.image_url,
-        meaning_vi: target.meaning_vi,
-        cultural_note: target.cultural_note,
-        related_artist: target.related_artist,
         options,
         correct_option: options.indexOf(target.word)
       });
     } else if (type === 0) {
-      // English to Vietnamese
+      // English to Vietnamese (chỉ gửi câu hỏi, không kèm ảnh hay bối cảnh để lộ đáp án)
       const options = shuffle([
         target.meaning_vi,
         distractors[0].meaning_vi,
@@ -78,9 +75,6 @@ const getVocabExercises = catchAsync(async (req, res) => {
         question: `Thuật ngữ "${target.word}" có nghĩa là gì?`,
         pronunciation: target.pronunciation,
         part_of_speech: target.part_of_speech,
-        image_url: target.image_url,
-        cultural_note: target.cultural_note,
-        related_artist: target.related_artist,
         options,
         correct_option: options.indexOf(target.meaning_vi)
       });
@@ -98,9 +92,6 @@ const getVocabExercises = catchAsync(async (req, res) => {
         type: 'vi_to_en',
         question: `Thuật ngữ tiếng Anh nào diễn đạt: "${target.meaning_vi}"?`,
         part_of_speech: target.part_of_speech,
-        image_url: target.image_url,
-        cultural_note: target.cultural_note,
-        related_artist: target.related_artist,
         options,
         correct_option: options.indexOf(target.word)
       });
@@ -123,9 +114,6 @@ const getVocabExercises = catchAsync(async (req, res) => {
           type: 'fill_blank',
           question: `Điền từ thích hợp vào chỗ trống trong ngữ cảnh mỹ thuật:\n"${blankSentence}"`,
           translation: target.example_translation,
-          image_url: target.image_url,
-          cultural_note: target.cultural_note,
-          related_artist: target.related_artist,
           options,
           correct_option: options.indexOf(target.word)
         });
@@ -141,9 +129,6 @@ const getVocabExercises = catchAsync(async (req, res) => {
           vocabulary_id: target.id,
           type: 'en_to_vi',
           question: `Thuật ngữ "${target.word}" có nghĩa là gì?`,
-          image_url: target.image_url,
-          cultural_note: target.cultural_note,
-          related_artist: target.related_artist,
           options,
           correct_option: options.indexOf(target.meaning_vi)
         });
@@ -169,10 +154,39 @@ const submitVocabExercises = catchAsync(async (req, res) => {
     await SrsService.recordReviewAnswer(userId, item.vocabulary_id, quality);
   }
 
+  // Lấy chi tiết thông tin bên lề & tranh để giải thích sau khi đã nộp bài
+  const vocabIds = results.map((r) => r.vocabulary_id);
+  const vocabs = await Vocabulary.findAll({
+    where: { id: vocabIds }
+  });
+  const vocabMap = {};
+  vocabs.forEach((v) => {
+    vocabMap[v.id] = v;
+  });
+
+  const explanations = results.map((item) => {
+    const v = vocabMap[item.vocabulary_id];
+    return {
+      vocabulary_id: item.vocabulary_id,
+      is_correct: item.is_correct,
+      word: v?.word,
+      pronunciation: v?.pronunciation,
+      meaning_vi: v?.meaning_vi,
+      image_url: v?.image_url,
+      image_alt: v?.image_alt,
+      cultural_note: v?.cultural_note,
+      related_artist: v?.related_artist,
+      source_ref: v?.source_ref,
+      example_sentence: v?.example_sentence,
+      example_translation: v?.example_translation
+    };
+  });
+
   return ApiResponse.success(res, {
     total: results.length,
     correct: correctCount,
-    percentage: results.length > 0 ? Math.round((correctCount / results.length) * 100) : 0
+    percentage: results.length > 0 ? Math.round((correctCount / results.length) * 100) : 0,
+    explanations
   }, 'Đã chấm điểm và cập nhật tiến độ ôn tập');
 });
 

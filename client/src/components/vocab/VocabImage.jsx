@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const FALLBACK_SRC = '/images/vocab/_placeholder.svg';
 
@@ -18,6 +18,12 @@ export default function VocabImage({
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isZoomed, setIsZoomed] = useState(false);
+
+  // Reset trạng thái lỗi & loading khi src thay đổi (ví dụ khi lật qua từ mới)
+  useEffect(() => {
+    setHasError(false);
+    setIsLoading(true);
+  }, [src]);
 
   const finalSrc = !src || hasError ? FALLBACK_SRC : src;
 

@@ -6,6 +6,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { HiUser, HiKey, HiFlag } from 'react-icons/hi';
+import { HiOutlineSparkles, HiOutlinePaintBrush } from 'react-icons/hi2';
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuthStore();
@@ -88,54 +89,54 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8 pb-12">
       <div>
-        <h1 className="text-2xl font-bold">Hồ Sơ Cá Nhân & Mục Tiêu</h1>
-        <p className="text-gray-600">Quản lý tài khoản, thiết lập mục tiêu và theo dõi kết quả học tập</p>
+        <h1 className="text-2xl font-bold font-serif text-stone-900">Hồ Sơ Cá Nhân &amp; Mục Tiêu Học Tập</h1>
+        <p className="text-sm text-stone-600 mt-1">Quản lý tài khoản, thiết lập mục tiêu và theo dõi tiến độ thuật ngữ Mỹ thuật</p>
       </div>
 
       {/* Stats Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="card text-center p-4 bg-blue-50/50 border-blue-100">
-          <p className="text-xs text-gray-500 uppercase font-semibold">Từ đã học</p>
-          <p className="text-3xl font-bold text-blue-600 mt-1">{stats?.learnedCount || 0}</p>
+        <div className="card text-center p-4 bg-stone-50 border border-stone-200 rounded-2xl">
+          <p className="text-xs text-stone-500 uppercase font-semibold">Thuật ngữ đã học</p>
+          <p className="text-3xl font-bold font-serif text-stone-900 mt-1">{stats?.learnedCount || 0}</p>
         </div>
-        <div className="card text-center p-4 bg-green-50/50 border-green-100">
-          <p className="text-xs text-gray-500 uppercase font-semibold">Từ thuần thục</p>
-          <p className="text-3xl font-bold text-green-600 mt-1">{stats?.masteredCount || 0}</p>
+        <div className="card text-center p-4 bg-emerald-50/60 border border-emerald-200 rounded-2xl">
+          <p className="text-xs text-emerald-800 uppercase font-semibold">Đã thuần thục</p>
+          <p className="text-3xl font-bold font-serif text-emerald-700 mt-1">{stats?.masteredCount || 0}</p>
         </div>
-        <div className="card text-center p-4 bg-purple-50/50 border-purple-100">
-          <p className="text-xs text-gray-500 uppercase font-semibold">Bài đọc xong</p>
-          <p className="text-3xl font-bold text-purple-600 mt-1">{stats?.completedReadingsCount || 0}</p>
+        <div className="card text-center p-4 bg-amber-50/60 border border-amber-200 rounded-2xl">
+          <p className="text-xs text-amber-800 uppercase font-semibold">Cần ôn hôm nay</p>
+          <p className="text-3xl font-bold font-serif text-amber-700 mt-1">{stats?.dueTodayCount || 0}</p>
         </div>
-        <div className="card text-center p-4 bg-orange-50/50 border-orange-100">
-          <p className="text-xs text-gray-500 uppercase font-semibold">Độ chính xác</p>
-          <p className="text-3xl font-bold text-orange-600 mt-1">{stats?.readingAccuracy || 0}%</p>
+        <div className="card text-center p-4 bg-stone-50 border border-stone-200 rounded-2xl">
+          <p className="text-xs text-stone-500 uppercase font-semibold">Độ chính xác SM-2</p>
+          <p className="text-3xl font-bold font-serif text-stone-900 mt-1">{stats?.accuracyRate || 0}%</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Profile Info */}
-        <div className="card space-y-4">
-          <div className="flex items-center gap-2 pb-3 border-b">
-            <HiUser className="w-5 h-5 text-primary-600" />
-            <h2 className="text-lg font-bold">Thông tin tài khoản</h2>
+        <div className="card space-y-4 rounded-2xl border border-stone-200 p-6 bg-white">
+          <div className="flex items-center gap-2 pb-3 border-b border-stone-200">
+            <HiUser className="w-5 h-5 text-amber-700" />
+            <h2 className="text-lg font-bold font-serif text-stone-900">Thông tin tài khoản</h2>
           </div>
 
           <form onSubmit={handleProfileSubmit} className="space-y-4">
             <div>
-              <label className="label">Tên đăng nhập</label>
+              <label className="label text-xs font-semibold text-stone-600">Tên đăng nhập</label>
               <input
-                className="input bg-gray-100 cursor-not-allowed"
+                className="input bg-stone-100 cursor-not-allowed rounded-xl text-stone-600 text-sm"
                 value={user?.username || ''}
                 disabled
               />
             </div>
 
             <div>
-              <label className="label">Email</label>
+              <label className="label text-xs font-semibold text-stone-600">Email</label>
               <input
-                className="input bg-gray-100 cursor-not-allowed"
+                className="input bg-stone-100 cursor-not-allowed rounded-xl text-stone-600 text-sm"
                 value={user?.email || ''}
                 disabled
               />
@@ -149,88 +150,78 @@ export default function ProfilePage() {
             />
 
             <div>
-              <label className="label">Vai trò</label>
-              <span className="badge bg-primary-100 text-primary-700 capitalize">
-                {user?.role === 'admin' ? 'Quản trị viên' : user?.role === 'group_owner' ? 'Chủ nhóm / Giáo viên' : 'Học viên'}
+              <label className="label text-xs font-semibold text-stone-600">Vai trò</label>
+              <span className="badge bg-amber-100 text-amber-900 border border-amber-200 font-semibold text-xs capitalize">
+                {user?.role === 'admin' ? 'Quản trị viên' : 'Học viên Mỹ thuật'}
               </span>
             </div>
 
-            <Button type="submit" isLoading={isUpdatingProfile}>
+            <Button type="submit" isLoading={isUpdatingProfile} className="rounded-xl">
               Lưu thay đổi
             </Button>
           </form>
         </div>
 
         {/* Learning Goal */}
-        <div className="card space-y-4">
-          <div className="flex items-center gap-2 pb-3 border-b">
-            <HiFlag className="w-5 h-5 text-success-600" />
-            <h2 className="text-lg font-bold">Mục tiêu học tập</h2>
+        <div className="card space-y-4 rounded-2xl border border-stone-200 p-6 bg-white">
+          <div className="flex items-center gap-2 pb-3 border-b border-stone-200">
+            <HiFlag className="w-5 h-5 text-amber-700" />
+            <h2 className="text-lg font-bold font-serif text-stone-900">Mục tiêu học tập mỹ thuật</h2>
           </div>
 
           <form onSubmit={handleGoalSubmit} className="space-y-4">
             <div>
-              <label className="label">Mục tiêu của bạn</label>
+              <label className="label text-xs font-semibold text-stone-600">
+                Mục tiêu của bạn (ví dụ: Nghiên cứu tranh phục hưng, giao tiếp triển lãm mỹ nghệ...)
+              </label>
               <textarea
-                className="input h-32 resize-none"
-                placeholder="Ví dụ: Mỗi ngày học 10 từ vựng mới, hoàn thành 2 bài đọc hiểu và ôn tập đúng lịch SM-2..."
+                className="input h-32 rounded-xl text-sm"
+                placeholder="Nhập mục tiêu học tập cá nhân..."
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
               />
             </div>
 
-            <div className="p-4 rounded-xl bg-gray-50 border text-sm text-gray-600 space-y-2">
-              <p className="font-semibold text-gray-800">💡 Lời khuyên thiết lập mục tiêu:</p>
-              <ul className="list-disc pl-5 space-y-1 text-xs text-gray-600">
-                <li>Duy trì streak học từ vựng mỗi ngày ít nhất 15 phút.</li>
-                <li>Làm đầy đủ các lượt ôn tập Spaced Repetition đến hạn.</li>
-                <li>Tham gia ít nhất một nhóm học để cùng bạn bè thi đua.</li>
-              </ul>
-            </div>
-
-            <Button type="submit" variant="success" isLoading={isUpdatingGoal}>
-              Cập nhật mục tiêu
+            <Button type="submit" variant="secondary" isLoading={isUpdatingGoal} className="rounded-xl">
+              Lưu mục tiêu
             </Button>
           </form>
+
+          {/* Change Password */}
+          <div className="pt-6 border-t border-stone-200 space-y-4">
+            <div className="flex items-center gap-2">
+              <HiKey className="w-5 h-5 text-amber-700" />
+              <h3 className="font-bold font-serif text-stone-900 text-base">Đổi mật khẩu</h3>
+            </div>
+
+            <form onSubmit={handlePasswordSubmit} className="space-y-3">
+              <Input
+                label="Mật khẩu hiện tại"
+                type="password"
+                value={passwordData.currentPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                required
+              />
+              <Input
+                label="Mật khẩu mới"
+                type="password"
+                value={passwordData.newPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                required
+              />
+              <Input
+                label="Xác nhận mật khẩu mới"
+                type="password"
+                value={passwordData.confirmPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                required
+              />
+              <Button type="submit" variant="secondary" isLoading={isUpdatingPassword} className="rounded-xl">
+                Cập nhật mật khẩu
+              </Button>
+            </form>
+          </div>
         </div>
-      </div>
-
-      {/* Change Password */}
-      <div className="card space-y-4 max-w-md">
-        <div className="flex items-center gap-2 pb-3 border-b">
-          <HiKey className="w-5 h-5 text-gray-600" />
-          <h2 className="text-lg font-bold">Đổi mật khẩu</h2>
-        </div>
-
-        <form onSubmit={handlePasswordSubmit} className="space-y-4">
-          <Input
-            label="Mật khẩu hiện tại"
-            type="password"
-            value={passwordData.currentPassword}
-            onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-            required
-          />
-
-          <Input
-            label="Mật khẩu mới (tối thiểu 6 ký tự)"
-            type="password"
-            value={passwordData.newPassword}
-            onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-            required
-          />
-
-          <Input
-            label="Xác nhận mật khẩu mới"
-            type="password"
-            value={passwordData.confirmPassword}
-            onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-            required
-          />
-
-          <Button type="submit" variant="outline" isLoading={isUpdatingPassword}>
-            Đổi mật khẩu
-          </Button>
-        </form>
       </div>
     </div>
   );

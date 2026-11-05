@@ -21,18 +21,16 @@ const usersData = [
     password_hash: 'Admin@123',
     full_name: 'Quản Trị Viên Mỹ Thuật',
     role: 'admin',
-    learning_goal: 'Quản trị và phát triển hệ thống học thuật ngữ tiếng Anh chuyên ngành Mỹ thuật & Mỹ nghệ.',
-    initial_level: 100
+    learning_goal: 'Quản trị và phát triển hệ thống học thuật ngữ tiếng Anh chuyên ngành Mỹ thuật & Mỹ nghệ.'
   },
   {
     id: 2,
     username: 'teacher01',
     email: 'teacher@enlearn.com',
     password_hash: 'Teacher@123',
-    full_name: 'Họa sĩ / Giảng viên Mai Lan',
-    role: 'group_owner',
-    learning_goal: 'Biên soạn thuật ngữ Mỹ thuật & hướng dẫn học viên nghiên cứu lịch sử nghệ thuật.',
-    initial_level: 95
+    full_name: 'Họa sĩ / Cố vấn Mai Lan',
+    role: 'learner',
+    learning_goal: 'Nghiên cứu thuật ngữ Mỹ thuật & hướng dẫn học viên tìm hiểu lịch sử nghệ thuật.'
   },
   {
     id: 3,
@@ -41,8 +39,7 @@ const usersData = [
     password_hash: 'Student@123',
     full_name: 'Nguyễn Văn Minh',
     role: 'learner',
-    learning_goal: 'Học từ vựng về các trường phái hội họa và kỹ thuật vẽ tranh mỗi ngày.',
-    initial_level: 45
+    learning_goal: 'Học từ vựng về các trường phái hội họa và kỹ thuật vẽ tranh mỗi ngày.'
   },
   {
     id: 4,
@@ -51,8 +48,7 @@ const usersData = [
     password_hash: 'Student@123',
     full_name: 'Trần Thị Hà',
     role: 'learner',
-    learning_goal: 'Trau dồi thuật ngữ thủ công mỹ nghệ truyền thống và di sản văn hóa.',
-    initial_level: 60
+    learning_goal: 'Trau dồi thuật ngữ thủ công mỹ nghệ truyền thống và di sản văn hóa.'
   }
 ];
 
@@ -63,26 +59,28 @@ async function seed() {
   await sequelize.query('SET FOREIGN_KEY_CHECKS = 0;');
 
   try {
-    // Drop obsolete tables if they still exist in database
-    await sequelize.query('DROP TABLE IF EXISTS group_reading_sets;');
-    await sequelize.query('DROP TABLE IF EXISTS group_vocab_items;');
-    await sequelize.query('DROP TABLE IF EXISTS group_vocab_sets;');
-    await sequelize.query('DROP TABLE IF EXISTS group_members;');
-    await sequelize.query('DROP TABLE IF EXISTS `groups`;');
-    await sequelize.query('DROP TABLE IF EXISTS user_answers;');
-    await sequelize.query('DROP TABLE IF EXISTS user_reading_attempts;');
-    await sequelize.query('DROP TABLE IF EXISTS questions;');
-    await sequelize.query('DROP TABLE IF EXISTS readings;');
-    await sequelize.query('DROP TABLE IF EXISTS community_posts;');
-    await sequelize.query('DROP TABLE IF EXISTS level_assessments;');
+    if (process.env.NODE_ENV !== 'production') {
+      // Drop obsolete tables if they still exist in database
+      await sequelize.query('DROP TABLE IF EXISTS group_reading_sets;');
+      await sequelize.query('DROP TABLE IF EXISTS group_vocab_items;');
+      await sequelize.query('DROP TABLE IF EXISTS group_vocab_sets;');
+      await sequelize.query('DROP TABLE IF EXISTS group_members;');
+      await sequelize.query('DROP TABLE IF EXISTS `groups`;');
+      await sequelize.query('DROP TABLE IF EXISTS user_answers;');
+      await sequelize.query('DROP TABLE IF EXISTS user_reading_attempts;');
+      await sequelize.query('DROP TABLE IF EXISTS questions;');
+      await sequelize.query('DROP TABLE IF EXISTS readings;');
+      await sequelize.query('DROP TABLE IF EXISTS community_posts;');
+      await sequelize.query('DROP TABLE IF EXISTS level_assessments;');
 
-    // Clean old topics > 2 and their dependent items
-    await sequelize.query('DELETE FROM vocab_examples WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
-    await sequelize.query('DELETE FROM user_vocab_progress WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
-    await sequelize.query('DELETE FROM review_schedules WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
-    await sequelize.query('DELETE FROM user_vocab_list_items WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
-    await sequelize.query('DELETE FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL;');
-    await sequelize.query('DELETE FROM topics WHERE id > 2;');
+      // Clean old topics > 2 and their dependent items
+      await sequelize.query('DELETE FROM vocab_examples WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
+      await sequelize.query('DELETE FROM user_vocab_progress WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
+      await sequelize.query('DELETE FROM review_schedules WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
+      await sequelize.query('DELETE FROM user_vocab_list_items WHERE vocabulary_id IN (SELECT id FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL);');
+      await sequelize.query('DELETE FROM vocabularies WHERE topic_id > 2 OR source_ref IS NULL;');
+      await sequelize.query('DELETE FROM topics WHERE id > 2;');
+    }
   } catch (cleanErr) {
     console.warn('⚠️ Non-critical notice during table clean:', cleanErr.message);
   }

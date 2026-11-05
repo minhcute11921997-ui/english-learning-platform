@@ -317,7 +317,7 @@ export default function TopicsPage() {
                   type="text"
                   autoFocus
                   required
-                  placeholder="Ví dụ: Từ vựng IELTS Reading, Từ khó Unit 1..."
+                  placeholder="Ví dụ: Hội họa Phục hưng, Gốm sứ Bát Tràng, Thuật ngữ điêu khắc..."
                   value={newListName}
                   onChange={(e) => setNewListName(e.target.value)}
                   className="input py-2 px-3 text-xs w-full border-[#CCD5D0] focus:border-[#195646]"

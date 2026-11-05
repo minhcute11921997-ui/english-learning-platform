@@ -24,7 +24,7 @@ const authenticate = catchAsync(async (req, res, next) => {
 
   // 3) Kiểm tra user còn tồn tại và chưa bị khóa
   const user = await User.findByPk(decoded.id, {
-    attributes: ['id', 'username', 'email', 'role', 'is_active', 'full_name', 'initial_level', 'learning_goal', 'avatar_url']
+    attributes: ['id', 'username', 'email', 'role', 'is_active', 'full_name', 'learning_goal', 'avatar_url']
   });
 
   if (!user) {

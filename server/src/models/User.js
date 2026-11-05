@@ -41,18 +41,13 @@ module.exports = (sequelize) => {
       allowNull: true
     },
     role: {
-      type: DataTypes.ENUM('learner', 'group_owner', 'admin'),
+      type: DataTypes.ENUM('learner', 'admin'),
       defaultValue: 'learner'
     },
     learning_goal: {
       type: DataTypes.TEXT,
       allowNull: true,
       comment: 'Mục tiêu học tập của người dùng'
-    },
-    initial_level: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      comment: 'Điểm đánh giá đầu vào'
     },
     is_active: {
       type: DataTypes.BOOLEAN,

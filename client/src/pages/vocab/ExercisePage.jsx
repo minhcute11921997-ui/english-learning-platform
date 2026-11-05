@@ -109,13 +109,23 @@ export default function ExercisePage() {
       setIsSubmitting(true);
       const res = await exerciseApi.submitVocabExercises(formatted);
       sessionStorage.removeItem(`exercise_draft_${id}`);
+      const explanations = res.data?.explanations || [];
+      const expMap = {};
+      explanations.forEach((e) => {
+        expMap[e.vocabulary_id] = e;
+      });
+
       setResults({
         ...res.data,
-        detail: exercises.map((ex, idx) => ({
-          ...ex,
-          selected_option: answers[idx],
-          is_correct: answers[idx] === ex.correct_option
-        }))
+        detail: exercises.map((ex, idx) => {
+          const exp = expMap[ex.vocabulary_id] || {};
+          return {
+            ...ex,
+            ...exp,
+            selected_option: answers[idx],
+            is_correct: answers[idx] === ex.correct_option
+          };
+        })
       });
       toast.success('Đã nộp bài và cập nhật tiến độ ôn tập!');
     } catch (err) {

@@ -47,14 +47,15 @@ module.exports = {
     logging: false,
     define: {
       timestamps: true,
-      underscored: true
+      underscored: true,
+      charset: 'utf8mb4',
+      collate: 'utf8mb4_unicode_ci'
     },
     pool: {
-      max: parseInt(process.env.DB_POOL_MAX) || 50,
-      min: parseInt(process.env.DB_POOL_MIN) || 5,
+      max: 20,
+      min: 5,
       acquire: 30000,
-      idle: 10000,
-      evict: 1000
+      idle: 10000
     }
   }
 };

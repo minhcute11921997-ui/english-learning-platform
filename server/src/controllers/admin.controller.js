@@ -41,7 +41,7 @@ const updateUserRole = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { role } = req.body;
 
-  if (!['learner', 'group_owner', 'admin'].includes(role)) {
+  if (!['learner', 'admin'].includes(role)) {
     throw new AppError('Vai trò (role) không hợp lệ.', 400);
   }
 
