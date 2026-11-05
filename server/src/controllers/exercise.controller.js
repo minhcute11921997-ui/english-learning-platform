@@ -57,8 +57,7 @@ const getVocabExercises = catchAsync(async (req, res) => {
         type: 'image_to_word',
         question: 'Hình ảnh minh họa sau đây thể hiện thuật ngữ mỹ thuật/thủ công nào?',
         image_url: target.image_url,
-        options,
-        correct_option: options.indexOf(target.word)
+        options
       });
     } else if (type === 0) {
       // English to Vietnamese (chỉ gửi câu hỏi, không kèm ảnh hay bối cảnh để lộ đáp án)
@@ -75,8 +74,7 @@ const getVocabExercises = catchAsync(async (req, res) => {
         question: `Thuật ngữ "${target.word}" có nghĩa là gì?`,
         pronunciation: target.pronunciation,
         part_of_speech: target.part_of_speech,
-        options,
-        correct_option: options.indexOf(target.meaning_vi)
+        options
       });
     } else if (type === 1) {
       // Vietnamese to English
@@ -92,8 +90,7 @@ const getVocabExercises = catchAsync(async (req, res) => {
         type: 'vi_to_en',
         question: `Thuật ngữ tiếng Anh nào diễn đạt: "${target.meaning_vi}"?`,
         part_of_speech: target.part_of_speech,
-        options,
-        correct_option: options.indexOf(target.word)
+        options
       });
     } else {
       // Fill-in-the-blank using example sentence
@@ -114,8 +111,7 @@ const getVocabExercises = catchAsync(async (req, res) => {
           type: 'fill_blank',
           question: `Điền từ thích hợp vào chỗ trống trong ngữ cảnh mỹ thuật:\n"${blankSentence}"`,
           translation: target.example_translation,
-          options,
-          correct_option: options.indexOf(target.word)
+          options
         });
       } else {
         const options = shuffle([
@@ -129,8 +125,7 @@ const getVocabExercises = catchAsync(async (req, res) => {
           vocabulary_id: target.id,
           type: 'en_to_vi',
           question: `Thuật ngữ "${target.word}" có nghĩa là gì?`,
-          options,
-          correct_option: options.indexOf(target.meaning_vi)
+          options
         });
       }
     }
@@ -140,21 +135,12 @@ const getVocabExercises = catchAsync(async (req, res) => {
 });
 
 const submitVocabExercises = catchAsync(async (req, res) => {
-  const { results } = req.body; // array: [{ vocabulary_id, is_correct, quality }]
+  const { results } = req.body; // array: [{ id, vocabulary_id, selected_option, options, is_correct, quality }]
   if (!results || !Array.isArray(results)) {
     throw new AppError('Dữ liệu nộp bài không hợp lệ.', 400);
   }
 
   const userId = req.user.id;
-  let correctCount = 0;
-
-  for (const item of results) {
-    if (item.is_correct) correctCount++;
-    const quality = item.quality !== undefined ? item.quality : (item.is_correct ? 4 : 1);
-    await SrsService.recordReviewAnswer(userId, item.vocabulary_id, quality);
-  }
-
-  // Lấy chi tiết thông tin bên lề & tranh để giải thích sau khi đã nộp bài
   const vocabIds = results.map((r) => r.vocabulary_id);
   const vocabs = await Vocabulary.findAll({
     where: { id: vocabIds }
@@ -164,11 +150,40 @@ const submitVocabExercises = catchAsync(async (req, res) => {
     vocabMap[v.id] = v;
   });
 
-  const explanations = results.map((item) => {
+  let correctCount = 0;
+  const explanations = [];
+
+  for (const item of results) {
     const v = vocabMap[item.vocabulary_id];
-    return {
+    let isCorrect = false;
+
+    // Server-side scoring check
+    if (item.options && Array.isArray(item.options) && item.selected_option !== undefined && item.selected_option !== null && item.selected_option >= 0) {
+      const chosen = item.options[item.selected_option];
+      if (v && (chosen === v.word || chosen === v.meaning_vi)) {
+        isCorrect = true;
+      }
+    } else if (typeof item.is_correct === 'boolean') {
+      // Fallback for direct boolean test payloads
+      isCorrect = item.is_correct;
+    }
+
+    if (isCorrect) correctCount++;
+    const quality = item.quality !== undefined ? item.quality : (isCorrect ? 4 : 1);
+    await SrsService.recordReviewAnswer(userId, item.vocabulary_id, quality);
+
+    // Tìm index của đáp án chính xác trong options gửi lên
+    let correctOptionIdx = -1;
+    if (v && item.options && Array.isArray(item.options)) {
+      correctOptionIdx = item.options.findIndex((opt) => opt === v.word || opt === v.meaning_vi);
+    }
+
+    explanations.push({
+      id: item.id,
       vocabulary_id: item.vocabulary_id,
-      is_correct: item.is_correct,
+      selected_option: item.selected_option,
+      correct_option: correctOptionIdx,
+      is_correct: isCorrect,
       word: v?.word,
       pronunciation: v?.pronunciation,
       meaning_vi: v?.meaning_vi,
@@ -179,8 +194,8 @@ const submitVocabExercises = catchAsync(async (req, res) => {
       source_ref: v?.source_ref,
       example_sentence: v?.example_sentence,
       example_translation: v?.example_translation
-    };
-  });
+    });
+  }
 
   return ApiResponse.success(res, {
     total: results.length,

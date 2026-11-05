@@ -97,11 +97,11 @@ export default function ExercisePage() {
   const handleSubmit = async () => {
     const formatted = exercises.map((ex, idx) => {
       const selected = answers[idx];
-      const is_correct = selected === ex.correct_option;
       return {
+        id: ex.id,
         vocabulary_id: ex.vocabulary_id,
-        is_correct,
-        quality: is_correct ? 4 : 1 // SM-2 feedback score
+        selected_option: selected !== undefined ? selected : null,
+        options: ex.options
       };
     });
 
@@ -112,18 +112,20 @@ export default function ExercisePage() {
       const explanations = res.data?.explanations || [];
       const expMap = {};
       explanations.forEach((e) => {
-        expMap[e.vocabulary_id] = e;
+        if (e.id) expMap[e.id] = e;
+        else expMap[e.vocabulary_id] = e;
       });
 
       setResults({
         ...res.data,
         detail: exercises.map((ex, idx) => {
-          const exp = expMap[ex.vocabulary_id] || {};
+          const exp = expMap[ex.id] || expMap[ex.vocabulary_id] || {};
           return {
             ...ex,
             ...exp,
-            selected_option: answers[idx],
-            is_correct: answers[idx] === ex.correct_option
+            selected_option: answers[idx] !== undefined ? answers[idx] : null,
+            correct_option: exp.correct_option,
+            is_correct: Boolean(exp.is_correct)
           };
         })
       });
