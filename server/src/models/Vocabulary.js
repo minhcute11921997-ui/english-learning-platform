@@ -57,6 +57,11 @@ module.exports = (sequelize) => {
       defaultValue: 'easy',
       comment: 'Mức độ khó'
     },
+    source_ref: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      comment: 'Nguồn từ điển tham chiếu chuẩn xác (Duden, Oxford Art, etc.)'
+    },
     source_type: {
       type: DataTypes.ENUM('system', 'community'),
       defaultValue: 'system',

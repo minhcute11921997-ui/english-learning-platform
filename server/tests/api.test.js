@@ -1,10 +1,11 @@
 const request = require('supertest');
 const app = require('../src/app');
-const { sequelize } = require('../src/models');
+const { sequelize, Vocabulary } = require('../src/models');
 
 describe('EngLearn Backend Integration Test Suite', () => {
   let authToken = '';
   let adminToken = '';
+  let sampleVocabId = 1;
 
   beforeAll(async () => {
     // Đăng nhập student01
@@ -18,6 +19,11 @@ describe('EngLearn Backend Integration Test Suite', () => {
       .post('/api/auth/login')
       .send({ email: 'admin@enlearn.com', password: 'Admin@123' });
     adminToken = adminRes.body.data.accessToken;
+
+    const sample = await Vocabulary.findOne();
+    if (sample) {
+      sampleVocabId = sample.id;
+    }
   });
 
   afterAll(async () => {
@@ -46,10 +52,10 @@ describe('EngLearn Backend Integration Test Suite', () => {
   });
 
   describe('2. Topics & Vocabulary APIs', () => {
-    test('GET /api/topics should return 7 topics', async () => {
+    test('GET /api/topics should return 2 fine arts topics', async () => {
       const res = await request(app).get('/api/topics');
       expect(res.status).toBe(200);
-      expect(res.body.data.length).toBe(7);
+      expect(res.body.data.length).toBe(2);
     });
 
     test('GET /api/vocabularies/topic/1 should return words with examples', async () => {
@@ -62,7 +68,7 @@ describe('EngLearn Backend Integration Test Suite', () => {
 
     test('POST /api/vocabularies/:id/learn should record learning progress', async () => {
       const res = await request(app)
-        .post('/api/vocabularies/1/learn')
+        .post(`/api/vocabularies/${sampleVocabId}/learn`)
         .set('Authorization', `Bearer ${authToken}`);
       expect(res.status).toBe(200);
       expect(['learning', 'reviewing', 'mastered']).toContain(res.body.data.status);
@@ -96,7 +102,7 @@ describe('EngLearn Backend Integration Test Suite', () => {
   describe('4. Spaced Repetition (SRS) Review APIs', () => {
     test('POST /api/reviews/:vocabId/answer should update SM-2 schedule', async () => {
       const res = await request(app)
-        .post('/api/reviews/1/answer')
+        .post(`/api/reviews/${sampleVocabId}/answer`)
         .set('Authorization', `Bearer ${authToken}`)
         .send({ quality: 4 });
 

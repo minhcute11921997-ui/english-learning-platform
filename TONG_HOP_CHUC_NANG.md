@@ -1,4 +1,5 @@
-# 📚 TÀI LIỆU ĐẶC TẢ CHI TIẾT TẤT CẢ CHỨC NĂNG HỆ THỐNG ENGLEARN
+# TÀI LIỆU ĐẶC TẢ CHI TIẾT TẤT CẢ CHỨC NĂNG HỆ THỐNG ENGLEARN
+
 > **Dự án:** EngLearn - Nền tảng học Tiếng Anh cơ bản thông minh  
 > **Phiên bản:** 1.0.0 (Release Master)  
 > **Đối tượng người dùng:** Học sinh, sinh viên, người mất gốc/mới bắt đầu học tiếng Anh, Trưởng nhóm học tập và Quản trị viên hệ thống.
@@ -32,11 +33,14 @@
 ## 1. TỔNG QUAN HỆ THỐNG & CÔNG NGHỆ
 
 ### 1.1. Mục tiêu dự án
+
 **EngLearn** là giải pháp phần mềm toàn diện hỗ trợ người học tiếng Anh cá nhân hóa lộ trình học, tập trung giải quyết triệt để 2 vấn đề lớn:
+
 1. **Tình trạng học trước quên sau:** Được giải quyết bằng thuật toán lặp lại ngắt quãng **SuperMemo 2 (SM-2)** khoa học, tự động lên lịch nhắc nhở từ vựng vào đúng "điểm rơi trí nhớ".
 2. **Thiếu tính định hướng và kết nối:** Cung cấp bài đánh giá năng lực đầu vào chuẩn hóa, tự động đề xuất bài đọc theo năng lực, đồng thời xây dựng môi trường học nhóm và diễn đàn đóng góp cộng đồng.
 
 ### 1.2. Kiến trúc & Công nghệ (Tech Stack)
+
 - **Frontend Client:**
   - Ngôn ngữ & Thư viện: React 19, JavaScript (ESNext), Vite 6 (Fast Refresh & Bundling)
   - Quản lý trạng thái (State Management): **Zustand** (Store tập trung gọn nhẹ cho Auth, Vocab, Study Progress)
@@ -55,34 +59,36 @@
 ## 2. MA TRẬN PHÂN QUYỀN HỆ THỐNG (ROLE MATRIX)
 
 Hệ thống định nghĩa rõ 4 vai trò tác nhân (Actors):
+
 - **Khách vãng lai (Guest):** Người chưa xác thực.
 - **Học viên (Learner / User):** Người dùng thông thường đã đăng nhập.
 - **Trưởng nhóm học tập (Group Owner):** Học viên sở hữu hoặc quản lý nhóm học tập do mình tạo.
 - **Quản trị viên (Admin):** Tài khoản quản trị cấp cao nhất, nắm quyền kiểm duyệt và điều hành toàn bộ dữ liệu.
 
-| Nhóm chức năng | Khách (Guest) | Học viên (Learner) | Trưởng nhóm (Group Owner) | Quản trị viên (Admin) |
-|---|:---:|:---:|:---:|:---:|
-| Đăng ký, Đăng nhập, Xem giới thiệu | ✅ | ✅ | ✅ | ✅ |
-| Làm bài kiểm tra năng lực đầu vào | ❌ | ✅ | ✅ | ✅ |
-| Xem từ vựng theo chủ đề & Tra cứu | ❌ | ✅ | ✅ | ✅ |
-| Học Flashcard, Làm bài tập trắc nghiệm | ❌ | ✅ | ✅ | ✅ |
-| Ôn tập ngắt quãng thông minh (SM-2) | ❌ | ✅ | ✅ | ✅ |
-| Luyện kỹ năng đọc hiểu & Làm quiz bài đọc | ❌ | ✅ | ✅ | ✅ |
-| Nhận gợi ý bài đọc cá nhân hóa | ❌ | ✅ | ✅ | ✅ |
-| Tạo nhóm học tập & Quản lý thành viên nhóm | ❌ | ❌ | ✅ | ✅ |
-| Biên soạn bộ từ vựng & Gán bài đọc cho nhóm | ❌ | ❌ | ✅ | ✅ |
-| Tham gia nhóm qua mã mời (Invite Code) | ❌ | ✅ | ✅ | ✅ |
-| Gửi bài đóng góp cộng đồng (UGC) & Upvote | ❌ | ✅ | ✅ | ✅ |
-| Quản lý người dùng (Khóa/Mở, Phân quyền) | ❌ | ❌ | ❌ | ✅ |
-| Quản lý danh mục Chủ đề, Từ vựng, Bài đọc | ❌ | ❌ | ❌ | ✅ |
-| Kiểm duyệt bài viết cộng đồng (Duyệt/Từ chối)| ❌ | ❌ | ❌ | ✅ |
-| Xem bảng thống kê toàn hệ thống | ❌ | ❌ | ❌ | ✅ |
+| Nhóm chức năng                                | Khách (Guest) | Học viên (Learner) | Trưởng nhóm (Group Owner) | Quản trị viên (Admin) |
+| --------------------------------------------- | :-----------: | :----------------: | :-----------------------: | :-------------------: |
+| Đăng ký, Đăng nhập, Xem giới thiệu            |      ✅       |         ✅         |            ✅             |          ✅           |
+| Làm bài kiểm tra năng lực đầu vào             |      ❌       |         ✅         |            ✅             |          ✅           |
+| Xem từ vựng theo chủ đề & Tra cứu             |      ❌       |         ✅         |            ✅             |          ✅           |
+| Học Flashcard, Làm bài tập trắc nghiệm        |      ❌       |         ✅         |            ✅             |          ✅           |
+| Ôn tập ngắt quãng thông minh (SM-2)           |      ❌       |         ✅         |            ✅             |          ✅           |
+| Luyện kỹ năng đọc hiểu & Làm quiz bài đọc     |      ❌       |         ✅         |            ✅             |          ✅           |
+| Nhận gợi ý bài đọc cá nhân hóa                |      ❌       |         ✅         |            ✅             |          ✅           |
+| Tạo nhóm học tập & Quản lý thành viên nhóm    |      ❌       |         ❌         |            ✅             |          ✅           |
+| Biên soạn bộ từ vựng & Gán bài đọc cho nhóm   |      ❌       |         ❌         |            ✅             |          ✅           |
+| Tham gia nhóm qua mã mời (Invite Code)        |      ❌       |         ✅         |            ✅             |          ✅           |
+| Gửi bài đóng góp cộng đồng (UGC) & Upvote     |      ❌       |         ✅         |            ✅             |          ✅           |
+| Quản lý người dùng (Khóa/Mở, Phân quyền)      |      ❌       |         ❌         |            ❌             |          ✅           |
+| Quản lý danh mục Chủ đề, Từ vựng, Bài đọc     |      ❌       |         ❌         |            ❌             |          ✅           |
+| Kiểm duyệt bài viết cộng đồng (Duyệt/Từ chối) |      ❌       |         ❌         |            ❌             |          ✅           |
+| Xem bảng thống kê toàn hệ thống               |      ❌       |         ❌         |            ❌             |          ✅           |
 
 ---
 
 ## 3. SƠ ĐỒ LUỒNG NGHIỆP VỤ TRỌNG TÂM (MERMAID WORKFLOWS)
 
 ### 3.1. Luồng Xác thực & Phân loại trình độ đầu vào
+
 ```mermaid
 flowchart TD
     Start([Người dùng truy cập]) --> CheckAuth{Đã đăng nhập?}
@@ -99,6 +105,7 @@ flowchart TD
 ```
 
 ### 3.2. Luồng Học từ vựng, Luyện tập & Chu kỳ Ôn tập ngắt quãng (SM-2)
+
 ```mermaid
 flowchart TD
     Topic[Chọn Chủ đề Từ vựng] --> Flashcard[Học qua Thẻ Flashcard 2 mặt]
@@ -116,6 +123,7 @@ flowchart TD
 ```
 
 ### 3.3. Luồng Quản trị & Kiểm duyệt nội dung cộng đồng
+
 ```mermaid
 flowchart TD
     User([Học viên]) --> CreatePost[Soạn bộ từ vựng / bài đọc đóng góp]
@@ -137,9 +145,11 @@ flowchart TD
 ---
 
 ### PHÂN HỆ 1: XÁC THỰC & QUẢN LÝ TÀI KHOẢN
+
 **Mục đích:** Cung cấp cơ chế định danh an toàn, quản lý phiên làm việc và hồ sơ học tập của từng cá nhân.
 
 #### 1. Chi tiết chức năng:
+
 - **Đăng ký tài khoản (Register):**
   - Nhập: Họ và tên, Tên đăng nhập (`username`), Email, Mật khẩu (`password`).
   - Hệ thống kiểm tra: Email đúng định dạng regex, tên đăng nhập không chứa ký tự đặc biệt nguy hiểm, mật khẩu có độ dài tối thiểu từ 6 ký tự.
@@ -161,20 +171,23 @@ flowchart TD
   - Chuỗi học liên tục (**Streak Counter**): Tự động tính số ngày đăng nhập và học tập liên tục không gián đoạn.
 
 #### 2. Ánh xạ API & Dữ liệu:
+
 - `POST /api/auth/register`: Đăng ký tài khoản mới.
 - `POST /api/auth/login`: Đăng nhập & cấp phát JWT.
 - `GET /api/auth/me`: Lấy thông tin tài khoản hiện tại từ token.
 - `PUT /api/users/profile`: Cập nhật họ tên, mục tiêu hàng ngày (`daily_goal`).
 - `PUT /api/users/change-password`: Thay đổi mật khẩu tài khoản.
-- *Model dữ liệu liên quan:* `User`.
-- *Giao diện tương ứng:* `LoginPage.jsx`, `RegisterPage.jsx`, `ProfilePage.jsx`.
+- _Model dữ liệu liên quan:_ `User`.
+- _Giao diện tương ứng:_ `LoginPage.jsx`, `RegisterPage.jsx`, `ProfilePage.jsx`.
 
 ---
 
 ### PHÂN HỆ 2: ĐÁNH GIÁ TRÌNH ĐỘ ĐẦU VÀO
+
 **Mục đích:** Khảo sát trình độ Anh ngữ ban đầu của học viên để hệ thống phân nhóm trình độ và cá nhân hóa tài liệu gợi ý ngay từ đầu.
 
 #### 1. Chi tiết chức năng:
+
 - **Ngân hàng đề thi chuẩn hóa:**
   - Bộ đề thi gồm 30 câu hỏi trắc nghiệm ngữ pháp, từ vựng và cấu trúc câu từ cơ bản đến nâng cao.
   - **Bảo mật đề thi:** API chỉ gửi về nội dung câu hỏi và danh sách đáp án A, B, C, D; tuyệt đối **không gửi đáp án đúng và lời giải thích** xuống client trong quá trình làm bài nhằm chống gian lận (Inspect/F12).
@@ -194,31 +207,34 @@ flowchart TD
   - Lưu kết quả vào bảng `LevelAssessment` và cập nhật trường `initial_level` của người dùng.
 
 #### 2. Ánh xạ API & Dữ liệu:
+
 - `GET /api/assessment/questions`: Lấy đề thi kiểm tra đầu vào (đã loại bỏ đáp án đúng).
 - `POST /api/assessment/submit`: Nộp bài làm, hệ thống chấm điểm và lưu kết quả.
 - `GET /api/assessment/history`: Xem lại lịch sử các lần làm bài kiểm tra.
-- *Model dữ liệu liên quan:* `LevelAssessment`, `User`.
-- *Giao diện tương ứng:* `AssessmentPage.jsx`.
+- _Model dữ liệu liên quan:_ `LevelAssessment`, `User`.
+- _Giao diện tương ứng:_ `AssessmentPage.jsx`.
 
 ---
 
 ### PHÂN HỆ 3: KHÁM PHÁ & QUẢN LÝ TỪ VỰNG THEO CHỦ ĐỀ
+
 **Mục đích:** Cung cấp kho từ vựng tiếng Anh thông dụng theo các chủ đề thiết thực, có cấu trúc sư phạm rõ ràng.
 
 #### 1. Chi tiết chức năng:
+
 - **7 Chủ đề học tập cốt lõi:**
-  1. *Daily Life* (Đời sống hàng ngày)
-  2. *Education & Study* (Giáo dục & Học đường)
-  3. *Travel & Holidays* (Du lịch & Nghỉ dưỡng)
-  4. *Work & Business* (Công việc & Thương mại)
-  5. *Food & Dining* (Ẩm thực & Nhà hàng)
-  6. *Technology & Media* (Công nghệ & Truyền thông)
-  7. *Health & Sports* (Sức khỏe & Thể thao)
+  1. _Daily Life_ (Đời sống hàng ngày)
+  2. _Education & Study_ (Giáo dục & Học đường)
+  3. _Travel & Holidays_ (Du lịch & Nghỉ dưỡng)
+  4. _Work & Business_ (Công việc & Thương mại)
+  5. _Food & Dining_ (Ẩm thực & Nhà hàng)
+  6. _Technology & Media_ (Công nghệ & Truyền thông)
+  7. _Health & Sports_ (Sức khỏe & Thể thao)
 - **Thông tin chi tiết của mỗi từ vựng:**
   - Từ gốc tiếng Anh, phiên âm quốc tế chuẩn IPA (ví dụ: `/ˈwɜːrk/`).
   - Phân loại từ loại ngữ pháp (Noun, Verb, Adjective, Adverb...).
   - Bản dịch nghĩa tiếng Việt chính xác và ngắn gọn.
-  - Phân cấp độ khó: *Easy*, *Medium*, *Hard*.
+  - Phân cấp độ khó: _Easy_, _Medium_, _Hard_.
   - Câu ví dụ ngữ cảnh chuẩn bản ngữ kèm bản dịch tiếng Việt song song.
 - **Bộ lọc & Tra cứu nhanh:**
   - Tìm kiếm thời gian thực theo từ tiếng Anh hoặc nghĩa tiếng Việt.
@@ -226,19 +242,22 @@ flowchart TD
   - Thanh hiển thị tỷ lệ tiến độ hoàn thành từ vựng trong từng chủ đề (đã học bao nhiêu từ / tổng số từ).
 
 #### 2. Ánh xạ API & Dữ liệu:
+
 - `GET /api/topics`: Lấy danh sách toàn bộ chủ đề học tập kèm thống kê số lượng từ.
 - `GET /api/topics/:id`: Lấy chi tiết thông tin chủ đề và danh sách từ vựng bên trong.
 - `GET /api/vocabularies`: Tìm kiếm và lọc từ vựng theo chủ đề, độ khó.
 - `GET /api/vocabularies/:id`: Xem chi tiết 1 từ vựng và các câu ví dụ minh họa.
-- *Model dữ liệu liên quan:* `Topic`, `Vocabulary`, `VocabExample`, `UserVocabProgress`.
-- *Giao diện tương ứng:* `TopicsPage.jsx`, `TopicDetailPage.jsx`.
+- _Model dữ liệu liên quan:_ `Topic`, `Vocabulary`, `VocabExample`, `UserVocabProgress`.
+- _Giao diện tương ứng:_ `TopicsPage.jsx`, `TopicDetailPage.jsx`.
 
 ---
 
 ### PHÂN HỆ 4: HỌC TỪ VỰNG TƯƠNG TÁC QUA THẺ GHI NHỚ (FLASHCARDS)
+
 **Mục đích:** Tối ưu hóa khả năng ghi nhớ thị giác thông qua mô hình thẻ học 2 mặt tương tác trực quan.
 
 #### 1. Chi tiết chức năng:
+
 - **Giao diện thẻ 3D lật 2 mặt:**
   - **Mặt trước:** Từ vựng tiếng Anh kích thước lớn, phiên âm quốc tế IPA, nhãn loại từ và nút nghe phát âm.
   - **Mặt sau:** Định nghĩa tiếng Việt, câu ví dụ tiếng Anh chứa từ vựng được in đậm, bản dịch câu ví dụ tiếng Việt.
@@ -252,16 +271,19 @@ flowchart TD
   - Cập nhật số từ đã học trong ngày vào bộ đếm Daily Goal.
 
 #### 2. Ánh xạ API & Dữ liệu:
+
 - `POST /api/vocabularies/:id/learn`: Đánh dấu đã học một từ vựng và khởi tạo chu trình SRS.
-- *Model dữ liệu liên quan:* `Vocabulary`, `VocabExample`, `UserVocabProgress`, `ReviewSchedule`.
-- *Giao diện tương ứng:* `FlashcardPage.jsx`.
+- _Model dữ liệu liên quan:_ `Vocabulary`, `VocabExample`, `UserVocabProgress`, `ReviewSchedule`.
+- _Giao diện tương ứng:_ `FlashcardPage.jsx`.
 
 ---
 
 ### PHÂN HỆ 5: LUYỆN TẬP & ĐÁNH GIÁ CỦNG CỐ TỪ VỰNG
+
 **Mục đích:** Tự động sinh bài tập trắc nghiệm đa dạng giúp củng cố kiến thức ngay sau phiên học Flashcard.
 
 #### 1. Chi tiết chức năng:
+
 - **Bộ sinh bài tập tự động (Auto Quiz Generator):**
   - Tự động lấy danh sách từ vựng thuộc chủ đề đang học để tạo bài trắc nghiệm 10 câu hỏi.
   - Tự động trích xuất các đáp án gây nhiễu (distractors) từ các từ vựng khác trong cùng chủ đề để đảm bảo tính thử thách.
@@ -276,17 +298,20 @@ flowchart TD
   - Tự động đồng bộ số lần trả lời đúng (`correct_count`) hoặc sai (`incorrect_count`) vào bảng dữ liệu tiến độ cá nhân.
 
 #### 2. Ánh xạ API & Dữ liệu:
+
 - `GET /api/exercises/topic/:topicId`: Sinh bộ câu hỏi trắc nghiệm ngẫu nhiên cho chủ đề.
 - `POST /api/exercises/submit`: Gửi kết quả bài tập, hệ thống chấm điểm và ghi nhận tiến độ.
-- *Model dữ liệu liên quan:* `Vocabulary`, `VocabExample`, `UserVocabProgress`.
-- *Giao diện tương ứng:* `ExercisePage.jsx`.
+- _Model dữ liệu liên quan:_ `Vocabulary`, `VocabExample`, `UserVocabProgress`.
+- _Giao diện tương ứng:_ `ExercisePage.jsx`.
 
 ---
 
 ### PHÂN HỆ 6: HỆ THỐNG ÔN TẬP NGẮT QUÃNG THÔNG MINH (SRS)
+
 **Mục đích:** Ứng dụng thuật toán **SuperMemo 2 (SM-2)** để tự động tính toán thời gian sắp quên của từng từ và nhắc học viên ôn tập đúng thời điểm vàng.
 
 #### 1. Chi tiết thuật toán SM-2 triển khai trong hệ thống:
+
 - Khi ôn tập, người học tự đánh giá mức độ ghi nhớ theo thang điểm chất lượng **$q$ từ 0 đến 5**:
   - **$q = 0$:** Hoàn toàn không nhớ gì (Blackout).
   - **$q = 1$:** Trả lời sai, nhưng khi nhìn đáp án thì nhớ ra.
@@ -315,26 +340,30 @@ flowchart TD
     2. Khoảng cách ngày ôn tập giãn cách $I \ge 15$ ngày.
 
 #### 2. Các chức năng trên giao diện SRS:
+
 - **Danh sách từ đến hạn hôm nay (Due Today):** Tự động truy vấn tất cả các từ có `next_review_at <= thời điểm hiện tại`.
 - **Dự báo lịch ôn tập 7 ngày tới (7-Day Forecast):** Biểu đồ cột hiển thị số lượng từ sẽ đến hạn trong 7 ngày tiếp theo để học viên chủ động kế hoạch học.
 - **Phiên ôn tập tương tác (SRS Flashcard Session):** Lần lượt hiển thị từ cần ôn, cho phép lật xem nghĩa và chọn 1 trong 4 nút đánh giá tương ứng (Quên, Khó, Nhớ tốt, Rất dễ).
 
 #### 3. Ánh xạ API & Dữ liệu:
+
 - `GET /api/reviews/today`: Lấy danh sách từ vựng cần ôn tập trong ngày hôm nay.
 - `GET /api/reviews/forecast`: Lấy dữ liệu dự báo lịch ôn tập 7 ngày tới.
 - `POST /api/reviews/answer`: Gửi đánh giá độ nhớ ($q$), hệ thống tính toán lại SM-2 và dời lịch ôn tiếp theo.
 - `GET /api/reviews/stats`: Lấy thống kê số lượng từ theo trạng thái: Mới (`new`), Đang học (`learning`), Đã thuộc (`mastered`).
-- *Model dữ liệu liên quan:* `UserVocabProgress`, `ReviewSchedule`, `Vocabulary`.
-- *Giao diện tương ứng:* `ReviewPage.jsx`.
+- _Model dữ liệu liên quan:_ `UserVocabProgress`, `ReviewSchedule`, `Vocabulary`.
+- _Giao diện tương ứng:_ `ReviewPage.jsx`.
 
 ---
 
 ### PHÂN HỆ 7: LUYỆN KỸ NĂNG ĐỌC HIỂU & TRẮC NGHIỆM NGỮ CẢNH
+
 **Mục đích:** Giúp người học áp dụng từ vựng vào việc đọc hiểu các đoạn văn ngắn, rèn luyện tư duy ngữ pháp và ngữ cảnh bài viết.
 
 #### 1. Chi tiết chức năng:
+
 - **Thư viện bài đọc phân cấp:**
-  - Bài đọc gắn liền với chủ đề thực tế, được phân loại theo 3 độ khó: *Easy*, *Medium*, *Hard*.
+  - Bài đọc gắn liền với chủ đề thực tế, được phân loại theo 3 độ khó: _Easy_, _Medium_, _Hard_.
   - Hiển thị ước tính thời gian đọc (Reading Time tính bằng phút) và tổng số từ trong bài.
 - **Giao diện đọc bài song ngữ thông minh:**
   - Bài viết tiếng Anh hiển thị chuẩn font chữ, cỡ chữ tối ưu cho việc đọc không mỏi mắt.
@@ -349,18 +378,21 @@ flowchart TD
   - Cập nhật huy hiệu "Đã hoàn thành" và ghi nhận điểm số cao nhất của người học.
 
 #### 2. Ánh xạ API & Dữ liệu:
+
 - `GET /api/readings`: Lấy danh sách bài đọc kèm bộ lọc theo chủ đề và độ khó.
 - `GET /api/readings/:id`: Lấy nội dung chi tiết bài đọc và bộ câu hỏi trắc nghiệm đi kèm.
 - `POST /api/readings/:id/submit`: Nộp bài kiểm tra đọc hiểu, chấm điểm và lưu kết quả.
-- *Model dữ liệu liên quan:* `Reading`, `Question`, `UserReadingAttempt`, `UserAnswer`.
-- *Giao diện tương ứng:* `ReadingListPage.jsx`, `ReadingDetailPage.jsx`.
+- _Model dữ liệu liên quan:_ `Reading`, `Question`, `UserReadingAttempt`, `UserAnswer`.
+- _Giao diện tương ứng:_ `ReadingListPage.jsx`, `ReadingDetailPage.jsx`.
 
 ---
 
 ### PHÂN HỆ 8: THUẬT TOÁN GỢI Ý BÀI ĐỌC THÔNG MINH
+
 **Mục đích:** Tự động đề xuất các bài đọc phù hợp nhất với năng lực và quá trình học tập thực tế của học viên.
 
 #### 1. Chi tiết thuật toán Gợi ý (Recommendation Logic):
+
 - **Gợi ý theo Trình độ năng lực (Initial Level Matching):**
   - Căn cứ vào điểm bài đánh giá đầu vào (`initial_level`):
     - Điểm $\ge 75$: Ưu tiên gợi ý các bài đọc mức độ **Hard**.
@@ -373,17 +405,20 @@ flowchart TD
   - Sắp xếp tăng dần để phát hiện các chủ đề học viên đang bỏ bê hoặc yếu nhất, từ đó gợi ý bài đọc và từ vựng thuộc các chủ đề này để bù đắp kiến thức.
 
 #### 2. Ánh xạ API & Dữ liệu:
+
 - `GET /api/readings/recommended`: Lấy danh sách 5 bài đọc được cá nhân hóa riêng cho học viên.
 - `GET /api/stats/gaps`: Lấy kết quả phân tích các chủ đề cần củng cố kiến thức.
-- *Service xử lý:* `RecommendationService.js`.
-- *Giao diện tương ứng:* `DashboardPage.jsx`, `ReadingListPage.jsx`.
+- _Service xử lý:_ `RecommendationService.js`.
+- _Giao diện tương ứng:_ `DashboardPage.jsx`, `ReadingListPage.jsx`.
 
 ---
 
 ### PHÂN HỆ 9: KHÔNG GIAN HỌC TẬP NHÓM & TƯƠNG TÁC
+
 **Mục đích:** Xây dựng môi trường học tập cộng tác, cho phép các nhóm bạn bè hoặc lớp học chia sẻ tài liệu học chung.
 
 #### 1. Chi tiết chức năng:
+
 - **Tạo nhóm học tập (Create Group):**
   - Bất kỳ học viên nào cũng có thể tạo nhóm bằng cách đặt Tên nhóm và Mô tả mục tiêu học.
   - Hệ thống tự động phát sinh một **Mã mời độc nhất gồm 8 ký tự ngẫu nhiên** (Invite Code, ví dụ: `A8K9F2D1`).
@@ -404,6 +439,7 @@ flowchart TD
   - Xem Bảng xếp hạng thi đua nội bộ nhóm dựa trên điểm số và số lượng từ đã học.
 
 #### 2. Ánh xạ API & Dữ liệu:
+
 - `POST /api/groups`: Tạo nhóm học tập mới.
 - `GET /api/groups`: Lấy danh sách các nhóm người dùng đang tham gia.
 - `GET /api/groups/:id`: Xem chi tiết thông tin nhóm, thành viên và tài liệu.
@@ -411,15 +447,17 @@ flowchart TD
 - `POST /api/groups/:id/vocab-sets`: Trưởng nhóm tạo bộ từ vựng nhóm.
 - `POST /api/groups/:id/readings`: Trưởng nhóm gán bài đọc cho nhóm.
 - `DELETE /api/groups/:id/members/:userId`: Trưởng nhóm xóa thành viên.
-- *Model dữ liệu liên quan:* `Group`, `GroupMember`, `GroupVocabSet`, `GroupVocabItem`, `GroupReadingSet`.
-- *Giao diện tương ứng:* `GroupsPage.jsx`, `GroupDetailPage.jsx`.
+- _Model dữ liệu liên quan:_ `Group`, `GroupMember`, `GroupVocabSet`, `GroupVocabItem`, `GroupReadingSet`.
+- _Giao diện tương ứng:_ `GroupsPage.jsx`, `GroupDetailPage.jsx`.
 
 ---
 
 ### PHÂN HỆ 10: DIỄN ĐÀN CHIA SẺ & ĐÓNG GÓP NỘI DUNG
+
 **Mục đích:** Huy động sức mạnh cộng đồng học viên để cùng xây dựng kho tài liệu tiếng Anh phong phú, đa dạng.
 
 #### 1. Chi tiết chức năng:
+
 - **Đóng góp tài liệu học tập:**
   - Học viên có thể tự soạn thảo và gửi lên 2 loại nội dung:
     1. **Bộ từ vựng đóng góp:** Nhập tiêu đề, mô tả, danh sách các từ vựng kèm phiên âm, nghĩa tiếng Việt và câu ví dụ.
@@ -435,22 +473,25 @@ flowchart TD
   - Học viên có thể nhấn "Upvote" cho những bài viết chất lượng.
   - Hệ thống tự động xếp hạng các tài liệu có số lượt Upvote cao nhất lên đầu bảng tin cộng đồng.
 - **Quản lý bài đóng góp cá nhân:**
-  - Trang cá nhân hiển thị danh sách các bài người dùng đã gửi kèm trạng thái rõ ràng: *Chờ duyệt (Pending)*, *Đã duyệt (Approved)*, hoặc *Bị từ chối (Rejected)*.
+  - Trang cá nhân hiển thị danh sách các bài người dùng đã gửi kèm trạng thái rõ ràng: _Chờ duyệt (Pending)_, _Đã duyệt (Approved)_, hoặc _Bị từ chối (Rejected)_.
 
 #### 2. Ánh xạ API & Dữ liệu:
+
 - `GET /api/community`: Lấy danh sách các bài viết cộng đồng đã được duyệt.
 - `POST /api/community`: Gửi bài đóng góp mới (từ vựng hoặc bài đọc).
 - `POST /api/community/:id/upvote`: Tăng lượt bình chọn cho bài viết.
 - `GET /api/community/my-posts`: Xem danh sách các bài viết do chính mình đóng góp.
-- *Model dữ liệu liên quan:* `CommunityPost`, `User`.
-- *Giao diện tương ứng:* `CommunityPage.jsx`, `CommunitySubmitPage.jsx`.
+- _Model dữ liệu liên quan:_ `CommunityPost`, `User`.
+- _Giao diện tương ứng:_ `CommunityPage.jsx`, `CommunitySubmitPage.jsx`.
 
 ---
 
 ### PHÂN HỆ 11: BẢNG QUẢN TRỊ & CMS NỘI DUNG
+
 **Mục đích:** Khu vực kiểm soát dữ liệu trung tâm dành riêng cho tài khoản Quản trị viên (Role: `admin`).
 
 #### 1. Chi tiết chức năng:
+
 - **Bảo mật truy cập cấp Router & API:**
   - Phía Client: Route `/admin` được bọc bởi `ProtectedRoute allowedRoles={['admin']}`. Nếu học viên thông thường cố tình truy cập sẽ tự động bị chuyển hướng về `/dashboard`.
   - Phía Server: Middleware `isAdmin` chặn đứng mọi request không có quyền admin với mã lỗi `403 Forbidden`.
@@ -476,6 +517,7 @@ flowchart TD
   - Hiển thị các thẻ chỉ số: Tổng số học viên, Tổng số chủ đề, Tổng số từ vựng, Tổng số bài đọc và Số lượng bài viết đang chờ duyệt.
 
 #### 2. Ánh xạ API & Dữ liệu:
+
 - `GET /api/admin/users`: Lấy danh sách người dùng.
 - `PATCH /api/admin/users/:id/status`: Khóa hoặc kích hoạt lại người dùng.
 - `PATCH /api/admin/users/:id/role`: Đổi quyền hạn người dùng (learner $\leftrightarrow$ admin).
@@ -489,14 +531,16 @@ flowchart TD
 - `PATCH /api/admin/community/:id/approve`: Duyệt bài đóng góp.
 - `PATCH /api/admin/community/:id/reject`: Từ chối bài đóng góp.
 - `GET /api/admin/stats`: Lấy các chỉ số thống kê hệ thống tổng thể.
-- *Giao diện tương ứng:* `AdminPage.jsx`.
+- _Giao diện tương ứng:_ `AdminPage.jsx`.
 
 ---
 
 ### PHÂN HỆ 12: BÁO CÁO, PHÂN TÍCH & GAMIFICATION
+
 **Mục đích:** Trực quan hóa tiến độ học tập, tạo động lực duy trì việc học hàng ngày thông qua cơ chế trò chơi hóa (Gamification).
 
 #### 1. Chi tiết chức năng:
+
 - **Bảng điều khiển cá nhân (Learning Dashboard):**
   - **Thẻ chỉ số tổng quan:**
     - Tổng số từ vựng đã học (`Total Learned Words`).
@@ -514,17 +558,20 @@ flowchart TD
   - **Biểu đồ xu hướng học tập trong tuần:** Thể hiện số lượng bài học và từ vựng tích lũy qua từng ngày trong 7 ngày gần nhất.
 
 #### 2. Ánh xạ API & Dữ liệu:
+
 - `GET /api/stats/dashboard`: Lấy tất cả dữ liệu thống kê tổng hợp cho Dashboard người dùng.
 - `GET /api/stats/streak`: Lấy thông tin chuỗi ngày học liên tục hiện tại.
-- *Service xử lý:* `stats.controller.js`.
-- *Giao diện tương ứng:* `DashboardPage.jsx`.
+- _Service xử lý:_ `stats.controller.js`.
+- _Giao diện tương ứng:_ `DashboardPage.jsx`.
 
 ---
 
 ### PHÂN HỆ 13: TIỆN ÍCH TRẢI NGHIỆM & CƠ CHẾ BẢO MẬT HỆ THỐNG
+
 **Mục đích:** Nâng cao trải nghiệm người dùng cuối (UX), đảm bảo an toàn dữ liệu và tính ổn định của hệ thống.
 
 #### 1. Chi tiết chức năng:
+
 - **Thiết kế thích ứng đa thiết bị (Responsive Web Design):**
   - Giao diện được tối ưu hóa hiển thị mượt mà trên Desktop, Laptop, Máy tính bảng (Tablet) và Điện thoại thông minh (Mobile) thông qua hệ thống Grid và Flexbox của Tailwind CSS.
   - Thanh điều hướng (Navbar / Sidebar) co giãn linh hoạt, menu hamburger trực quan trên màn hình nhỏ.
@@ -546,24 +593,24 @@ flowchart TD
 
 Hệ thống được thiết kế với **16 Thực thể dữ liệu (Models)** chuẩn hóa, đảm bảo tính toàn vẹn dữ liệu qua các ràng buộc khóa ngoại (Foreign Keys):
 
-| STT | Tên Model / Bảng | Mục đích lưu trữ dữ liệu | Các trường thuộc tính chính |
-|:---:|---|---|---|
-| 1 | `User` | Thông tin tài khoản người dùng | `id`, `username`, `email`, `password`, `role`, `initial_level`, `daily_goal`, `streak`, `is_active` |
-| 2 | `Topic` | Danh mục các chủ đề học tập | `id`, `name`, `name_vi`, `description`, `icon`, `order_index` |
-| 3 | `Vocabulary` | Kho từ vựng tiếng Anh | `id`, `topic_id`, `word`, `phonetic`, `part_of_speech`, `meaning_vi`, `difficulty`, `created_by` |
-| 4 | `VocabExample` | Các câu ví dụ ngữ cảnh cho từ | `id`, `vocabulary_id`, `sentence_en`, `sentence_vi` |
-| 5 | `UserVocabProgress` | Tiến độ học và thông số thuật toán SM-2 | `id`, `user_id`, `vocabulary_id`, `status`, `ease_factor`, `interval_days`, `repetition_count`, `next_review_at` |
-| 6 | `ReviewSchedule` | Hàng đợi lịch ôn tập từ vựng | `id`, `user_id`, `vocabulary_id`, `scheduled_date`, `is_completed`, `group_vocab_set_id` |
-| 7 | `Reading` | Kho bài đọc hiểu tiếng Anh | `id`, `topic_id`, `title`, `content_en`, `content_vi`, `difficulty`, `reading_time`, `is_approved`, `created_by` |
-| 8 | `Question` | Bộ câu hỏi trắc nghiệm của bài đọc | `id`, `reading_id`, `question_text`, `options` (JSON), `correct_option`, `explanation_vi` |
-| 9 | `UserReadingAttempt` | Lịch sử các lần làm bài đọc | `id`, `user_id`, `reading_id`, `score`, `total_questions`, `time_spent`, `completed_at` |
-| 10 | `UserAnswer` | Chi tiết câu trả lời bài đọc | `id`, `attempt_id`, `question_id`, `selected_option`, `is_correct` |
-| 11 | `LevelAssessment` | Lịch sử bài kiểm tra năng lực đầu vào | `id`, `user_id`, `score`, `total_questions`, `result_level`, `answers_detail` (JSON), `taken_at` |
-| 12 | `Group` | Nhóm học tập cộng tác | `id`, `name`, `description`, `invite_code`, `owner_id`, `created_at` |
-| 13 | `GroupMember` | Thành viên tham gia nhóm | `id`, `group_id`, `user_id`, `role`, `joined_at` |
-| 14 | `GroupVocabSet` | Bộ từ vựng do nhóm tự biên soạn | `id`, `group_id`, `title`, `description`, `created_by` |
-| 15 | `GroupVocabItem` | Các từ vựng nằm trong bộ từ nhóm | `id`, `group_vocab_set_id`, `word`, `phonetic`, `part_of_speech`, `meaning_vi`, `example_en`, `example_vi` |
-| 16 | `CommunityPost` | Bài viết đóng góp từ cộng đồng | `id`, `user_id`, `type`, `title`, `content` (JSON), `status`, `upvotes`, `created_at` |
+| STT | Tên Model / Bảng     | Mục đích lưu trữ dữ liệu                | Các trường thuộc tính chính                                                                                      |
+| :-: | -------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+|  1  | `User`               | Thông tin tài khoản người dùng          | `id`, `username`, `email`, `password`, `role`, `initial_level`, `daily_goal`, `streak`, `is_active`              |
+|  2  | `Topic`              | Danh mục các chủ đề học tập             | `id`, `name`, `name_vi`, `description`, `icon`, `order_index`                                                    |
+|  3  | `Vocabulary`         | Kho từ vựng tiếng Anh                   | `id`, `topic_id`, `word`, `pronunciation`, `part_of_speech`, `meaning_vi`, `difficulty`, `source_ref`, `image_url`, `created_by` |
+|  4  | `VocabExample`       | Các câu ví dụ ngữ cảnh cho từ           | `id`, `vocabulary_id`, `sentence_en`, `sentence_vi`                                                              |
+|  5  | `UserVocabProgress`  | Tiến độ học và thông số thuật toán SM-2 | `id`, `user_id`, `vocabulary_id`, `status`, `ease_factor`, `interval_days`, `repetition_count`, `next_review_at` |
+|  6  | `ReviewSchedule`     | Hàng đợi lịch ôn tập từ vựng            | `id`, `user_id`, `vocabulary_id`, `scheduled_date`, `is_completed`, `group_vocab_set_id`                         |
+|  7  | `Reading`            | Kho bài đọc hiểu tiếng Anh              | `id`, `topic_id`, `title`, `content_en`, `content_vi`, `difficulty`, `reading_time`, `is_approved`, `created_by` |
+|  8  | `Question`           | Bộ câu hỏi trắc nghiệm của bài đọc      | `id`, `reading_id`, `question_text`, `options` (JSON), `correct_option`, `explanation_vi`                        |
+|  9  | `UserReadingAttempt` | Lịch sử các lần làm bài đọc             | `id`, `user_id`, `reading_id`, `score`, `total_questions`, `time_spent`, `completed_at`                          |
+| 10  | `UserAnswer`         | Chi tiết câu trả lời bài đọc            | `id`, `attempt_id`, `question_id`, `selected_option`, `is_correct`                                               |
+| 11  | `LevelAssessment`    | Lịch sử bài kiểm tra năng lực đầu vào   | `id`, `user_id`, `score`, `total_questions`, `result_level`, `answers_detail` (JSON), `taken_at`                 |
+| 12  | `Group`              | Nhóm học tập cộng tác                   | `id`, `name`, `description`, `invite_code`, `owner_id`, `created_at`                                             |
+| 13  | `GroupMember`        | Thành viên tham gia nhóm                | `id`, `group_id`, `user_id`, `role`, `joined_at`                                                                 |
+| 14  | `GroupVocabSet`      | Bộ từ vựng do nhóm tự biên soạn         | `id`, `group_id`, `title`, `description`, `created_by`                                                           |
+| 15  | `GroupVocabItem`     | Các từ vựng nằm trong bộ từ nhóm        | `id`, `group_vocab_set_id`, `word`, `phonetic`, `part_of_speech`, `meaning_vi`, `example_en`, `example_vi`       |
+| 16  | `CommunityPost`      | Bài viết đóng góp từ cộng đồng          | `id`, `user_id`, `type`, `title`, `content` (JSON), `status`, `upvotes`, `created_at`                            |
 
 ---
 

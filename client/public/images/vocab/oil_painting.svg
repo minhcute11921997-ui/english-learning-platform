@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="grad_0" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="400" height="400" rx="28" fill="url(#grad_0)"/>
+  
+  <!-- Subtle Canvas Texture / Geometric Motif -->
+  <circle cx="50" cy="50" r="120" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+  <circle cx="350" cy="350" r="140" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+  <rect x="20" y="20" width="360" height="360" rx="20" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-dasharray="8,6"/>
+
+  <!-- Category Pill Badge -->
+  <g transform="translate(200, 52)">
+    <rect x="-85" y="-14" width="170" height="28" rx="14" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <text x="0" y="4" font-family="'Cinzel', 'Times New Roman', Georgia, serif" font-size="10" font-weight="bold" fill="#93c5fd" text-anchor="middle" letter-spacing="2">TYPES OF PAINTINGS</text>
+  </g>
+
+  <!-- Central Discipline Illustration -->
+  <g filter="url(#shadow)">
+    
+      <!-- Paint palette and brush -->
+      <path d="M160 220 C140 180, 180 140, 220 140 C260 140, 290 170, 290 200 C290 230, 260 250, 230 250 C210 250, 200 240, 190 240 C180 240, 170 250, 160 250 C140 250, 140 230, 160 220 Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="200" cy="170" r="12" fill="#ef4444"/>
+      <circle cx="240" cy="170" r="12" fill="#3b82f6"/>
+      <circle cx="260" cy="205" r="12" fill="#eab308"/>
+      <line x1="140" y1="270" x2="260" y2="150" stroke="#fef08a" stroke-width="8" stroke-linecap="round"/>
+      <polygon points="260,150 275,135 285,145 270,160" fill="#f59e0b"/>
+    
+  </g>
+
+  <!-- English Vocabulary Title -->
+  <text x="200" y="325" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="24" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1">OIL PAINTING</text>
+
+  <!-- Vietnamese Meaning & Reference Tag -->
+  <text x="200" y="352" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="14" font-weight="500" fill="rgba(255,255,255,0.92)" text-anchor="middle">tranh sơn dầu</text>
+  <text x="200" y="374" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="11" font-weight="400" fill="#93c5fd" text-anchor="middle" font-style="italic">Ref: Oxford Art Dictionary</text>
+</svg>

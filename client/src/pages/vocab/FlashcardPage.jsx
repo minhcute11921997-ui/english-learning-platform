@@ -167,16 +167,33 @@ export default function FlashcardPage() {
             {/* Header of card */}
             <div className="flex justify-between items-center text-xs font-semibold text-gray-400 uppercase tracking-wider">
               <span>{isFlipped ? 'Mặt sau (Nghĩa tiếng Việt)' : 'Mặt trước (Tiếng Anh)'}</span>
-              <span className="badge bg-primary-100 text-primary-700">{current.part_of_speech}</span>
+              <div className="flex items-center gap-2">
+                {current.source_ref && (
+                  <span className="text-[10px] text-stone-500 bg-stone-100 px-2 py-0.5 rounded-full border border-stone-200">
+                    Ref: {current.source_ref}
+                  </span>
+                )}
+                <span className="badge bg-primary-100 text-primary-700">{current.part_of_speech}</span>
+              </div>
             </div>
 
             {/* Content Front vs Back */}
             {!isFlipped ? (
-              <div className="text-center py-6">
-                <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-3 tracking-tight">
+              <div className="text-center py-4">
+                {current.image_url && (
+                  <div className="w-28 h-28 sm:w-36 sm:h-36 mx-auto mb-3 rounded-2xl overflow-hidden shadow-sm border border-stone-200/80 bg-white p-1">
+                    <img
+                      src={current.image_url}
+                      alt={current.word}
+                      className="w-full h-full object-contain rounded-xl"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                  </div>
+                )}
+                <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-900 mb-2 tracking-tight">
                   {current.word}
                 </h2>
-                <p className="text-lg text-gray-500 font-mono mb-4">{current.pronunciation}</p>
+                <p className="text-base text-gray-500 font-mono mb-4">{current.pronunciation}</p>
                 <button
                   onClick={(e) => handleSpeak(current.word, e)}
                   className="btn btn-secondary text-sm gap-2 mx-auto"
@@ -185,13 +202,26 @@ export default function FlashcardPage() {
                 </button>
               </div>
             ) : (
-              <div className="text-center py-4 space-y-4">
-                <p className="text-3xl font-bold text-primary-700">{current.meaning_vi}</p>
+              <div className="text-center py-3 space-y-3">
+                {current.image_url && (
+                  <div className="w-20 h-20 mx-auto rounded-xl overflow-hidden border border-stone-200/80 bg-white p-1 shadow-xs">
+                    <img
+                      src={current.image_url}
+                      alt={current.word}
+                      className="w-full h-full object-contain rounded-lg"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                  </div>
+                )}
+                <p className="text-2xl sm:text-3xl font-bold text-primary-700">{current.meaning_vi}</p>
                 {current.example_sentence && (
-                  <div className="p-4 rounded-xl bg-white/80 border border-primary-100 text-left space-y-2">
+                  <div className="p-3.5 rounded-xl bg-white/90 border border-primary-100 text-left space-y-1.5 shadow-2xs">
                     <p className="text-sm font-semibold text-gray-800">"{current.example_sentence}"</p>
                     <p className="text-sm text-gray-600 italic">"{current.example_translation}"</p>
                   </div>
+                )}
+                {current.source_ref && (
+                  <p className="text-xs text-stone-500 italic">Nguồn tham chiếu chuẩn: {current.source_ref}</p>
                 )}
               </div>
             )}

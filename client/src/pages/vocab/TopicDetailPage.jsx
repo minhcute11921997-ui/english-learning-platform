@@ -164,36 +164,57 @@ export default function TopicDetailPage() {
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-2">
-                  <div className="flex items-center gap-2.5">
-                    <h2 className="text-xl font-bold text-gray-900">{vocab.word}</h2>
-                    <button
-                      onClick={() => handleSpeak(vocab.word)}
-                      title="Nghe phát âm"
-                      className="p-1.5 rounded-full hover:bg-gray-100 text-primary-600 transition-colors cursor-pointer"
-                    >
-                      <HiVolumeUp className="w-5 h-5" />
-                    </button>
+                  <div className="flex items-center gap-3">
+                    {vocab.image_url && (
+                      <div className="w-14 h-14 rounded-xl overflow-hidden border border-stone-200 bg-white p-0.5 shrink-0 shadow-2xs">
+                        <img
+                          src={vocab.image_url}
+                          alt={vocab.word}
+                          className="w-full h-full object-contain rounded-lg"
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-gray-900">{vocab.word}</h2>
+                        <button
+                          onClick={() => handleSpeak(vocab.word)}
+                          title="Nghe phát âm"
+                          className="p-1 rounded-full hover:bg-gray-100 text-primary-600 transition-colors cursor-pointer"
+                        >
+                          <HiVolumeUp className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500 font-mono mt-0.5">{vocab.pronunciation}</p>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <span className="badge bg-blue-100 text-blue-700 text-xs font-semibold">
-                      {posLabels[vocab.part_of_speech] || vocab.part_of_speech}
-                    </span>
-                    <span
-                      className={`badge text-xs font-semibold ${
-                        vocab.difficulty === 'easy'
-                          ? 'bg-green-100 text-green-700'
-                          : vocab.difficulty === 'medium'
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-red-100 text-red-700'
-                      }`}
-                    >
-                      {vocab.difficulty}
-                    </span>
+                  <div className="flex flex-col items-end gap-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="badge bg-blue-100 text-blue-700 text-xs font-semibold">
+                        {posLabels[vocab.part_of_speech] || vocab.part_of_speech}
+                      </span>
+                      <span
+                        className={`badge text-xs font-semibold ${
+                          vocab.difficulty === 'easy'
+                            ? 'bg-green-100 text-green-700'
+                            : vocab.difficulty === 'medium'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-red-100 text-red-700'
+                        }`}
+                      >
+                        {vocab.difficulty}
+                      </span>
+                    </div>
+                    {vocab.source_ref && (
+                      <span className="text-[10px] text-stone-500 bg-stone-100 px-2 py-0.5 rounded-full border border-stone-200 font-medium">
+                        {vocab.source_ref}
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                <p className="text-xs text-gray-500 font-mono mb-2">{vocab.pronunciation}</p>
                 <p className="text-base font-semibold text-primary-900 mb-3">{vocab.meaning_vi}</p>
 
                 {vocab.example_sentence && (

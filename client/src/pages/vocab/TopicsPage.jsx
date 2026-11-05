@@ -15,14 +15,16 @@ import {
   HiOutlineArrowRight,
   HiOutlineFolder,
   HiOutlinePlus,
-  HiOutlineFolderPlus
+  HiOutlineFolderPlus,
+  HiOutlinePaintBrush
 } from 'react-icons/hi2';
 
 const iconMap = {
+  HiPaintBrush: HiOutlinePaintBrush,
+  HiSparkles: HiOutlineSparkles,
   HiUser: HiOutlineUser,
   HiUserGroup: HiOutlineUserGroup,
   HiAcademicCap: HiOutlineAcademicCap,
-  HiSparkles: HiOutlineSparkles,
   HiHeart: HiOutlineHeart,
   HiGlobe: HiOutlineGlobeAmericas,
   HiClock: HiOutlineClock
