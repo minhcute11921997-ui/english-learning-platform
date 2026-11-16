@@ -162,19 +162,11 @@ export default function ReviewPage() {
 
   return (
     <div className="space-y-7 max-w-4xl mx-auto pb-14">
-      {/* Contemporary Studio Header */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
-        <div>
-          <span className="font-mono text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
-            Spaced Repetition System (SM-2)
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Phòng Ôn Tập Thuật Ngữ Định Kỳ
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
-            Tối ưu hóa khả năng ghi nhớ dài hạn bằng thuật toán lặp lại ngắt quãng SuperMemo-2
-          </p>
-        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          Ôn tập từ vựng
+        </h1>
 
         {/* Source selector */}
         <div className="shrink-0 flex items-center gap-2">
@@ -316,12 +308,12 @@ export default function ReviewPage() {
 
               {/* Front side of card */}
               <div className="text-center py-4 flex flex-col items-center justify-center">
-                <div className="w-36 h-36 sm:w-44 sm:h-44 mx-auto mb-4 rounded-3xl overflow-hidden shadow-md border border-slate-200 bg-slate-900 p-2">
+                <div className="w-64 h-44 sm:w-72 sm:h-48 mx-auto mb-4 rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-slate-50">
                   <VocabImage
                     src={vocab.image_url}
                     alt={vocab.image_alt || vocab.word}
                     enableZoom={true}
-                    className="w-full h-full rounded-2xl"
+                    className="w-full h-full"
                   />
                 </div>
 
@@ -355,20 +347,16 @@ export default function ReviewPage() {
                       </div>
                     )}
 
-                    {/* Cultural Side-Notes */}
+                    {/* Cultural Info */}
                     <VocabSidebarInfo
                       culturalNote={vocab.cultural_note}
                       relatedArtist={vocab.related_artist}
                       sourceRef={vocab.source_ref}
-                      imageCredit={vocab.image_credit}
                     />
                   </div>
 
                   {/* 4 Assessment Buttons */}
                   <div>
-                    <p className="text-xs font-mono font-bold text-slate-500 text-center uppercase tracking-wider mb-3">
-                      Đánh giá mức độ ghi nhớ của bạn:
-                    </p>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                       <button
                         disabled={isSubmitting}
@@ -376,7 +364,6 @@ export default function ReviewPage() {
                         className="p-3.5 rounded-2xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-center transition-all cursor-pointer"
                       >
                         <p className="text-xs font-extrabold uppercase">Chưa nhớ</p>
-                        <p className="text-[10px] font-mono text-rose-500 mt-0.5">&lt; 1 ngày</p>
                       </button>
 
                       <button
@@ -385,7 +372,6 @@ export default function ReviewPage() {
                         className="p-3.5 rounded-2xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 text-center transition-all cursor-pointer"
                       >
                         <p className="text-xs font-extrabold uppercase">Khó nhớ</p>
-                        <p className="text-[10px] font-mono text-amber-600 mt-0.5">~ 2 ngày</p>
                       </button>
 
                       <button
@@ -394,7 +380,6 @@ export default function ReviewPage() {
                         className="p-3.5 rounded-2xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-800 text-center transition-all cursor-pointer"
                       >
                         <p className="text-xs font-extrabold uppercase">Nhớ tốt</p>
-                        <p className="text-[10px] font-mono text-blue-600 mt-0.5">~ 4-6 ngày</p>
                       </button>
 
                       <button
@@ -403,7 +388,6 @@ export default function ReviewPage() {
                         className="p-3.5 rounded-2xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-center transition-all cursor-pointer"
                       >
                         <p className="text-xs font-extrabold uppercase">Rất dễ</p>
-                        <p className="text-[10px] font-mono text-emerald-600 mt-0.5">&gt; 7 ngày</p>
                       </button>
                     </div>
                   </div>
@@ -499,8 +483,8 @@ export default function ReviewPage() {
                 return (
                   <div key={item.id || idx} className="py-4 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3.5">
-                      <div className="w-14 h-14 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 p-1 shrink-0 shadow-xs">
-                        <VocabImage src={v.image_url} alt={v.word} className="w-full h-full rounded-xl" />
+                      <div className="w-14 h-14 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shrink-0 shadow-xs">
+                        <VocabImage src={v.image_url} alt={v.word} fit="cover" className="w-full h-full" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
@@ -550,8 +534,8 @@ export default function ReviewPage() {
                 <div key={item.id} className="py-3.5 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3.5">
                     {item.vocabulary?.image_url && (
-                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-slate-200 bg-slate-900 p-0.5 shrink-0 shadow-xs">
-                        <VocabImage src={item.vocabulary.image_url} alt="" className="w-full h-full rounded-lg" />
+                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 shrink-0 shadow-xs">
+                        <VocabImage src={item.vocabulary.image_url} alt="" fit="cover" className="w-full h-full" />
                       </div>
                     )}
                     <div className="flex items-center gap-2.5">

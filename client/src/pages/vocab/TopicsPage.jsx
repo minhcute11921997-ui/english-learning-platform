@@ -94,17 +94,9 @@ export default function TopicsPage() {
     <div className="space-y-7 pb-14">
       {/* Header & Contemporary Tab Switcher */}
       <div className="border-b border-slate-200 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span className="font-mono text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
-            Gallery Collections
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Chuyên đề Thuật ngữ Mỹ thuật
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Học sâu các thuật ngữ tiếng Anh mỹ thuật &amp; kỹ nghệ thủ công qua tranh trực quan
-          </p>
-        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          Chuyên đề Mỹ thuật
+        </h1>
 
         {/* Tab Switcher */}
         <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-2xl self-start sm:self-auto border border-slate-200/80">
@@ -136,7 +128,7 @@ export default function TopicsPage() {
       {/* TAB 1: CHỦ ĐỀ HỆ THỐNG */}
       {activeTab === 'topics' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {topics.map((t, idx) => {
+          {topics.map((t) => {
             const IconComponent = iconMap[t.icon] || HiOutlineBookOpen;
             return (
               <div
@@ -150,26 +142,19 @@ export default function TopicsPage() {
                       <IconComponent className="w-6 h-6" />
                     </div>
                     <span className="font-mono text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">
-                      {t.vocab_count} Thuật ngữ
+                      {t.vocab_count} từ
                     </span>
                   </div>
 
                   {/* Tên chủ đề */}
-                  <span className="font-mono text-[10px] font-bold text-blue-600 uppercase tracking-wider block mb-1">
-                    Exhibition Hall 0{idx + 1}
-                  </span>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug tracking-tight">
                     {t.name_vi}
                   </h2>
-                  <p className="font-mono text-xs text-slate-400 mt-0.5">({t.name})</p>
-                  <p className="text-xs text-slate-600 mt-3 line-clamp-2 leading-relaxed">
-                    {t.description}
-                  </p>
 
                   {/* Thanh tiến độ học */}
                   <div className="mt-5 pt-4 border-t border-slate-100">
                     <div className="flex justify-between text-xs font-bold text-slate-600 mb-2">
-                      <span>Tiến độ: {t.learned_count} / {t.vocab_count} từ</span>
+                      <span>{t.learned_count} / {t.vocab_count} từ</span>
                       <span className="font-mono text-blue-600">{t.progress_percent}%</span>
                     </div>
                     <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -210,12 +195,9 @@ export default function TopicsPage() {
         <div className="space-y-6">
           {/* Action bar for My Lists */}
           <div className="flex items-center justify-between bg-white p-5 rounded-3xl border border-slate-200/90 shadow-sm">
-            <div>
-              <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">
-                Bộ sưu tập thuật ngữ cá nhân
-              </h2>
-              <p className="text-xs text-slate-500">Tự do phân loại từ vựng theo dự án hoặc trường phái yêu thích</p>
-            </div>
+            <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">
+              Bộ sưu tập cá nhân
+            </h2>
             <button
               type="button"
               onClick={() => setShowCreateModal(true)}
@@ -260,7 +242,7 @@ export default function TopicsPage() {
 
                     {/* Action buttons */}
                     <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
-                      {count > 0 ? (
+                      {count > 0 && (
                         <Link
                           to={`/vocab-lists/${list.id}/flashcards`}
                           className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1.5"
@@ -268,13 +250,11 @@ export default function TopicsPage() {
                           <HiOutlineBookOpen className="w-4 h-4" />
                           <span>Flashcard</span>
                         </Link>
-                      ) : (
-                        <span className="text-xs text-slate-400 italic font-mono">Chưa có từ</span>
                       )}
 
                       <Link
                         to={`/vocab-lists/${list.id}`}
-                        className="btn btn-secondary py-1.5 px-3.5 text-xs gap-1.5 flex items-center rounded-xl"
+                        className="btn btn-secondary py-1.5 px-3.5 text-xs gap-1.5 flex items-center rounded-xl ml-auto"
                       >
                         <span>Chi tiết</span>
                         <HiOutlineArrowRight className="w-3.5 h-3.5" />

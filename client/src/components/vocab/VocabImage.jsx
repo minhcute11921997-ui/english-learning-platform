@@ -12,6 +12,7 @@ export default function VocabImage({
   alt = 'Tác phẩm mỹ thuật',
   className = '',
   imgClassName = '',
+  fit = 'contain',
   showCaption = false,
   caption = '',
   enableZoom = false
@@ -47,7 +48,7 @@ export default function VocabImage({
           onClick={() => {
             if (enableZoom && !hasError) setIsZoomed(true);
           }}
-          className={`w-full h-full object-contain transition-all duration-300 ${
+          className={`w-full h-full ${fit === 'cover' ? 'object-cover' : 'object-contain'} transition-all duration-300 ${
             enableZoom && !hasError ? 'cursor-zoom-in group-hover:scale-[1.03]' : ''
           } ${imgClassName}`}
         />

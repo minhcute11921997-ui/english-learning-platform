@@ -205,8 +205,8 @@ export default function ExercisePage() {
 
               {/* Artwork thumbnail if question had an image */}
               {item.image_url && (
-                <div className="w-28 h-28 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 p-1 shadow-md">
-                  <VocabImage src={item.image_url} alt="Tác phẩm" className="w-full h-full rounded-xl" />
+                <div className="w-36 h-28 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-sm">
+                  <VocabImage src={item.image_url} alt="Tác phẩm" fit="cover" className="w-full h-full" />
                 </div>
               )}
 
@@ -303,12 +303,12 @@ export default function ExercisePage() {
 
           {/* Visual Artwork Box for image questions or questions with an image */}
           {currentQ.image_url && (
-            <div className="w-44 h-44 sm:w-56 sm:h-56 mx-auto rounded-3xl overflow-hidden border border-slate-200 bg-slate-900 p-2 shadow-lg">
+            <div className="w-72 h-52 sm:w-80 sm:h-56 mx-auto rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-sm">
               <VocabImage
                 src={currentQ.image_url}
                 alt="Minh họa câu hỏi"
                 enableZoom={true}
-                className="w-full h-full rounded-2xl"
+                className="w-full h-full"
               />
             </div>
           )}

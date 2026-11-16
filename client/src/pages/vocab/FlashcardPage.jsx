@@ -11,10 +11,8 @@ import {
   HiArrowLeft,
   HiArrowRight,
   HiRefresh,
-  HiCheck,
-  HiLightBulb
+  HiCheck
 } from 'react-icons/hi';
-import { HiOutlineSparkles } from 'react-icons/hi2';
 
 export default function FlashcardPage() {
   const { id } = useParams();
@@ -167,30 +165,23 @@ export default function FlashcardPage() {
             }`}
           >
             {/* Header of card */}
-            <div className="flex justify-between items-center text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
-              <span>{isFlipped ? 'MẶT SAU • GIẢI NGHĨA & DI SẢN' : 'MẶT TRƯỚC • TÁC PHẨM & THUẬT NGỮ'}</span>
-              <div className="flex items-center gap-2">
-                {current.source_ref && (
-                  <span className="font-mono text-[10px] text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-md font-semibold">
-                    {current.source_ref}
-                  </span>
-                )}
-                <span className="badge bg-blue-50 text-blue-700 font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-blue-200/60">
-                  {current.part_of_speech}
-                </span>
-              </div>
+            <div className="flex justify-between items-center text-xs font-bold text-slate-400">
+              <span>{isFlipped ? 'Mặt sau' : 'Mặt trước'}</span>
+              <span className="badge bg-blue-50 text-blue-700 font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-blue-200/60">
+                {current.part_of_speech}
+              </span>
             </div>
 
             {/* Content Front vs Back */}
             {!isFlipped ? (
-              <div className="text-center py-6 flex flex-col items-center justify-center flex-1">
-                {/* Visual Image - Contemporary Framing */}
-                <div className="w-40 h-40 sm:w-48 sm:h-48 mx-auto mb-5 rounded-3xl overflow-hidden shadow-lg border border-slate-200 bg-slate-900 p-2">
+              <div className="text-center py-4 flex flex-col items-center justify-center flex-1">
+                {/* Visual Image */}
+                <div className="w-full max-w-sm h-56 mx-auto mb-5 rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-slate-50">
                   <VocabImage
                     src={current.image_url}
                     alt={current.image_alt || current.word}
                     enableZoom={false}
-                    className="w-full h-full rounded-2xl"
+                    className="w-full h-full"
                   />
                 </div>
 
@@ -202,17 +193,18 @@ export default function FlashcardPage() {
                   onClick={(e) => handleSpeak(current.word, e)}
                   className="btn btn-secondary text-xs gap-2 mx-auto rounded-xl shadow-xs hover:bg-slate-200"
                 >
-                  <HiVolumeUp className="w-4 h-4 text-blue-600" /> Nghe phát âm chuẩn
+                  <HiVolumeUp className="w-4 h-4 text-blue-600" /> Nghe phát âm
                 </button>
               </div>
             ) : (
               <div className="text-center py-2 space-y-4 flex flex-col justify-center flex-1">
                 <div className="flex items-center justify-center gap-4">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 p-1.5 shadow-md shrink-0">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-sm shrink-0">
                     <VocabImage
                       src={current.image_url}
                       alt={current.image_alt || current.word}
-                      className="w-full h-full rounded-xl"
+                      fit="cover"
+                      className="w-full h-full"
                     />
                   </div>
                   <div className="text-left">
@@ -229,21 +221,17 @@ export default function FlashcardPage() {
                   </div>
                 )}
 
-                {/* Rich Cultural Side-Notes */}
+                {/* Cultural Info */}
                 <VocabSidebarInfo
                   culturalNote={current.cultural_note}
                   relatedArtist={current.related_artist}
                   sourceRef={current.source_ref}
-                  imageCredit={current.image_credit}
                 />
               </div>
             )}
 
-            {/* Footer tip */}
-            <div className="flex justify-between items-center pt-5 border-t border-slate-100 text-xs text-slate-500">
-              <span className="flex items-center gap-1.5 font-mono text-[11px]">
-                <HiLightBulb className="w-4 h-4 text-amber-500" /> [Phím Cách] để lật thẻ
-              </span>
+            {/* Footer action */}
+            <div className="flex justify-end items-center pt-5 border-t border-slate-100">
               <button
                 onClick={handleMarkLearned}
                 className="btn btn-primary text-xs py-2 px-4 gap-1.5 rounded-xl shadow-sm"

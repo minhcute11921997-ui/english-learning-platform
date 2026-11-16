@@ -87,32 +87,26 @@ export default function TopicDetailPage() {
 
   return (
     <div className="space-y-7 pb-14">
-      {/* Back button & Contemporary Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 border-b border-slate-200 pb-6">
+      {/* Back button & Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <Link
             to="/topics"
-            className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-slate-500 hover:text-blue-600 mb-2 transition-colors uppercase tracking-wider"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-600 mb-1.5 transition-colors"
           >
-            <HiArrowLeft className="w-3.5 h-3.5" /> Quay lại danh mục triển lãm
+            <HiArrowLeft className="w-3.5 h-3.5" /> Chủ đề
           </Link>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            {topic?.name_vi}{' '}
-            <span className="text-slate-400 font-mono font-normal text-xl block sm:inline mt-1 sm:mt-0">
-              ({topic?.name})
-            </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            {topic?.name_vi}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-3xl leading-relaxed">
-            {topic?.description}
-          </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
           <Link to={`/topics/${id}/flashcards`} className="btn btn-secondary text-xs py-2.5 px-4 gap-2 rounded-xl">
-            <HiViewGrid className="w-4 h-4 text-blue-600" /> Flashcard 3D
+            <HiViewGrid className="w-4 h-4 text-blue-600" /> Flashcard
           </Link>
           <Link to={`/topics/${id}/exercise`} className="btn btn-primary text-xs py-2.5 px-4 gap-2 rounded-xl">
-            <HiLightningBolt className="w-4 h-4" /> Luyện tập đố tranh
+            <HiLightningBolt className="w-4 h-4" /> Luyện tập
           </Link>
         </div>
       </div>
@@ -145,11 +139,12 @@ export default function TopicDetailPage() {
         </div>
       </div>
 
-      {/* Vocabulary list grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Vocabulary gallery grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredVocabs.map((vocab) => {
           const isLearned = !!vocab.user_progress;
           const isExpanded = !!expandedInfoIds[vocab.id];
+          const hasExtra = !!(vocab.example_sentence || vocab.cultural_note || vocab.related_artist);
           const posLabels = {
             noun: 'danh từ',
             verb: 'động từ',
@@ -163,122 +158,113 @@ export default function TopicDetailPage() {
           return (
             <div
               key={vocab.id}
-              className={`rounded-3xl p-6 border transition-all flex flex-col justify-between shadow-sm ${
+              className={`rounded-3xl border overflow-hidden transition-all flex flex-col justify-between shadow-sm ${
                 isLearned
                   ? 'bg-blue-50/20 border-blue-200/80'
                   : 'bg-white border-slate-200/90 hover:border-blue-300'
               }`}
             >
               <div>
-                {/* Header item */}
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-20 h-20 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 p-1 shrink-0 shadow-md">
-                      <VocabImage
-                        src={vocab.image_url}
-                        alt={vocab.image_alt || vocab.word}
-                        enableZoom={true}
-                        className="w-full h-full rounded-xl"
-                      />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 className="text-xl sm:text-2xl font-extrabold text-slate-950 tracking-tight">
-                          {vocab.word}
-                        </h2>
-                        <button
-                          onClick={() => handleSpeak(vocab.word)}
-                          title="Nghe phát âm chuẩn"
-                          className="p-1.5 rounded-xl hover:bg-slate-100 text-blue-600 transition-colors cursor-pointer"
-                        >
-                          <HiVolumeUp className="w-4 h-4" />
-                        </button>
-                      </div>
-                      <p className="text-xs text-slate-500 font-mono mt-0.5">{vocab.pronunciation}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col items-end gap-1.5 shrink-0">
-                    <div className="flex items-center gap-1.5">
-                      <span className="badge bg-slate-100 text-slate-700 font-mono text-[10px] uppercase font-bold px-2 py-0.5">
-                        {posLabels[vocab.part_of_speech] || vocab.part_of_speech}
-                      </span>
-                      <span
-                        className={`badge font-mono text-[10px] uppercase font-bold px-2 py-0.5 ${
-                          vocab.difficulty === 'easy'
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : vocab.difficulty === 'medium'
-                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                            : 'bg-rose-50 text-rose-700 border border-rose-200'
-                        }`}
-                      >
-                        {vocab.difficulty}
-                      </span>
-                    </div>
-                    {vocab.source_ref && (
-                      <span className="font-mono text-[10px] text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200/60 font-semibold">
-                        {vocab.source_ref}
-                      </span>
-                    )}
-                  </div>
+                {/* Artwork Banner */}
+                <div className="relative h-48 bg-slate-100 border-b border-slate-100 overflow-hidden">
+                  <VocabImage
+                    src={vocab.image_url}
+                    alt={vocab.image_alt || vocab.word}
+                    fit="cover"
+                    enableZoom={true}
+                    className="w-full h-full"
+                  />
+                  <span
+                    className={`absolute top-3 right-3 badge font-mono text-[10px] uppercase font-bold px-2.5 py-0.5 shadow-sm backdrop-blur-sm ${
+                      vocab.difficulty === 'easy'
+                        ? 'bg-emerald-50/95 text-emerald-700 border border-emerald-200'
+                        : vocab.difficulty === 'medium'
+                        ? 'bg-blue-50/95 text-blue-700 border border-blue-200'
+                        : 'bg-rose-50/95 text-rose-700 border border-rose-200'
+                    }`}
+                  >
+                    {vocab.difficulty}
+                  </span>
                 </div>
 
-                {/* Nghĩa tiếng Việt */}
-                <p className="text-base font-bold text-slate-900 mb-3">{vocab.meaning_vi}</p>
-
-                {/* Ví dụ ngữ cảnh */}
-                {vocab.example_sentence && (
-                  <div className="p-3.5 rounded-2xl bg-slate-50 text-xs space-y-1 mb-4 border border-slate-200/70">
-                    <p className="font-semibold text-slate-800">"{vocab.example_sentence}"</p>
-                    <p className="text-slate-500 italic">"{vocab.example_translation}"</p>
+                <div className="p-5 pb-3">
+                  {/* Word & Pronunciation */}
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <h2 className="text-xl font-extrabold text-slate-950 tracking-tight truncate">
+                        {vocab.word}
+                      </h2>
+                      <button
+                        onClick={() => handleSpeak(vocab.word)}
+                        title="Nghe phát âm"
+                        className="p-1.5 rounded-xl hover:bg-slate-100 text-blue-600 transition-colors cursor-pointer shrink-0"
+                      >
+                        <HiVolumeUp className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <span className="badge bg-slate-100 text-slate-600 font-mono text-[10px] uppercase font-bold px-2 py-0.5 shrink-0 mt-1">
+                      {posLabels[vocab.part_of_speech] || vocab.part_of_speech}
+                    </span>
                   </div>
-                )}
 
-                {/* Collapsible toggle for Cultural Side-Notes */}
-                {(vocab.cultural_note || vocab.related_artist) && (
-                  <div className="mb-4">
-                    <button
-                      type="button"
-                      onClick={() => toggleExpand(vocab.id)}
-                      className="w-full text-left flex items-center justify-between text-xs font-bold text-slate-700 hover:text-blue-600 py-1.5 px-3 rounded-xl bg-slate-100/70 hover:bg-slate-100 border border-slate-200/60 transition-colors cursor-pointer"
-                    >
-                      <span className="flex items-center gap-1.5">
-                        <HiOutlineSparkles className="w-3.5 h-3.5 text-blue-600" />
-                        {isExpanded ? 'Ẩn thông tin bên lề & nghệ sĩ' : 'Xem bối cảnh văn hóa & nghệ sĩ tiêu biểu'}
-                      </span>
-                      {isExpanded ? <HiChevronUp className="w-3.5 h-3.5" /> : <HiChevronDown className="w-3.5 h-3.5" />}
-                    </button>
+                  {vocab.pronunciation && (
+                    <p className="text-xs text-slate-400 font-mono mb-2">{vocab.pronunciation}</p>
+                  )}
 
-                    {isExpanded && (
-                      <div className="mt-3">
-                        <VocabSidebarInfo
-                          culturalNote={vocab.cultural_note}
-                          relatedArtist={vocab.related_artist}
-                          sourceRef={vocab.source_ref}
-                          imageCredit={vocab.image_credit}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
+                  {/* Nghĩa tiếng Việt */}
+                  <p className="text-base font-bold text-slate-900 mb-3">{vocab.meaning_vi}</p>
+
+                  {/* Collapsible details (Example + Cultural info) */}
+                  {hasExtra && (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => toggleExpand(vocab.id)}
+                        className="w-full text-left flex items-center justify-between text-xs font-bold text-slate-600 hover:text-blue-600 py-1.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/60 transition-colors cursor-pointer"
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <HiOutlineSparkles className="w-3.5 h-3.5 text-blue-600" />
+                          {isExpanded ? 'Thu gọn' : 'Chi tiết & ví dụ'}
+                        </span>
+                        {isExpanded ? <HiChevronUp className="w-3.5 h-3.5" /> : <HiChevronDown className="w-3.5 h-3.5" />}
+                      </button>
+
+                      {isExpanded && (
+                        <div className="mt-3 space-y-2.5">
+                          {vocab.example_sentence && (
+                            <div className="p-3 rounded-2xl bg-slate-50 text-xs space-y-1 border border-slate-200/70">
+                              <p className="font-semibold text-slate-800">"{vocab.example_sentence}"</p>
+                              <p className="text-slate-500 italic">"{vocab.example_translation}"</p>
+                            </div>
+                          )}
+                          {(vocab.cultural_note || vocab.related_artist) && (
+                            <VocabSidebarInfo
+                              culturalNote={vocab.cultural_note}
+                              relatedArtist={vocab.related_artist}
+                              sourceRef={vocab.source_ref}
+                            />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Card Footer Actions */}
-              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                {isLearned ? (
-                  <span className="inline-flex items-center gap-1.5 text-emerald-600 font-bold">
-                    <HiCheckCircle className="w-4 h-4" /> Đang ôn tập SM-2
+              <div className="px-5 py-3.5 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
+                {isLearned && (
+                  <span className="inline-flex items-center gap-1 text-emerald-600 font-bold">
+                    <HiCheckCircle className="w-4 h-4" /> Đã lưu
                   </span>
-                ) : (
-                  <span className="text-slate-400 font-mono text-[11px]">Chưa lưu</span>
                 )}
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 ml-auto">
                   <button
                     type="button"
                     onClick={() => setSelectedVocabForModal(vocab)}
-                    className="py-1.5 px-3 text-xs text-slate-700 hover:text-blue-600 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors cursor-pointer flex items-center gap-1.5 font-bold"
-                    title="Quản lý sổ từ cá nhân"
+                    className="py-1.5 px-3 text-xs text-slate-700 hover:text-blue-600 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors cursor-pointer flex items-center gap-1 font-bold"
+                    title="Lưu vào sổ từ"
                   >
                     <HiOutlineBookmark className="w-3.5 h-3.5 text-slate-500" />
                     <span>Sổ từ</span>
@@ -286,19 +272,17 @@ export default function TopicDetailPage() {
                   {isLearned ? (
                     <Link
                       to="/review"
-                      className="py-1.5 px-3.5 text-xs rounded-xl border border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold transition-colors"
+                      className="py-1.5 px-3 text-xs rounded-xl border border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold transition-colors"
                     >
-                      Ôn tập ngay →
+                      Ôn tập →
                     </Link>
                   ) : (
                     <button
                       type="button"
                       onClick={() => setSelectedVocabForModal(vocab)}
-                      className="py-1.5 px-3.5 text-xs rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm shadow-blue-600/25"
-                      title="Lưu vào danh sách học và lên lịch ôn tập"
+                      className="py-1.5 px-3 text-xs rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-bold transition-colors cursor-pointer shadow-sm shadow-blue-600/25"
                     >
-                      <HiOutlineBookmark className="w-3.5 h-3.5 text-white/90" />
-                      + Học từ này
+                      + Học từ
                     </button>
                   )}
                 </div>

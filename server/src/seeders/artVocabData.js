@@ -1,6 +1,6 @@
 /**
  * Bộ từ vựng chuẩn Mỹ thuật & Thủ công nghệ thuật (Fine Arts & Crafts)
- * Bổ sung đầy đủ bối cảnh văn hóa - lịch sử, nghệ sĩ tiêu biểu và hình ảnh minh họa
+ * Bổ sung đầy đủ bối cảnh văn hóa - lịch sử, nghệ sĩ tiêu biểu và hình ảnh minh họa thực tế
  */
 
 const topicsData = [
@@ -33,11 +33,11 @@ const vocabByTopic = {
       "example_translation": "Bảo tàng trưng bày một bức tranh sơn dầu thời Phục hưng nổi tiếng.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/oil_painting.svg",
+      "image_url": "/images/vocab/oil_painting.jpg",
       "cultural_note": "Kỹ thuật sơn dầu phát triển bùng nổ từ thế kỷ 15 tại vùng Flanders (Bỉ/Hà Lan) với danh họa Jan van Eyck, mang lại độ sâu quang học và độ bền bỉ qua hàng thế kỷ.",
       "related_artist": "Jan van Eyck, Leonardo da Vinci, Rembrandt van Rijn",
       "image_alt": "Bức tranh sơn dầu kinh điển trên toan với bảng màu và cọ vẽ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Jan van Eyck (Public domain)"
     },
     {
       "word": "watercolor",
@@ -48,11 +48,11 @@ const vocabByTopic = {
       "example_translation": "Màu nước cho phép họa sĩ tạo ra những lớp màu mềm mại và trong trẻo.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/watercolor.svg",
+      "image_url": "/images/vocab/watercolor.jpg",
       "cultural_note": "Tranh màu nước có lịch sử lâu đời từ Ai Cập cổ đại và nở rộ tại Anh vào thế kỷ 18-19, đề cao tính ngẫu hứng, độ trong suốt và tương tác tinh tế giữa nước và giấy bông.",
       "related_artist": "J. M. W. Turner, John Singer Sargent",
       "image_alt": "Bức tranh màu nước với các vệt màu loang trong trẻo",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Joseph Mallord William Turner (Public domain)"
     },
     {
       "word": "acrylic painting",
@@ -63,11 +63,11 @@ const vocabByTopic = {
       "example_translation": "Sơn acrylic khô nhanh hơn nhiều so với sơn dầu truyền thống.",
       "difficulty": "easy",
       "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/acrylic_painting.svg",
+      "image_url": "/images/vocab/acrylic_painting.jpg",
       "cultural_note": "Sơn acrylic ra đời vào giữa thế kỷ 20 từ chất kết dính polymer, nhanh khô và kháng nước, gắn liền với phong trào Nghệ thuật Pop Art và Biểu hiện trừu tượng.",
       "related_artist": "Andy Warhol, David Hockney, Mark Rothko",
       "image_alt": "Tranh sơn acrylic hiện đại với sắc màu rực rỡ và khô nhanh",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Anantamandal (CC BY-SA 4.0)"
     },
     {
       "word": "fresco",
@@ -78,11 +78,11 @@ const vocabByTopic = {
       "example_translation": "Michelangelo đã vẽ những bức bích họa đồ sộ trên trần Nhà nguyện Sistine.",
       "difficulty": "medium",
       "source_ref": "Duden Bildwörterbuch",
-      "image_url": "/images/vocab/fresco.svg",
+      "image_url": "/images/vocab/fresco.jpg",
       "cultural_note": "Bích họa vẽ trên lớp vữa vôi còn ướt (buon fresco). Sắc tố màu ngấm sâu vào vữa tạo độ bền vĩnh cửu, đỉnh cao là các kiệt tác tại Nhà nguyện Sistine ở Vatican.",
       "related_artist": "Michelangelo Buonarroti, Giotto di Bondone, Raphael",
       "image_alt": "Bích họa cổ điển vẽ trực tiếp trên lớp vữa tường ẩm",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Michelangelo (Public domain)"
     },
     {
       "word": "portrait",
@@ -93,11 +93,11 @@ const vocabByTopic = {
       "example_translation": "Mona Lisa có lẽ là bức tranh chân dung nổi tiếng nhất thế giới.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/portrait.svg",
+      "image_url": "/images/vocab/portrait.jpg",
       "cultural_note": "Thể loại tranh chân dung ghi lại diện mạo, khí chất và địa vị xã hội của nhân vật, từ chân dung hoàng gia châu Âu đến những khám phá nội tâm hiện đại.",
       "related_artist": "Leonardo da Vinci (Mona Lisa), Johannes Vermeer, Diego Velázquez",
       "image_alt": "Tranh chân dung nghệ thuật miêu tả diện mạo và biểu cảm",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Johannes Vermeer (Public domain)"
     },
     {
       "word": "landscape",
@@ -108,11 +108,11 @@ const vocabByTopic = {
       "example_translation": "Ông đã bắt trọn hoàng hôn rực vàng trong một bức tranh phong cảnh đồng quê thanh bình.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/landscape.svg",
+      "image_url": "/images/vocab/landscape.jpg",
       "cultural_note": "Tranh phong cảnh trở thành thể loại hội họa độc lập quan trọng từ thời Phục hưng và thăng hoa rực rỡ trong trường phái Lãng mạn cùng trường phái Ấn tượng ngoài trời.",
       "related_artist": "Claude Monet, Caspar David Friedrich, Vincent van Gogh",
       "image_alt": "Tranh phong cảnh thiên nhiên bao la với núi rừng và bầu trời",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Caspar David Friedrich (Public domain)"
     },
     {
       "word": "still life",
@@ -123,11 +123,11 @@ const vocabByTopic = {
       "example_translation": "Các danh họa Hà Lan là bậc thầy về những bố cục tranh tĩnh vật chi tiết.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/still_life.svg",
+      "image_url": "/images/vocab/still_life.jpg",
       "cultural_note": "Tranh tĩnh vật khắc họa những vật thể vô tri như hoa quả, hoa tươi, nhạc cụ, từng mang ý nghĩa triết học sâu sắc về sự ngắn ngủi của đời người (Vanitas Hà Lan).",
       "related_artist": "Paul Cézanne, Caravaggio, Jean-Baptiste-Siméon Chardin",
       "image_alt": "Tranh tĩnh vật sắp đặt bình gốm, hoa quả trên bàn",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Paul Cézanne (Public domain)"
     },
     {
       "word": "abstract art",
@@ -138,11 +138,11 @@ const vocabByTopic = {
       "example_translation": "Nghệ thuật trừu tượng chú trọng vào hình khối, màu sắc và cảm xúc thay vì hình tượng hiện thực.",
       "difficulty": "medium",
       "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/abstract_art.svg",
+      "image_url": "/images/vocab/abstract_art.jpg",
       "cultural_note": "Nghệ thuật trừu tượng từ bỏ việc mô phỏng thực tại hữu hình, sử dụng đường nét, màu sắc và hình khối thuần túy để đánh thức cảm xúc thị giác nguyên bản.",
       "related_artist": "Wassily Kandinsky, Piet Mondrian, Kazimir Malevich",
       "image_alt": "Tác phẩm nghệ thuật trừu tượng với các mảng hình học và màu sắc",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Wassily Kandinsky (Public domain)"
     },
     {
       "word": "impressionism",
@@ -153,11 +153,11 @@ const vocabByTopic = {
       "example_translation": "Trường phái ấn tượng khởi phát tại Pháp với Claude Monet là một nhân vật then chốt.",
       "difficulty": "medium",
       "source_ref": "Encyclopædia Britannica",
-      "image_url": "/images/vocab/impressionism.svg",
+      "image_url": "/images/vocab/impressionism.jpg",
       "cultural_note": "Trường phái Ấn tượng khởi xướng tại Paris thập niên 1870, chú trọng nắm bắt khoảnh khắc biến chuyển của ánh sáng tự nhiên với nét cọ ngắn và màu sắc tươi sáng.",
       "related_artist": "Claude Monet, Pierre-Auguste Renoir, Edgar Degas",
       "image_alt": "Bức tranh trường phái Ấn tượng nắm bắt ánh sáng và sắc màu thoáng qua",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Claude Monet (Public domain)"
     },
     {
       "word": "surrealism",
@@ -168,11 +168,11 @@ const vocabByTopic = {
       "example_translation": "Trường phái siêu thực khám phá những hình ảnh tựa giấc mơ và tiềm thức con người.",
       "difficulty": "hard",
       "source_ref": "MoMA Art Terms",
-      "image_url": "/images/vocab/surrealism.svg",
+      "image_url": "/images/vocab/surrealism.jpg",
       "cultural_note": "Chủ nghĩa siêu thực khởi phát vào thập niên 1920 tại châu Âu, giải phóng tiềm thức, giấc mơ và những liên tưởng phi lý vượt ra ngoài logic lý tính.",
       "related_artist": "Salvador Dalí, René Magritte, Max Ernst",
       "image_alt": "Tác phẩm siêu thực với thế giới giấc mơ và biểu tượng bí ẩn",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Odilon Redon (Public domain)"
     },
     {
       "word": "cubism",
@@ -183,11 +183,11 @@ const vocabByTopic = {
       "example_translation": "Picasso mở đường cho trường phái lập thể bằng cách phân tích đối tượng thành các diện kỷ hà hình học.",
       "difficulty": "hard",
       "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/cubism.svg",
+      "image_url": "/images/vocab/cubism.jpg",
       "cultural_note": "Chủ nghĩa Lập thể do Picasso và Braque sáng lập năm 1907, phân rã vật thể thành các đa giác hình khối và tái hiện chúng từ nhiều góc nhìn đồng thời.",
       "related_artist": "Pablo Picasso, Georges Braque, Juan Gris",
       "image_alt": "Tác phẩm Lập thể phân rã cấu trúc vật thể thành các mặt phẳng",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Juan Gris (Public domain)"
     },
     {
       "word": "canvas",
@@ -198,11 +198,11 @@ const vocabByTopic = {
       "example_translation": "Cô căng một tấm toan vải cotton sạch lên khung gỗ.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/canvas.svg",
+      "image_url": "/images/vocab/canvas.jpg",
       "cultural_note": "Toan vẽ (vải bố dệt từ sợi lanh hoặc sợi gai dầu căng trên khung gỗ) thay thế gỗ phiến từ thế kỷ 16 ở Venice nhờ trọng lượng nhẹ và khả năng chống ẩm cao.",
       "related_artist": "Titian, Tintoretto (những bậc thầy tiên phong dùng toan lanh Venice)",
       "image_alt": "Tấm toan vẽ tranh căng đều trên khung gỗ mộc",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Janvdee (CC BY-SA 3.0)"
     },
     {
       "word": "easel",
@@ -213,11 +213,11 @@ const vocabByTopic = {
       "example_translation": "Họa sĩ đặt tấm toan chắc chắn lên giá vẽ bằng gỗ.",
       "difficulty": "easy",
       "source_ref": "Duden Bildwörterbuch",
-      "image_url": "/images/vocab/easel.svg",
+      "image_url": "/images/vocab/easel.jpg",
       "cultural_note": "Giá vẽ bằng gỗ xuất hiện từ thời cổ đại và là người bạn đồng hành không thể thiếu của người họa sĩ trong xưởng vẽ lẫn khi đi thực tế vẽ ngoại cảnh ngoài trời.",
       "related_artist": "Rembrandt van Rijn, Claude Monet (giá vẽ dã ngoại)",
       "image_alt": "Giá vẽ ba chân bằng gỗ dùng đỡ toan vẽ tranh",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Vadim Cole (CC BY-SA 4.0)"
     },
     {
       "word": "palette",
@@ -228,11 +228,11 @@ const vocabByTopic = {
       "example_translation": "Anh ấy pha trộn những sắc thái rực rỡ của màu xanh và vàng trên bảng pha màu bằng gỗ.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/palette.svg",
+      "image_url": "/images/vocab/palette.jpg",
       "cultural_note": "Bảng pha màu biểu trưng cho tư duy hòa sắc của họa sĩ, từ bảng gỗ hình hạt đậu thời Phục hưng đến bảng kính hoặc sứ phẳng hiện đại.",
       "related_artist": "Eugène Delacroix, Paul Gauguin",
       "image_alt": "Bảng pha màu gỗ truyền thống chứa các vệt màu sơn dầu rực rỡ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Mlaoxve (Public domain)"
     },
     {
       "word": "brushstroke",
@@ -243,11 +243,11 @@ const vocabByTopic = {
       "example_translation": "Van Gogh nổi tiếng với những nét cọ dày và tràn đầy năng lượng.",
       "difficulty": "medium",
       "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/brushstroke.svg",
+      "image_url": "/images/vocab/brushstroke.jpg",
       "cultural_note": "Nhát cọ là chữ ký cá nhân của người nghệ sĩ; từ nhát cọ mượt mà vô hình của trường phái Cổ điển đến nhát cọ dày dặn (impasto) đầy năng lượng của Van Gogh.",
       "related_artist": "Vincent van Gogh, Frans Hals, Jackson Pollock",
       "image_alt": "Vệt cọ dứt khoát thể hiện chất liệu sơn và năng lượng người vẽ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Vincent van Gogh (Public domain)"
     },
     {
       "word": "sketch",
@@ -258,11 +258,11 @@ const vocabByTopic = {
       "example_translation": "Trước khi thực hiện tác phẩm chính thức, cô đã vẽ một bản phác thảo nhanh bằng than.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/sketch.svg",
+      "image_url": "/images/vocab/sketch.jpg",
       "cultural_note": "Bản phác thảo là bước khởi đầu ghi lại ý niệm thị giác ban đầu; các bản phác thảo chì và mực của Leonardo da Vinci là di sản khảo cứu vô giá.",
       "related_artist": "Leonardo da Vinci, Michelangelo, Edgar Degas",
       "image_alt": "Bản vẽ phác thảo chì than phác họa đường nét và chuyển động",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Leonardo da Vinci (CC0)"
     },
     {
       "word": "mural",
@@ -273,11 +273,11 @@ const vocabByTopic = {
       "example_translation": "Một bức tranh tường khổng lồ đầy màu sắc trang hoàng toàn bộ mặt bên của tòa nhà.",
       "difficulty": "easy",
       "source_ref": "Duden Bildwörterbuch",
-      "image_url": "/images/vocab/mural.svg",
+      "image_url": "/images/vocab/mural.jpg",
       "cultural_note": "Tranh tường gắn liền với không gian công cộng, mang thông điệp xã hội và chính trị mạnh mẽ, tiêu biểu là phong trào tranh tường Mexico thập niên 1920-1930.",
       "related_artist": "Diego Rivera, José Clemente Orozco, David Alfaro Siqueiros",
       "image_alt": "Bức tranh tường khổ lớn trong không gian kiến trúc công cộng",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Kgv88 (CC BY-SA 3.0)"
     },
     {
       "word": "gouache",
@@ -288,11 +288,11 @@ const vocabByTopic = {
       "example_translation": "Gouache là loại màu nước đục mang lại độ phủ đậm đặc và bề mặt lì.",
       "difficulty": "medium",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/gouache.svg",
+      "image_url": "/images/vocab/gouache.jpg",
       "cultural_note": "Màu bột (gouache) là màu nước đục có pha thêm chất độn như phấn trắng, tạo bề mặt màu lì, phẳng mịn, rất được ưa chuộng trong minh họa sách và thiết kế poster.",
       "related_artist": "Henri Matisse, Marc Chagall",
       "image_alt": "Tranh màu bột với các mảng màu đục phẳng mịn và độ phủ cao",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Jeff Dahl (CC BY-SA 3.0)"
     },
     {
       "word": "tempera",
@@ -303,11 +303,11 @@ const vocabByTopic = {
       "example_translation": "Các biểu tượng tôn giáo thời Trung Cổ thường được vẽ bằng màu keo lòng đỏ trứng.",
       "difficulty": "hard",
       "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/tempera.svg",
+      "image_url": "/images/vocab/tempera.jpg",
       "cultural_note": "Chất liệu vẽ cổ xưa dùng lòng đỏ trứng gà làm chất kết dính hạt màu, thịnh hành suốt thời Trung cổ và tiền Phục hưng châu Âu trước khi sơn dầu ra đời.",
       "related_artist": "Sandro Botticelli (Sự ra đời của thần Vệ Nữ), Duccio",
       "image_alt": "Bức tranh vẽ bằng chất liệu màu trứng tempera cổ kính",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Sandro Botticelli (Public domain)"
     },
     {
       "word": "minimalism",
@@ -318,11 +318,11 @@ const vocabByTopic = {
       "example_translation": "Chủ nghĩa tối giản đề cao các hình thức hình học đơn giản và sắc thái đơn sắc.",
       "difficulty": "medium",
       "source_ref": "MoMA Art Terms",
-      "image_url": "/images/vocab/minimalism.svg",
+      "image_url": "/images/vocab/minimalism.jpg",
       "cultural_note": "Chủ nghĩa Tối giản ra đời tại New York thập niên 1960 với triết lý 'Ít hơn là nhiều hơn' (Less is more), tinh giản tuyệt đối yếu tố biểu cảm để tập trung vào bản chất vật liệu.",
       "related_artist": "Donald Judd, Frank Stella, Agnes Martin",
       "image_alt": "Tác phẩm hội họa tối giản với cấu trúc hình khối cô đọng",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Piet Mondrian (Public domain)"
     },
     {
       "word": "expressionism",
@@ -333,11 +333,11 @@ const vocabByTopic = {
       "example_translation": "Trường phái biểu hiện Đức hướng đến diễn tả phản ứng cảm xúc chủ quan sâu sắc.",
       "difficulty": "hard",
       "source_ref": "Encyclopædia Britannica",
-      "image_url": "/images/vocab/expressionism.svg",
+      "image_url": "/images/vocab/expressionism.jpg",
       "cultural_note": "Trường phái Biểu hiện khởi phát từ Đức đầu thế kỷ 20, bóp méo hình dạng và dùng màu sắc tương phản mạnh mẽ để bộc lộ thế giới nội tâm đầy giông bão.",
       "related_artist": "Edvard Munch (Tiếng thét), Egon Schiele, Wassily Kandinsky",
       "image_alt": "Tác phẩm Biểu hiện với những đường nét uốn lượn và sắc màu kịch tính",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Edvard Munch (Public domain)"
     },
     {
       "word": "realism",
@@ -348,11 +348,11 @@ const vocabByTopic = {
       "example_translation": "Chủ nghĩa hiện thực tìm cách miêu tả đời sống thường nhật một cách chân thực không lý tưởng hóa.",
       "difficulty": "medium",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/realism.svg",
+      "image_url": "/images/vocab/realism.jpg",
       "cultural_note": "Chủ nghĩa Hiện thực xuất hiện tại Pháp giữa thế kỷ 19, từ chối sự lý tưởng hóa lãng mạn để khắc họa chân thực đời sống nhân dân lao động và hiện thực xã hội.",
       "related_artist": "Gustave Courbet, Jean-François Millet, Édouard Manet",
       "image_alt": "Bức tranh hiện thực miêu tả trung thực cuộc sống đời thường",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Jean-François Millet (Public domain)"
     },
     {
       "word": "miniature",
@@ -363,11 +363,11 @@ const vocabByTopic = {
       "example_translation": "Những bức tranh tiểu họa Ba Tư thể hiện các chi tiết cực kỳ tinh xảo.",
       "difficulty": "medium",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/miniature.svg",
+      "image_url": "/images/vocab/miniature.jpg",
       "cultural_note": "Nghệ thuật tranh tiểu họa vẽ trên bề mặt nhỏ đòi hỏi sự tỉ mỉ phi thường bằng kính lúp và cọ lông mảnh, phát triển rực rỡ tại Ba Tư, Ấn Độ thời Mughal và châu Âu.",
       "related_artist": "Nicholas Hilliard, Kamāl ud-Dīn Behzād",
       "image_alt": "Tác phẩm tranh tiểu họa tinh xảo vẽ chi tiết kích thước nhỏ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Possibly Sultan Muhammad (Public domain)"
     },
     {
       "word": "self-portrait",
@@ -378,11 +378,11 @@ const vocabByTopic = {
       "example_translation": "Rembrandt đã vẽ hàng chục bức tranh tự họa ghi lại từng chặng đường cuộc đời mình.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/self_portrait.svg",
+      "image_url": "/images/vocab/self_portrait.jpg",
       "cultural_note": "Chân dung tự họa là phương tiện tự vấn tâm thức và định vị bản ngã của người họa sĩ qua thời gian, nổi tiếng nhất là chuỗi chân dung tự họa của Rembrandt và Frida Kahlo.",
       "related_artist": "Rembrandt van Rijn, Frida Kahlo, Vincent van Gogh",
       "image_alt": "Bức chân dung tự họa người nghệ sĩ tự khắc họa chính mình",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Vincent van Gogh (Public domain)"
     },
     {
       "word": "seascape",
@@ -393,11 +393,11 @@ const vocabByTopic = {
       "example_translation": "Turner tạo nên những bức tranh cảnh biển dữ dội thể hiện sóng bão và tàu bè uy nghi.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/seascape.svg",
+      "image_url": "/images/vocab/seascape.jpg",
       "cultural_note": "Tranh phong cảnh biển khắc họa sức mạnh huyền bí của đại dương, từ sóng gió gầm thét đến bờ cát tĩnh lặng, thịnh hành đặc biệt tại Hà Lan thế kỷ 17 và Anh thế kỷ 19.",
       "related_artist": "J. M. W. Turner, Ivan Aivazovsky, Katsushika Hokusai",
       "image_alt": "Bức tranh phong cảnh biển với những con sóng bạc đầu",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Ivan Aivazovsky (Public domain)"
     },
     {
       "word": "cityscape",
@@ -408,11 +408,11 @@ const vocabByTopic = {
       "example_translation": "Bức tranh phong cảnh đô thị hiện đại nổi bật với những tòa nhà chọc trời rực sáng lúc chạng vạng.",
       "difficulty": "easy",
       "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/cityscape.svg",
+      "image_url": "/images/vocab/cityscape.jpg",
       "cultural_note": "Tranh phong cảnh đô thị phản ánh nhịp sống kiến trúc, đường phố và ánh sáng thị thành; phát triển từ tranh Veduta thành phố Venice thời Baroque đến các đô thị hiện đại.",
       "related_artist": "Canaletto, Camille Pissarro, Edward Hopper",
       "image_alt": "Bức tranh cảnh quan đô thị với các tòa nhà và đường phố",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Camille Pissarro (Public domain)"
     },
     {
       "word": "chiaroscuro",
@@ -423,11 +423,11 @@ const vocabByTopic = {
       "example_translation": "Caravaggio là bậc thầy kỹ thuật tương phản sáng tối đầy kịch tính trong hội họa Baroque.",
       "difficulty": "hard",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/chiaroscuro.svg",
+      "image_url": "/images/vocab/chiaroscuro.jpg",
       "cultural_note": "Kỹ thuật sáng - tối tương phản gay gắt có nguồn gốc từ tiếng Ý (chiaro: sáng, scuro: tối), giúp tạo chiều sâu khối ba chiều và tính kịch tính điện ảnh cho tranh.",
       "related_artist": "Caravaggio, Rembrandt van Rijn, Georges de La Tour",
       "image_alt": "Kỹ thuật tương phản ánh sáng và bóng tối kịch tính",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Caravaggio (Public domain)"
     },
     {
       "word": "charcoal",
@@ -438,11 +438,11 @@ const vocabByTopic = {
       "example_translation": "Vẽ than tạo ra những mảng đen sâu thẳm như nhung cùng những độ chuyển êm ái.",
       "difficulty": "easy",
       "source_ref": "Duden Bildwörterbuch",
-      "image_url": "/images/vocab/charcoal.svg",
+      "image_url": "/images/vocab/charcoal.jpg",
       "cultural_note": "Chì than là chất liệu vẽ lâu đời nhất của nhân loại từ những bức vẽ hang động thời tiền sử, cho phép tạo các sắc độ đen sâu thẳm và dải chuyển xám mềm mại.",
       "related_artist": "Käthe Kollwitz, Leonardo da Vinci, Odilon Redon",
       "image_alt": "Bức vẽ bằng chì than với sắc đen mờ mịn và độ sâu ấn tượng",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Sofía Zambrano Ayoub (CC0)"
     },
     {
       "word": "pastel",
@@ -453,11 +453,11 @@ const vocabByTopic = {
       "example_translation": "Degas dùng thỏi phấn màu để bắt trọn chuyển động duyên dáng của các vũ công múa ba-lê.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/pastel.svg",
+      "image_url": "/images/vocab/pastel.jpg",
       "cultural_note": "Phấn tiên là thanh màu khô gồm sắc tố nguyên chất nén với lượng rất nhỏ chất kết dính, tạo hiệu ứng mờ mịn như phấn hoa, cực kỳ thịnh hành tại Pháp thế kỷ 18.",
       "related_artist": "Edgar Degas, Rosalba Carriera, Mary Cassatt",
       "image_alt": "Tranh phấn tiên với lớp sắc tố mịn màng và độ sáng tươi trẻ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Edgar Degas (Public domain)"
     },
     {
       "word": "triptych",
@@ -468,11 +468,11 @@ const vocabByTopic = {
       "example_translation": "Bàn thờ được tôn nghiêm bằng một bức tranh triptych ba tấm ghép công phu.",
       "difficulty": "hard",
       "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/triptych.svg",
+      "image_url": "/images/vocab/triptych.jpg",
       "cultural_note": "Tranh bộ ba gồm ba tấm ghép lại, thường dùng làm án thờ trong các thánh đường Thiên Chúa giáo thời Trung cổ và Phục hưng với tấm chính giữa và hai cánh mở.",
       "related_artist": "Hieronymus Bosch (Khu vườn hoan lạc), Francis Bacon",
       "image_alt": "Bộ tranh ba tấm triptych ghép liền theo phong cách án thờ cổ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Peter Paul Rubens (Public domain)"
     }
   ],
   "2": [
@@ -485,11 +485,11 @@ const vocabByTopic = {
       "example_translation": "Nghệ thuật gốm sứ liên quan đến việc nặn đất sét và nung cứng ở nhiệt độ cao trong lò nung.",
       "difficulty": "easy",
       "source_ref": "Duden Bildwörterbuch",
-      "image_url": "/images/vocab/ceramics.svg",
+      "image_url": "/images/vocab/ceramics.jpg",
       "cultural_note": "Nghệ thuật gốm sứ kết tinh từ đất sét, khoáng thạch và lửa nung nhiệt độ cao. Việt Nam có truyền thống gốm rực rỡ từ thời Lý - Trần với gốm hoa nâu, gốm Chu Đậu nổi danh.",
       "related_artist": "Gốm Chu Đậu (Hải Dương), Gốm Bát Tràng (Hà Nội)",
       "image_alt": "Tác phẩm gốm sứ nghệ thuật với lớp men sáng bóng",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Hungda (CC BY-SA 3.0)"
     },
     {
       "word": "pottery",
@@ -500,11 +500,11 @@ const vocabByTopic = {
       "example_translation": "Ngôi làng đã lưu truyền nghề làm đồ gốm truyền thống hơn năm thế kỷ qua.",
       "difficulty": "easy",
       "source_ref": "Oxford Crafts Dictionary",
-      "image_url": "/images/vocab/pottery.svg",
+      "image_url": "/images/vocab/pottery.jpg",
       "cultural_note": "Nghệ thuật làm đồ gốm đất nung thủ công gắn liền với chiếc bàn xoay gốm truyền thống, tạo ra những vật dụng sinh hoạt mộc mạc và giàu tính thẩm mỹ bản địa.",
       "related_artist": "Làng gốm Bát Tràng, Làng gốm Phù Lãng (Bắc Ninh), Gốm Thanh Hà (Hội An)",
       "image_alt": "Chiếc bình gốm đất nung mộc mạc trên bàn xoay gốm",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Chukwukajustice (CC BY-SA 4.0)"
     },
     {
       "word": "lacquerware",
@@ -515,11 +515,11 @@ const vocabByTopic = {
       "example_translation": "Sơn mài Việt Nam đòi hỏi nhiều lớp nhựa tự nhiên cùng quy trình mài đánh bóng tỉ mỉ.",
       "difficulty": "medium",
       "source_ref": "Britannica Crafts",
-      "image_url": "/images/vocab/lacquerware.svg",
+      "image_url": "/images/vocab/lacquerware.jpg",
       "cultural_note": "Nghệ thuật sơn mài truyền thống Á Đông sử dụng nhựa cây sơn ta tự nhiên. Các họa sĩ Trường Mỹ thuật Đông Dương đã cách tân mài nước độc đáo, đưa sơn mài Việt Nam thành di sản hội họa thế giới.",
       "related_artist": "Danh họa Nguyễn Gia Trí, Làng sơn mài Tương Bình Hiệp (Bình Dương), Hạ Thái (Hà Nội)",
       "image_alt": "Sản phẩm sơn mài truyền thống thếp vàng lộng lẫy và bóng sâu",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Vietnamese Women's Museum, Hanoi (CC0)"
     },
     {
       "word": "embroidery",
@@ -530,11 +530,11 @@ const vocabByTopic = {
       "example_translation": "Tác phẩm thêu tơ tằm tinh xảo của bà miêu tả đàn hạc bay lượn trên đầm sen.",
       "difficulty": "medium",
       "source_ref": "Oxford Crafts Dictionary",
-      "image_url": "/images/vocab/embroidery.svg",
+      "image_url": "/images/vocab/embroidery.jpg",
       "cultural_note": "Nghệ thuật thêu tay truyền thống sử dụng chỉ tơ tằm trên nền vải lụa, thể hiện độ tinh nhã của các nghệ nhân cung đình xưa và các làng nghề tranh thêu thủ công.",
       "related_artist": "Làng thêu Quất Động (Thường Tín, Hà Nội), Thêu tay XQ Đà Lạt",
       "image_alt": "Tác phẩm tranh thêu tay tinh xảo bằng chỉ tơ lụa truyền thống",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — DPLA Silk Embroidery (Public domain)"
     },
     {
       "word": "woodcarving",
@@ -545,11 +545,11 @@ const vocabByTopic = {
       "example_translation": "Những cánh cửa đền nổi bật với nghệ thuật điêu khắc gỗ rồng thần thoại tráng lệ.",
       "difficulty": "easy",
       "source_ref": "Duden Bildwörterbuch",
-      "image_url": "/images/vocab/woodcarving.svg",
+      "image_url": "/images/vocab/woodcarving.jpg",
       "cultural_note": "Nghệ thuật chạm khắc gỗ cổ truyền Việt Nam đạt đến đỉnh cao trên các bức cốn đình làng thế kỷ 16-18, tượng Phật chùa Tây Phương và đồ mỹ nghệ hoàng gia.",
       "related_artist": "Làng mộc Đồng Kỵ (Bắc Ninh), Làng mộc Kim Bồng (Hội An), Chàng Sơn (Hà Nội)",
       "image_alt": "Họa tiết chạm khắc gỗ thủ công tinh xảo trên gỗ quý",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Patrick Damiaens (CC BY 3.0)"
     },
     {
       "word": "calligraphy",
@@ -560,11 +560,11 @@ const vocabByTopic = {
       "example_translation": "Thư pháp truyền thống biến các con chữ viết thành một hình thái nghệ thuật thị giác truyền cảm.",
       "difficulty": "medium",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/calligraphy.svg",
+      "image_url": "/images/vocab/calligraphy.jpg",
       "cultural_note": "Thư pháp là nghệ thuật viết chữ đẹp biến các ký tự thành vũ điệu thị giác; tại phương Đông, thư pháp chữ Hán và thư pháp chữ Việt tôn vinh cốt cách 'Tâm - Đức - Tài'.",
       "related_artist": "Vương Hy Chi (Đông Tấn), các nghệ nhân 'Ông Đồ' phố Văn Miếu",
       "image_alt": "Bức đại tự thư pháp mực tàu phóng khoáng trên giấy xuyến chỉ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Ouyang Xiu (Public domain)"
     },
     {
       "word": "sculpture",
@@ -575,11 +575,11 @@ const vocabByTopic = {
       "example_translation": "Nghệ thuật điêu khắc đá cẩm thạch đòi hỏi sự chuẩn xác cao độ, lòng kiên nhẫn và kỹ năng tay nghề.",
       "difficulty": "easy",
       "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/sculpture.svg",
+      "image_url": "/images/vocab/sculpture.jpg",
       "cultural_note": "Điêu khắc là nghệ thuật tạo hình ba chiều thông qua đục đẽo, nặn hoặc đúc kim loại, từ tượng điêu khắc Hy Lạp cổ đại đến các tác phẩm điêu khắc ngoài trời đương đại.",
       "related_artist": "Auguste Rodin (Người suy tưởng), Michelangelo (David), Henry Moore",
       "image_alt": "Bức tượng điêu khắc đá cẩm thạch ba chiều tuyệt mỹ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Auguste Rodin (CC0)"
     },
     {
       "word": "weaving",
@@ -590,11 +590,11 @@ const vocabByTopic = {
       "example_translation": "Nghề dệt khung cửi thủ công lưu giữ các hoa văn bản địa truyền qua nhiều thế hệ.",
       "difficulty": "easy",
       "source_ref": "Britannica Crafts",
-      "image_url": "/images/vocab/weaving.svg",
+      "image_url": "/images/vocab/weaving.jpg",
       "cultural_note": "Nghệ thuật dệt vải thủ công bằng khung cửi đan kết sợi dọc và sợi ngang, bảo tồn bản sắc văn hóa các dân tộc qua các tấm vải thổ cẩm và lụa tơ tằm danh tiếng.",
       "related_artist": "Làng lụa Vạn Phúc (Hà Đông), Làng dệt thổ cẩm Chăm Mỹ Nghiệp (Ninh Thuận)",
       "image_alt": "Tấm vải dệt thổ cẩm hoa văn truyền thống trên khung cửi",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Erik Zachte (CC BY-SA 4.0)"
     },
     {
       "word": "glassblowing",
@@ -605,11 +605,11 @@ const vocabByTopic = {
       "example_translation": "Hòn đảo Murano tại Venice nổi danh toàn cầu nhờ nghệ thuật thổi thủy tinh tinh xảo.",
       "difficulty": "hard",
       "source_ref": "Oxford Crafts Dictionary",
-      "image_url": "/images/vocab/glassblowing.svg",
+      "image_url": "/images/vocab/glassblowing.jpg",
       "cultural_note": "Kỹ nghệ thổi thủy tinh thủ công nóng chảy phát triển từ thời La Mã cổ đại và đạt tới tầm đỉnh cao nghệ thuật tại đảo Murano thuộc Venice (Ý).",
       "related_artist": "Dale Chihuly, Các bậc thầy nghệ nhân thủy tinh đảo Murano (Ý)",
       "image_alt": "Nghệ nhân thổi ống thủy tinh nóng chảy định hình bình thủy tinh trong suốt",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Julian Herzog ( Website ) (CC BY 4.0)"
     },
     {
       "word": "silversmithing",
@@ -620,11 +620,11 @@ const vocabByTopic = {
       "example_translation": "Nghề chế tác bạc bao gồm rèn gò và hàn bạc quý thành các đồ vật mỹ nghệ tinh mỹ.",
       "difficulty": "hard",
       "source_ref": "Duden Bildwörterbuch",
-      "image_url": "/images/vocab/silversmithing.svg",
+      "image_url": "/images/vocab/silversmithing.jpg",
       "cultural_note": "Nghệ thuật chế tác kim hoàn bạc với kỹ thuật đậu bạc (kéo sợi bạc mảnh như sợi chỉ rồi uốn hoa văn) và chạm khắc bạc tinh xảo lưu truyền qua nhiều thế kỷ.",
       "related_artist": "Làng nghề đậu bạc Định Công (Hà Nội), Làng chạm bạc Đồng Xâm (Thái Bình)",
       "image_alt": "Sản phẩm chạm bạc thủ công với hoa văn cánh hoa tinh tế",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Hester, Peter & Ann Bateman (CC BY 3.0)"
     },
     {
       "word": "jewelry design",
@@ -635,11 +635,11 @@ const vocabByTopic = {
       "example_translation": "Cô ấy theo học chuyên ngành thiết kế trang sức kim hoàn đương đại tại Florence.",
       "difficulty": "medium",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/jewelry_design.svg",
+      "image_url": "/images/vocab/jewelry_design.jpg",
       "cultural_note": "Thiết kế trang sức mỹ nghệ kết hợp kiến thức đá quý, luyện kim và cảm quan thẩm mỹ để tạo ra những tác phẩm trang sức độc bản tôn vinh vẻ đẹp người đeo.",
       "related_artist": "René Lalique (Nghệ thuật Art Nouveau), Peter Carl Fabergé",
       "image_alt": "Trang sức vàng bạc đính ngọc quý được chế tác tinh mỹ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — René Lalique Brooch (CC0)"
     },
     {
       "word": "leathercraft",
@@ -650,11 +650,11 @@ const vocabByTopic = {
       "example_translation": "Các sản phẩm đồ da thủ công được ưa chuộng nhờ đường may tay và độ bền vượt trội.",
       "difficulty": "medium",
       "source_ref": "Oxford Crafts Dictionary",
-      "image_url": "/images/vocab/leathercraft.svg",
+      "image_url": "/images/vocab/leathercraft.jpg",
       "cultural_note": "Nghệ thuật chế tác đồ da thủ công từ cắt lạng da, dập vân hoa văn trang trí đến may chỉ yên ngựa (saddle stitch) bền bỉ theo năm tháng.",
       "related_artist": "Hermès (thương hiệu thủ công da thủ công Pháp khởi nguồn từ xưởng yên ngựa)",
       "image_alt": "Sản phẩm đồ da thủ công với đường chỉ may yên ngựa tỉ mỉ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Trougnouf (Benoit Brummer) , Les cuirs d'Agathe (CC BY 4.0)"
     },
     {
       "word": "quilting",
@@ -665,11 +665,11 @@ const vocabByTopic = {
       "example_translation": "Nghề chần ghép vải mỹ thuật kết hợp các mảnh vải sắc màu thành tranh treo tường mang tính tự sự.",
       "difficulty": "medium",
       "source_ref": "Britannica Crafts",
-      "image_url": "/images/vocab/quilting.svg",
+      "image_url": "/images/vocab/quilting.jpg",
       "cultural_note": "Nghệ thuật may chần ghép vải (quilt) ghép các mảnh vải vụn thành tấm chăn hay tác phẩm nghệ thuật treo tường đa sắc, biểu tượng của văn hóa dân gian Bắc Mỹ.",
       "related_artist": "Cộng đồng nghệ nhân quilt Gee's Bend (Alabama, Hoa Kỳ)",
       "image_alt": "Tấm vải chăn quilt ghép nhiều mẩu hoa văn hình học độc đáo",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — jude from new york, usa (CC BY 2.0)"
     },
     {
       "word": "printmaking",
@@ -680,11 +680,11 @@ const vocabByTopic = {
       "example_translation": "Nghệ thuật in mộc bản đóng vai trò quan trọng trong lịch sử mỹ thuật Á Đông.",
       "difficulty": "medium",
       "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/printmaking.svg",
+      "image_url": "/images/vocab/printmaking.jpg",
       "cultural_note": "Nghệ thuật đồ họa in ấn gồm khắc gỗ, in lụa, in thạch bản; tại Việt Nam, tranh dân gian Đông Hồ và Hàng Trống là những di sản in tranh khắc gỗ quý báu.",
       "related_artist": "Tranh dân gian Đông Hồ (Bắc Ninh), Hàng Trống (Hà Nội), Albrecht Dürer",
       "image_alt": "Bản in tranh khắc gỗ nghệ thuật với các lớp màu thủ công",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Katsushika Hokusai (Public domain)"
     },
     {
       "word": "engraving",
@@ -695,11 +695,11 @@ const vocabByTopic = {
       "example_translation": "Chạm khắc bản đồng từng được sử dụng rộng rãi để minh họa sách vào thế kỷ 18.",
       "difficulty": "medium",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/engraving.svg",
+      "image_url": "/images/vocab/engraving.jpg",
       "cultural_note": "Kỹ thuật chạm khắc kim loại bằng mũi dao trổ (burin) lên phiến đồng hoặc thép để tạo đường nét cực kỳ chuẩn xác, dùng in tiền giấy, con tem và tranh ấn họa cổ.",
       "related_artist": "Albrecht Dürer, Martin Schongauer",
       "image_alt": "Bản chạm khắc kim loại chi tiết bằng dao trổ chuyên dụng",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Albrecht Dürer (Public domain)"
     },
     {
       "word": "mosaic",
@@ -710,11 +710,11 @@ const vocabByTopic = {
       "example_translation": "Các thánh đường Byzantine được trang hoàng bằng những bức tranh khảm vàng lấp lánh.",
       "difficulty": "easy",
       "source_ref": "Duden Bildwörterbuch",
-      "image_url": "/images/vocab/mosaic.svg",
+      "image_url": "/images/vocab/mosaic.jpg",
       "cultural_note": "Nghệ thuật ghép mảnh (mosaic) dùng hàng ngàn viên đá màu, sành sứ hoặc thủy tinh màu ghép thành bức tranh lớn, rực rỡ tại các nhà thờ Byzantine và khảm sành sứ cung đình Huế.",
       "related_artist": "Lăng Khải Định (Huế - đỉnh cao khảm sành sứ), Nhà thờ Ravenna (Ý)",
       "image_alt": "Bức tranh ghép đá mosaic muôn màu lấp lánh",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Basilica of Sant'Apollinare Nuovo, Ravenna (Public domain)"
     },
     {
       "word": "basketry",
@@ -725,11 +725,11 @@ const vocabByTopic = {
       "example_translation": "Nghề đan lát mây tre là nghề thủ công truyền thống thân thiện môi trường ở Đông Nam Á.",
       "difficulty": "medium",
       "source_ref": "Britannica Crafts",
-      "image_url": "/images/vocab/basketry.svg",
+      "image_url": "/images/vocab/basketry.jpg",
       "cultural_note": "Nghệ thuật đan lát mây tre đan cổ xưa tận dụng nguồn vật liệu thảo mộc tự nhiên của xứ sở nhiệt đới, tạo nên những sản phẩm vừa thanh thoát vừa dẻo dai.",
       "related_artist": "Làng mây tre đan Phú Vinh (Chương Mỹ, Hà Nội), Nghệ nhân đan tre Nhật Bản",
       "image_alt": "Chiếc giỏ mây tre đan thủ công bằng nan tre uốn lượn",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Abdulrohmatt (CC BY-SA 4.0)"
     },
     {
       "word": "tapestry",
@@ -740,11 +740,11 @@ const vocabByTopic = {
       "example_translation": "Đại sảnh yến tiệc hoàng gia được phủ kín bởi những tấm thảm dệt len trang trí lộng lẫy.",
       "difficulty": "medium",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/tapestry.svg",
+      "image_url": "/images/vocab/tapestry.jpg",
       "cultural_note": "Thảm thêu trang trí dệt tay khổ lớn bằng len và lụa từng là vật phẩm xa xỉ quý tộc tại các lâu đài châu Âu thời Trung cổ và Phục hưng vừa giữ ấm vừa thể hiện quyền uy.",
       "related_artist": "Xưởng dệt thảm hoàng gia Gobelins (Pháp), Bộ thảm 'Quý cô và kỳ lân' (Musée de Cluny)",
       "image_alt": "Tấm thảm treo tường dệt tay dệt hình phong cảnh và hiệp sĩ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — The Lady and the Unicorn, Musée de Cluny (Public domain)"
     },
     {
       "word": "gilding",
@@ -755,11 +755,11 @@ const vocabByTopic = {
       "example_translation": "Các nghệ nhân gắn lá vàng mỏng bằng kỹ thuật dát vàng lá công phu.",
       "difficulty": "hard",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/gilding.svg",
+      "image_url": "/images/vocab/gilding.jpg",
       "cultural_note": "Nghệ thuật dát vàng sử dụng những lá vàng quỳ được đập mỏng tang như cánh bướm dán lên tượng Phật, ngai vàng và hoành phi câu đối sơn son thếp vàng.",
       "related_artist": "Làng dát vàng quỳ Kiêu Kỵ (Gia Lâm, Hà Nội)",
       "image_alt": "Tác phẩm dát vàng quỳ lấp lánh trên nền sơn son truyền thống",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Gold Leaf Gilding (Public domain)"
     },
     {
       "word": "stonemasonry",
@@ -770,11 +770,11 @@ const vocabByTopic = {
       "example_translation": "Các nhà thờ Gothic đứng vững như những đài tưởng niệm cho nghề chạm khắc đá bậc thầy.",
       "difficulty": "hard",
       "source_ref": "Duden Bildwörterbuch",
-      "image_url": "/images/vocab/stonemasonry.svg",
+      "image_url": "/images/vocab/stonemasonry.jpg",
       "cultural_note": "Kỹ nghệ đẽo gọt và điêu khắc đá tảng xây dựng nên những công trình kiến trúc kỳ vĩ như tháp Chăm, thành nhà Hồ và các lăng tẩm cung điện cổ truyền.",
       "related_artist": "Làng đá mỹ nghệ Non Nước (Đà Nẵng), Làng đá Ninh Vân (Ninh Bình)",
       "image_alt": "Khối đá cẩm thạch được thợ đá đẽo gọt điêu khắc công phu",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Bain News Service (Public domain)"
     },
     {
       "word": "origami",
@@ -785,11 +785,11 @@ const vocabByTopic = {
       "example_translation": "Nghệ thuật origami biến những tờ giấy phẳng thành những tạo hình điêu khắc kỷ hà phức tạp.",
       "difficulty": "easy",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/origami.svg",
+      "image_url": "/images/vocab/origami.jpg",
       "cultural_note": "Nghệ thuật gấp giấy truyền thống của Nhật Bản (Ori: gấp, Kami: giấy) biến một tờ giấy phẳng duy nhất thành hình các sinh vật sống động mà không cần cắt hay dán keo.",
       "related_artist": "Akira Yoshizawa (Đại sư phụ Origami hiện đại Nhật Bản)",
       "image_alt": "Con hạc giấy Origami gấp tinh tế từ một tờ giấy vuông",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Laitche (Public domain)"
     },
     {
       "word": "blacksmithing",
@@ -800,11 +800,11 @@ const vocabByTopic = {
       "example_translation": "Nghề rèn sắt mỹ thuật rèn sắt nung nóng thành những cánh cổng vườn hoa văn cầu kỳ.",
       "difficulty": "medium",
       "source_ref": "Britannica Crafts",
-      "image_url": "/images/vocab/blacksmithing.svg",
+      "image_url": "/images/vocab/blacksmithing.jpg",
       "cultural_note": "Nghệ thuật rèn sắt thủ công dùng đe, búa và lò lửa tôi rèn kim loại thành các chi tiết cổng hoa sắt mỹ thuật, vũ khí và công cụ sắc bén.",
       "related_artist": "Làng rèn Đa Sỹ (Hà Đông, Hà Nội)",
       "image_alt": "Nghệ nhân rèn kim loại đập búa trên đe lửa đỏ rực rỡ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — David Whelan (CC0)"
     },
     {
       "word": "potter",
@@ -815,11 +815,11 @@ const vocabByTopic = {
       "example_translation": "Nghệ nhân làm gốm nắn định tâm khối đất sét đang quay nhanh trên bàn xoay.",
       "difficulty": "easy",
       "source_ref": "Oxford Crafts Dictionary",
-      "image_url": "/images/vocab/potter.svg",
+      "image_url": "/images/vocab/potter.jpg",
       "cultural_note": "Nghệ nhân gốm là người thổi hồn vào đất sét bằng đôi bàn tay tài hoa trên bàn xoay, kết hợp kỹ thuật pha chế nước men tro, men ngọc độc đáo.",
       "related_artist": "Nghệ nhân nhân dân Vũ Đức Thắng (Bát Tràng)",
       "image_alt": "Người thợ gốm đang miệt mài tạo hình chiếc bình đất trên bàn xoay",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Gannu03 (CC BY-SA 4.0)"
     },
     {
       "word": "sculptor",
@@ -830,11 +830,11 @@ const vocabByTopic = {
       "example_translation": "Nhà điêu khắc đục bỏ phần đá thừa để làm lộ diện hình tượng bên trong.",
       "difficulty": "easy",
       "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/sculptor.svg",
+      "image_url": "/images/vocab/sculptor.jpg",
       "cultural_note": "Nhà điêu khắc là nghệ sĩ tư duy không gian ba chiều, giải phóng hình hài tiềm ẩn bên trong phiến đá vô tri hoặc khối đồng đúc.",
       "related_artist": "Michelangelo Buonarroti, Điềm Phùng Thị (Nhà điêu khắc Việt kiều Pháp lừng danh)",
       "image_alt": "Nhà điêu khắc đang dùng đục và búa tạc tượng đá cẩm thạch",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Jean-Léon Gérôme (Public domain)"
     },
     {
       "word": "artisan",
@@ -845,11 +845,11 @@ const vocabByTopic = {
       "example_translation": "Mỗi sản phẩm thủ công đều mang dấu ấn độc đáo của nghệ nhân bậc thầy.",
       "difficulty": "medium",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/artisan.svg",
+      "image_url": "/images/vocab/artisan.jpg",
       "cultural_note": "Nghệ nhân là người thợ bậc thầy đạt tới độ thấu hiểu sâu sắc chất liệu và kỹ thuật gia truyền, giữ gìn hồn cốt các di sản thủ công truyền thống.",
       "related_artist": "Các Nghệ nhân Nhân dân, Nghệ nhân Ưu tú các làng nghề Việt Nam",
       "image_alt": "Nghệ nhân bậc thầy đang tỉ mỉ hoàn thiện tác phẩm thủ công",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Ahaetulla (CC BY-SA 4.0)"
     },
     {
       "word": "craftsman",
@@ -860,11 +860,11 @@ const vocabByTopic = {
       "example_translation": "Một người thợ thủ công lành nghề luôn tự hào về độ hoàn thiện hoàn mỹ của tác phẩm.",
       "difficulty": "easy",
       "source_ref": "Duden Bildwörterbuch",
-      "image_url": "/images/vocab/craftsman.svg",
+      "image_url": "/images/vocab/craftsman.jpg",
       "cultural_note": "Thợ thủ công lành nghề là lực lượng sáng tạo bền bỉ biến vật liệu thô mộc thành các vật phẩm mỹ nghệ tinh xảo phục vụ đời sống và nghệ thuật.",
       "related_artist": "Cộng đồng thợ thủ công các làng nghề truyền thống",
       "image_alt": "Thợ thủ công cần mẫn bên bàn làm việc với các dụng cụ chế tác",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Shixart1985 (CC BY 2.0)"
     },
     {
       "word": "weaver",
@@ -875,11 +875,11 @@ const vocabByTopic = {
       "example_translation": "Người thợ dệt lành nghề đan luồn các sợi chỉ với tốc độ và nhịp điệu phi thường.",
       "difficulty": "easy",
       "source_ref": "Oxford Crafts Dictionary",
-      "image_url": "/images/vocab/weaver.svg",
+      "image_url": "/images/vocab/weaver.jpg",
       "cultural_note": "Nghệ nhân dệt vải ngồi bên khung cửi nhịp nhàng luồn thoi đưa sợi, dệt nên những dải lụa mượt mà hay tấm thổ cẩm rực rỡ hoa văn núi rừng.",
       "related_artist": "Các mẹ, các chị nghệ nhân dệt thổ cẩm vùng cao Tây Bắc và Tây Nguyên",
       "image_alt": "Người thợ dệt đang thoăn thoắt đưa con thoi trên khung cửi gỗ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — পৱন বৰ্মন (CC BY 4.0)"
     },
     {
       "word": "metalsmith",
@@ -890,11 +890,11 @@ const vocabByTopic = {
       "example_translation": "Người thợ kim loại gò những tấm đồng thành phù điêu trang trí tường.",
       "difficulty": "medium",
       "source_ref": "Britannica Crafts",
-      "image_url": "/images/vocab/metalsmith.svg",
+      "image_url": "/images/vocab/metalsmith.jpg",
       "cultural_note": "Thợ đúc rèn kim loại tinh chế đồng, đồng thau và sắt thép; tiêu biểu là nghề đúc trống đồng Đông Sơn huyền thoại của người Việt cổ.",
       "related_artist": "Nghệ nhân đúc đồng làng Ngũ Xã (Hà Nội), Làng đúc đồng Ý Yên (Nam Định)",
       "image_alt": "Thợ kim khí đang thao tác với ngọn lửa nung chảy kim loại",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Damascus Bladesmith (Public domain)"
     },
     {
       "word": "calligrapher",
@@ -905,11 +905,11 @@ const vocabByTopic = {
       "example_translation": "Vào dịp Tết, nhà thư pháp viết những câu đối may mắn cho khách ghé thăm.",
       "difficulty": "medium",
       "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/calligrapher.svg",
+      "image_url": "/images/vocab/calligrapher.jpg",
       "cultural_note": "Nhà thư pháp tĩnh tâm luyện bút lực, dùng ngọn bút lông chấm mực tàu truyền tải tinh hoa triết đạo và vẻ đẹp thi ca lên từng nét chữ.",
       "related_artist": "Các danh gia thư pháp cổ điển và nghệ nhân thư pháp chữ Việt hiện đại",
       "image_alt": "Nhà thư pháp đang cầm bút lông lướt những đường mực uyển chuyển",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Chris Gladis, Flickr user MShades (CC BY 2.0)"
     },
     {
       "word": "restorer",
@@ -920,11 +920,11 @@ const vocabByTopic = {
       "example_translation": "Chuyên gia phục chế nghệ thuật cẩn trọng làm sạch bụi bẩn trên tấm toan hàng thế kỷ tuổi.",
       "difficulty": "hard",
       "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/restorer.svg",
+      "image_url": "/images/vocab/restorer.jpg",
       "cultural_note": "Chuyên gia phục chế tác phẩm nghệ thuật là bác sĩ của di sản, có kiến thức hóa học, lịch sử nghệ thuật sâu sắc để cứu vãn các kiệt tác tranh cổ và tượng khỏi sự hủy hoại của thời gian.",
       "related_artist": "Các chuyên gia phục chế tại Bảo tàng Mỹ thuật Việt Nam và Bảo tàng Louvre",
       "image_alt": "Chuyên gia phục chế dùng kính lúp và hóa chất bảo tồn bức tranh cổ",
-      "image_credit": "EngLearn Fine Arts Visuals"
+      "image_credit": "Wikimedia Commons — Artstudiosk (CC BY-SA 3.0)"
     }
   ]
 };

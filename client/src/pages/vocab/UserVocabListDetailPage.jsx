@@ -12,7 +12,6 @@ import {
   HiOutlinePencilAlt,
   HiVolumeUp,
   HiSearch,
-  HiCheckCircle,
   HiOutlineSparkles,
   HiChevronDown,
   HiChevronUp
@@ -260,114 +259,102 @@ export default function UserVocabListDetailPage() {
 
       {/* Vocabulary Grid */}
       {filteredVocabs.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredVocabs.map((vocab) => {
             const isExpanded = !!expandedInfoIds[vocab.id];
+            const hasExtra = !!(vocab.example_sentence || vocab.cultural_note || vocab.related_artist);
 
             return (
               <div
                 key={vocab.id}
-                className="card p-6 border border-slate-200/90 hover:border-blue-300 bg-white rounded-3xl shadow-sm transition-all flex flex-col justify-between"
+                className="card border border-slate-200/90 hover:border-blue-300 bg-white rounded-3xl overflow-hidden shadow-sm transition-all flex flex-col justify-between"
               >
                 <div>
-                  {/* Word title, artwork, audio, part of speech */}
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className="flex items-center gap-3.5 min-w-0">
-                      <div className="w-16 h-16 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 p-1 shrink-0 shadow-xs">
-                        <VocabImage
-                          src={vocab.image_url}
-                          alt={vocab.image_alt || vocab.word}
-                          enableZoom={true}
-                          className="w-full h-full rounded-xl"
-                        />
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h2 className="text-xl font-extrabold text-slate-950 truncate tracking-tight">
-                            {vocab.word}
-                          </h2>
-                          <button
-                            onClick={() => handleSpeak(vocab.word)}
-                            title="Nghe phát âm chuẩn"
-                            className="p-1 rounded-xl hover:bg-slate-100 text-blue-600 transition-colors cursor-pointer shrink-0"
-                          >
-                            <HiVolumeUp className="w-4 h-4" />
-                          </button>
-                        </div>
-                        {vocab.pronunciation && (
-                          <p className="text-xs text-slate-400 font-mono mt-0.5">
-                            {vocab.pronunciation}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col items-end gap-1 shrink-0">
-                      {vocab.part_of_speech && (
-                        <span className="badge bg-blue-50 text-blue-700 border border-blue-200 font-mono text-[10px] uppercase font-bold">
-                          {vocab.part_of_speech}
-                        </span>
-                      )}
-                      {vocab.source_ref && (
-                        <span className="font-mono text-[10px] text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200/60 font-semibold">
-                          {vocab.source_ref}
-                        </span>
-                      )}
-                    </div>
+                  {/* Artwork Banner */}
+                  <div className="relative h-44 bg-slate-100 border-b border-slate-100 overflow-hidden">
+                    <VocabImage
+                      src={vocab.image_url}
+                      alt={vocab.image_alt || vocab.word}
+                      fit="cover"
+                      enableZoom={true}
+                      className="w-full h-full"
+                    />
+                    {vocab.part_of_speech && (
+                      <span className="absolute top-3 right-3 badge bg-white/90 text-slate-700 border border-slate-200 font-mono text-[10px] uppercase font-bold backdrop-blur-sm">
+                        {vocab.part_of_speech}
+                      </span>
+                    )}
                   </div>
 
-                  <p className="text-base font-bold text-slate-900 mb-3">
-                    {vocab.meaning_vi}
-                  </p>
-
-                  {vocab.example_sentence && (
-                    <div className="p-3.5 rounded-2xl bg-slate-50 text-xs space-y-1 mb-3 border border-slate-200/70">
-                      <p className="font-bold text-slate-800">
-                        "{vocab.example_sentence}"
-                      </p>
-                      {vocab.example_translation && (
-                        <p className="text-slate-500 italic">
-                          "{vocab.example_translation}"
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Collapsible toggle for Cultural Side-Notes */}
-                  {(vocab.cultural_note || vocab.related_artist) && (
-                    <div className="mb-3">
+                  <div className="p-5 pb-3">
+                    <div className="flex items-center gap-1.5 min-w-0 mb-1">
+                      <h2 className="text-xl font-extrabold text-slate-950 truncate tracking-tight">
+                        {vocab.word}
+                      </h2>
                       <button
-                        type="button"
-                        onClick={() => toggleExpand(vocab.id)}
-                        className="w-full text-left flex items-center justify-between text-xs font-bold text-slate-700 hover:text-blue-600 py-1.5 px-3 rounded-xl bg-slate-100/70 hover:bg-slate-100 border border-slate-200/60 transition-colors cursor-pointer"
+                        onClick={() => handleSpeak(vocab.word)}
+                        title="Nghe phát âm"
+                        className="p-1 rounded-xl hover:bg-slate-100 text-blue-600 transition-colors cursor-pointer shrink-0"
                       >
-                        <span className="flex items-center gap-1.5">
-                          <HiOutlineSparkles className="w-3.5 h-3.5 text-blue-600" />
-                          {isExpanded ? 'Ẩn thông tin bên lề' : 'Xem bối cảnh văn hóa & nghệ sĩ'}
-                        </span>
-                        {isExpanded ? <HiChevronUp className="w-3.5 h-3.5" /> : <HiChevronDown className="w-3.5 h-3.5" />}
+                        <HiVolumeUp className="w-4 h-4" />
                       </button>
-
-                      {isExpanded && (
-                        <div className="mt-2.5">
-                          <VocabSidebarInfo
-                            culturalNote={vocab.cultural_note}
-                            relatedArtist={vocab.related_artist}
-                            sourceRef={vocab.source_ref}
-                            imageCredit={vocab.image_credit}
-                          />
-                        </div>
-                      )}
                     </div>
-                  )}
+
+                    {vocab.pronunciation && (
+                      <p className="text-xs text-slate-400 font-mono mb-2">
+                        {vocab.pronunciation}
+                      </p>
+                    )}
+
+                    <p className="text-base font-bold text-slate-900 mb-3">
+                      {vocab.meaning_vi}
+                    </p>
+
+                    {/* Collapsible details */}
+                    {hasExtra && (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => toggleExpand(vocab.id)}
+                          className="w-full text-left flex items-center justify-between text-xs font-bold text-slate-600 hover:text-blue-600 py-1.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/60 transition-colors cursor-pointer"
+                        >
+                          <span className="flex items-center gap-1.5">
+                            <HiOutlineSparkles className="w-3.5 h-3.5 text-blue-600" />
+                            {isExpanded ? 'Thu gọn' : 'Chi tiết & ví dụ'}
+                          </span>
+                          {isExpanded ? <HiChevronUp className="w-3.5 h-3.5" /> : <HiChevronDown className="w-3.5 h-3.5" />}
+                        </button>
+
+                        {isExpanded && (
+                          <div className="mt-2.5 space-y-2.5">
+                            {vocab.example_sentence && (
+                              <div className="p-3 rounded-2xl bg-slate-50 text-xs space-y-1 border border-slate-200/70">
+                                <p className="font-bold text-slate-800">
+                                  "{vocab.example_sentence}"
+                                </p>
+                                {vocab.example_translation && (
+                                  <p className="text-slate-500 italic">
+                                    "{vocab.example_translation}"
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                            {(vocab.cultural_note || vocab.related_artist) && (
+                              <VocabSidebarInfo
+                                culturalNote={vocab.cultural_note}
+                                relatedArtist={vocab.related_artist}
+                                sourceRef={vocab.source_ref}
+                              />
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Footer of card */}
-                <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                  <span className="inline-flex items-center gap-1 text-emerald-600 font-bold text-[11px]">
-                    <HiCheckCircle className="w-3.5 h-3.5" /> Trong lộ trình ôn SM-2
-                  </span>
-
+                <div className="px-5 py-3 border-t border-slate-100 flex items-center justify-end">
                   <button
                     type="button"
                     onClick={() => handleRemoveWord(vocab.id, vocab.word)}

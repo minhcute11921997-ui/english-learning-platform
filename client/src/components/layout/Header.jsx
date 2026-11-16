@@ -40,14 +40,9 @@ export default function Header() {
             <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm shadow-blue-500/30 transition-transform group-hover:scale-105">
               <HiSparkles className="w-5 h-5 text-blue-200" />
             </div>
-            <div className="flex flex-col">
-              <span className="font-extrabold text-xl tracking-tight text-slate-950 leading-tight">
-                EngLearn<span className="text-blue-600">.art</span>
-              </span>
-              <span className="text-[10px] uppercase font-mono font-bold tracking-wider text-slate-500 -mt-0.5">
-                Contemporary Atelier
-              </span>
-            </div>
+            <span className="font-extrabold text-xl tracking-tight text-slate-950 leading-tight">
+              EngLearn<span className="text-blue-600">.art</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -55,7 +50,7 @@ export default function Header() {
             <nav className="hidden md:flex items-center gap-2">
               <NavLink to="/dashboard" className={navLinkClass}>Bảng điều khiển</NavLink>
               <NavLink to="/topics" className={navLinkClass}>Chủ đề Mỹ thuật</NavLink>
-              <NavLink to="/review" className={navLinkClass}>Ôn tập hôm nay (SM-2)</NavLink>
+              <NavLink to="/review" className={navLinkClass}>Ôn tập</NavLink>
               {user?.role === 'admin' && (
                 <NavLink
                   to="/admin"
@@ -130,7 +125,7 @@ export default function Header() {
                 Chủ đề Mỹ thuật
               </NavLink>
               <NavLink to="/review" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>
-                Ôn tập hôm nay (SM-2)
+                Ôn tập
               </NavLink>
               {user?.role === 'admin' && (
                 <NavLink to="/admin" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>
