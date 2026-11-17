@@ -4,40 +4,41 @@ import useAuthStore from '../../stores/authStore';
 import { userApi, statsApi } from '../../api/services';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
-import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { HiUser, HiKey, HiFlag } from 'react-icons/hi';
-import { HiOutlineSparkles, HiOutlinePaintBrush } from 'react-icons/hi2';
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuthStore();
-  const [profileData, setProfileData] = useState({ full_name: '' });
+  const [profileData, setProfileData] = useState({ full_name: user?.full_name || '' });
   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
-  const [goal, setGoal] = useState('');
+  const [goal, setGoal] = useState(user?.learning_goal || '');
   const [stats, setStats] = useState(null);
-  const [isLoadingStats, setIsLoadingStats] = useState(true);
+  const [prevUser, setPrevUser] = useState(user);
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [isUpdatingGoal, setIsUpdatingGoal] = useState(false);
 
-  useEffect(() => {
+  if (user !== prevUser) {
+    setPrevUser(user);
     if (user) {
       setProfileData({ full_name: user.full_name || '' });
       setGoal(user.learning_goal || '');
     }
-    loadStats();
-  }, [user]);
+  }
 
-  const loadStats = async () => {
-    try {
-      setIsLoadingStats(true);
-      const res = await statsApi.getMyProgress();
-      setStats(res.data);
-    } catch {
-      // ignore
-    } finally {
-      setIsLoadingStats(false);
-    }
-  };
+  useEffect(() => {
+    let active = true;
+    statsApi
+      .getMyProgress()
+      .then((res) => {
+        if (active) setStats(res.data);
+      })
+      .catch(() => {
+        // ignore
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleProfileSubmit = async (e) => {
     e.preventDefault();

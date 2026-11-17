@@ -13,22 +13,127 @@ import {
   HiRefresh,
   HiLightningBolt
 } from 'react-icons/hi';
-import { HiOutlineSparkles } from 'react-icons/hi2';
+
+const readDraftAnswers = (topicId) => {
+  try {
+    const saved = sessionStorage.getItem(`exercise_draft_${topicId}`);
+    return saved ? JSON.parse(saved) : {};
+  } catch {
+    return {};
+  }
+};
+
+const readCachedQuestions = (topicId) => {
+  try {
+    const raw = sessionStorage.getItem(`exercise_questions_${topicId}`);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed?.exercises) && parsed.exercises.length > 0) {
+      const safeIdx =
+        typeof parsed.currentIndex === 'number' &&
+        parsed.currentIndex >= 0 &&
+        parsed.currentIndex < parsed.exercises.length
+          ? parsed.currentIndex
+          : 0;
+      return { exercises: parsed.exercises, currentIndex: safeIdx };
+    }
+  } catch {
+    // ignore malformed storage
+  }
+  return null;
+};
 
 export default function ExercisePage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [prevId, setPrevId] = useState(id);
   const [topic, setTopic] = useState(null);
-  const [exercises, setExercises] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState(() => {
-    const saved = sessionStorage.getItem(`exercise_draft_${id}`);
-    return saved ? JSON.parse(saved) : {};
-  });
+  const [exercises, setExercises] = useState(() => readCachedQuestions(id)?.exercises || []);
+  const [currentIndex, setCurrentIndex] = useState(() => readCachedQuestions(id)?.currentIndex || 0);
+  const [answers, setAnswers] = useState(() => readDraftAnswers(id));
   const [results, setResults] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => !readCachedQuestions(id));
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  if (id !== prevId) {
+    setPrevId(id);
+    const nextCached = readCachedQuestions(id);
+    setExercises(nextCached?.exercises || []);
+    setCurrentIndex(nextCached?.currentIndex || 0);
+    setAnswers(readDraftAnswers(id));
+    setResults(null);
+    setTopic(null);
+    setIsLoading(!nextCached);
+  }
+
+  const loadNewExercises = async () => {
+    try {
+      setIsLoading(true);
+      const [tRes, eRes] = await Promise.all([
+        topicApi.getById(id),
+        exerciseApi.getVocabExercises(id, 10)
+      ]);
+      const loadedExercises = eRes.data || [];
+      setTopic(tRes.data);
+      setExercises(loadedExercises);
+      setResults(null);
+      setCurrentIndex(0);
+      if (loadedExercises.length > 0) {
+        sessionStorage.setItem(
+          `exercise_questions_${id}`,
+          JSON.stringify({ exercises: loadedExercises, currentIndex: 0 })
+        );
+      }
+    } catch (err) {
+      toast.error(err.message || 'Không thể tạo bài tập');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    let active = true;
+    const initExercises = async () => {
+      try {
+        const cached = readCachedQuestions(id);
+        if (cached) {
+          const tRes = await topicApi.getById(id);
+          if (!active) return;
+          setTopic(tRes.data);
+          setExercises(cached.exercises);
+          setCurrentIndex(cached.currentIndex);
+          setResults(null);
+        } else {
+          const [tRes, eRes] = await Promise.all([
+            topicApi.getById(id),
+            exerciseApi.getVocabExercises(id, 10)
+          ]);
+          if (!active) return;
+          const loadedExercises = eRes.data || [];
+          setTopic(tRes.data);
+          setExercises(loadedExercises);
+          setResults(null);
+          setCurrentIndex(0);
+          if (loadedExercises.length > 0) {
+            sessionStorage.setItem(
+              `exercise_questions_${id}`,
+              JSON.stringify({ exercises: loadedExercises, currentIndex: 0 })
+            );
+          }
+        }
+      } catch (err) {
+        if (active) toast.error(err.message || 'Không thể tạo bài tập');
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    };
+
+    initExercises();
+    return () => {
+      active = false;
+    };
+  }, [id]);
 
   // Lưu tạm bài làm vào sessionStorage
   useEffect(() => {
@@ -36,6 +141,16 @@ export default function ExercisePage() {
       sessionStorage.setItem(`exercise_draft_${id}`, JSON.stringify(answers));
     }
   }, [answers, results, id]);
+
+  // Đồng bộ vị trí câu hỏi hiện tại với bộ đề lưu nháp
+  useEffect(() => {
+    if (!results && exercises.length > 0) {
+      sessionStorage.setItem(
+        `exercise_questions_${id}`,
+        JSON.stringify({ exercises, currentIndex })
+      );
+    }
+  }, [exercises, currentIndex, results, id]);
 
   // Cảnh báo người dùng khi reload hoặc rời trang lúc đang làm bài
   useEffect(() => {
@@ -48,28 +163,6 @@ export default function ExercisePage() {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [answers, results]);
-
-  useEffect(() => {
-    loadData();
-  }, [id]);
-
-  const loadData = async () => {
-    try {
-      setIsLoading(true);
-      const [tRes, eRes] = await Promise.all([
-        topicApi.getById(id),
-        exerciseApi.getVocabExercises(id, 10)
-      ]);
-      setTopic(tRes.data);
-      setExercises(eRes.data || []);
-      setResults(null);
-      setCurrentIndex(0);
-    } catch (err) {
-      toast.error(err.message || 'Không thể tạo bài tập');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleSelectOption = (optIdx) => {
     setAnswers((prev) => ({
@@ -90,7 +183,21 @@ export default function ExercisePage() {
     }
   };
 
+  const handleResetQuiz = () => {
+    if (
+      Object.keys(answers).length > 0 &&
+      !window.confirm('Bạn muốn hủy bài làm hiện tại và tạo đề mới?')
+    ) {
+      return;
+    }
+    sessionStorage.removeItem(`exercise_draft_${id}`);
+    sessionStorage.removeItem(`exercise_questions_${id}`);
+    setAnswers({});
+    loadNewExercises();
+  };
+
   const handleSubmit = async () => {
+    if (isSubmitting) return;
     const formatted = exercises.map((ex, idx) => {
       const selected = answers[idx];
       return {
@@ -105,6 +212,7 @@ export default function ExercisePage() {
       setIsSubmitting(true);
       const res = await exerciseApi.submitVocabExercises(formatted);
       sessionStorage.removeItem(`exercise_draft_${id}`);
+      sessionStorage.removeItem(`exercise_questions_${id}`);
       const explanations = res.data?.explanations || [];
       const expMap = {};
       explanations.forEach((e) => {
@@ -166,8 +274,9 @@ export default function ExercisePage() {
               variant="secondary"
               onClick={() => {
                 sessionStorage.removeItem(`exercise_draft_${id}`);
+                sessionStorage.removeItem(`exercise_questions_${id}`);
                 setAnswers({});
-                loadData();
+                loadNewExercises();
               }}
               className="gap-2 rounded-xl text-xs py-2.5 px-4"
             >
@@ -260,16 +369,33 @@ export default function ExercisePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6 py-6 pb-14">
       {/* Top bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
         <Link
           to={`/topics/${id}`}
           className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-slate-500 hover:text-blue-600 transition-colors uppercase tracking-wider"
         >
           <HiArrowLeft /> Thoát bài tập
         </Link>
-        <span className="font-mono text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-xl border border-slate-200">
-          Câu {currentIndex + 1} / {exercises.length}
-        </span>
+        <div className="flex items-center gap-2">
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={handleResetQuiz}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleResetQuiz();
+              }
+            }}
+            title="Hủy bài đang làm và tạo đề mới"
+            className="inline-flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-blue-600 bg-white hover:bg-slate-50 px-3 py-1 rounded-xl border border-slate-200 cursor-pointer transition-colors"
+          >
+            <HiRefresh className="w-3.5 h-3.5" /> Làm lại đề mới
+          </span>
+          <span className="font-mono text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-xl border border-slate-200">
+            Câu {currentIndex + 1} / {exercises.length}
+          </span>
+        </div>
       </div>
 
       {/* Progress bar */}
@@ -278,6 +404,37 @@ export default function ExercisePage() {
           className="bg-blue-600 h-2 rounded-full transition-all duration-300"
           style={{ width: `${progressPercent}%` }}
         />
+      </div>
+
+      {/* Question Navigator */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        {exercises.map((_, idx) => {
+          const isCurrent = idx === currentIndex;
+          const isAnswered = answers[idx] !== undefined;
+          return (
+            <span
+              key={idx}
+              role="button"
+              tabIndex={0}
+              onClick={() => setCurrentIndex(idx)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setCurrentIndex(idx);
+                }
+              }}
+              className={`w-8 h-8 rounded-xl font-mono text-xs font-bold flex items-center justify-center border cursor-pointer transition-all select-none ${
+                isCurrent
+                  ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                  : isAnswered
+                  ? 'bg-blue-50 text-blue-700 border-blue-300'
+                  : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              {idx + 1}
+            </span>
+          );
+        })}
       </div>
 
       {/* Question Card */}

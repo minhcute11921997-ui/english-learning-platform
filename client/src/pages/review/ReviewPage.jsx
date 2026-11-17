@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import { reviewApi, vocabListApi } from '../../api/services';
 import Button from '../../components/ui/Button';
@@ -16,56 +16,154 @@ import {
   HiChevronDown
 } from 'react-icons/hi';
 
+const REVIEW_SESSION_KEY = 'review_session_state';
+
+const readReviewSession = () => {
+  try {
+    const raw = sessionStorage.getItem(REVIEW_SESSION_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
 export default function ReviewPage() {
+  const [initialSession] = useState(() => readReviewSession());
   const [stats, setStats] = useState(null);
   const [dueWords, setDueWords] = useState([]);
   const [learningWords, setLearningWords] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [myLists, setMyLists] = useState([]);
   const [listWordsMap, setListWordsMap] = useState({});
-  const [selectedSource, setSelectedSource] = useState('all_learning'); // 'all_learning' | 'due_today' | 'list_${id}'
-  const [activeTab, setActiveTab] = useState('queue'); // 'queue' | 'learning_list' | 'upcoming'
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedSource, setSelectedSource] = useState(
+    initialSession?.selectedSource || 'all_learning'
+  );
+  const [activeTab, setActiveTab] = useState(initialSession?.activeTab || 'queue');
+  const [currentIndex, setCurrentIndex] = useState(
+    typeof initialSession?.currentIndex === 'number' ? initialSession.currentIndex : 0
+  );
   const [showAnswer, setShowAnswer] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isListLoading, setIsListLoading] = useState(false);
 
-  useEffect(() => {
-    loadReviewData();
-  }, []);
-
-  const loadReviewData = async () => {
-    try {
-      setIsLoading(true);
-      const [sRes, dRes, lRes, uRes, listsRes] = await Promise.all([
-        reviewApi.getStats(),
-        reviewApi.getDue(50),
-        reviewApi.getLearning(100),
-        reviewApi.getUpcoming(7),
-        vocabListApi.getAll().catch(() => ({ data: [] }))
-      ]);
+  const applyReviewPayload = useCallback(
+    async (sRes, dRes, lRes, uRes, listsRes, preferredSource = null, preferredIndex = 0) => {
       setStats(sRes.data);
       const due = dRes.data || [];
       const learning = lRes.data || [];
+      const lists = listsRes.data || [];
       setDueWords(due);
       setLearningWords(learning);
       setUpcoming(uRes.data || []);
-      setMyLists(listsRes.data || []);
+      setMyLists(lists);
 
-      if (due.length > 0) {
-        setSelectedSource('due_today');
-      } else {
-        setSelectedSource('all_learning');
+      let nextSource = preferredSource;
+      if (!nextSource) {
+        nextSource = due.length > 0 ? 'due_today' : 'all_learning';
       }
-      setCurrentIndex(0);
+
+      let nextQueueLength =
+        nextSource === 'due_today' ? due.length : nextSource === 'all_learning' ? learning.length : 0;
+
+      if (nextSource.startsWith('list_')) {
+        const listId = nextSource.replace('list_', '');
+        const exists = lists.some((l) => String(l.id) === String(listId));
+        if (exists) {
+          try {
+            const listDetailRes = await vocabListApi.getById(listId);
+            const vocabs = (listDetailRes.data?.vocabularies || []).map((v) => ({
+              vocabulary: v,
+              user_progress: v.user_progress
+            }));
+            setListWordsMap((prev) => ({ ...prev, [listId]: vocabs }));
+            nextQueueLength = vocabs.length;
+          } catch {
+            nextQueueLength = 0;
+          }
+        } else {
+          nextSource = due.length > 0 ? 'due_today' : 'all_learning';
+          nextQueueLength = nextSource === 'due_today' ? due.length : learning.length;
+        }
+      }
+
+      setSelectedSource(nextSource);
+      const safeIndex =
+        typeof preferredIndex === 'number' && preferredIndex > 0 && nextQueueLength > 0
+          ? Math.min(preferredIndex, nextQueueLength - 1)
+          : 0;
+      setCurrentIndex(safeIndex);
       setShowAnswer(false);
-    } catch (err) {
-      toast.error(err.message || 'Không thể tải lịch ôn tập');
-    } finally {
-      setIsLoading(false);
+    },
+    []
+  );
+
+  const loadReviewData = useCallback(
+    async (preferredSource = null) => {
+      try {
+        setIsLoading(true);
+        const [sRes, dRes, lRes, uRes, listsRes] = await Promise.all([
+          reviewApi.getStats(),
+          reviewApi.getDue(50),
+          reviewApi.getLearning(100),
+          reviewApi.getUpcoming(7),
+          vocabListApi.getAll().catch(() => ({ data: [] }))
+        ]);
+        await applyReviewPayload(sRes, dRes, lRes, uRes, listsRes, preferredSource, 0);
+      } catch (err) {
+        toast.error(err.message || 'Không thể tải lịch ôn tập');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [applyReviewPayload]
+  );
+
+  useEffect(() => {
+    let active = true;
+    const initReviewData = async () => {
+      try {
+        const [sRes, dRes, lRes, uRes, listsRes] = await Promise.all([
+          reviewApi.getStats(),
+          reviewApi.getDue(50),
+          reviewApi.getLearning(100),
+          reviewApi.getUpcoming(7),
+          vocabListApi.getAll().catch(() => ({ data: [] }))
+        ]);
+        if (!active) return;
+        const saved = readReviewSession();
+        await applyReviewPayload(
+          sRes,
+          dRes,
+          lRes,
+          uRes,
+          listsRes,
+          saved?.selectedSource || null,
+          saved?.currentIndex || 0
+        );
+      } catch (err) {
+        if (active) toast.error(err.message || 'Không thể tải lịch ôn tập');
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    };
+    initReviewData();
+    return () => {
+      active = false;
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [applyReviewPayload]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      sessionStorage.setItem(
+        REVIEW_SESSION_KEY,
+        JSON.stringify({ selectedSource, activeTab, currentIndex })
+      );
     }
-  };
+  }, [selectedSource, activeTab, currentIndex, isLoading]);
 
   const handleSpeak = (word) => {
     if ('speechSynthesis' in window) {
@@ -78,10 +176,12 @@ export default function ReviewPage() {
   };
 
   const handleSourceChange = async (source) => {
-    setSelectedSource(source);
-    setCurrentIndex(0);
-    setShowAnswer(false);
     setActiveTab('queue');
+    if (source !== selectedSource) {
+      setSelectedSource(source);
+      setCurrentIndex(0);
+      setShowAnswer(false);
+    }
 
     if (source.startsWith('list_')) {
       const listId = source.replace('list_', '');
@@ -128,29 +228,91 @@ export default function ReviewPage() {
     return 'Luyện tập';
   };
 
-  const handleAnswer = async (quality) => {
-    if (!vocab) return;
+  const handleAnswer = useCallback(
+    async (quality) => {
+      if (!vocab || isSubmitting) return;
 
-    try {
-      setIsSubmitting(true);
-      await reviewApi.answer(vocab.id, { quality });
+      try {
+        setIsSubmitting(true);
+        const res = await reviewApi.answer(vocab.id, { quality });
+        const updatedProgress = res.data;
 
-      toast.success(
-        quality >= 3 ? 'Đã ghi nhận! Chu kỳ ghi nhớ được củng cố.' : 'Đã ghi nhận! Hệ thống sẽ xếp lịch ôn sớm hơn.'
-      );
+        toast.success(
+          quality >= 3 ? 'Đã ghi nhận! Chu kỳ ghi nhớ được củng cố.' : 'Đã ghi nhận! Hệ thống sẽ xếp lịch ôn sớm hơn.'
+        );
 
-      setShowAnswer(false);
-      if (currentIndex < currentQueue.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        loadReviewData();
+        if (updatedProgress) {
+          setLearningWords((prev) =>
+            prev.map((item) =>
+              item.vocabulary?.id === vocab.id
+                ? {
+                    ...item,
+                    next_review_at: updatedProgress.next_review_at,
+                    status: updatedProgress.status
+                  }
+                : item
+            )
+          );
+          if (selectedSource.startsWith('list_')) {
+            const listId = selectedSource.replace('list_', '');
+            setListWordsMap((prev) => ({
+              ...prev,
+              [listId]: (prev[listId] || []).map((item) =>
+                item.vocabulary?.id === vocab.id
+                  ? { ...item, user_progress: updatedProgress }
+                  : item
+              )
+            }));
+          }
+        }
+
+        setShowAnswer(false);
+        if (currentIndex < currentQueue.length - 1) {
+          setCurrentIndex((prev) => prev + 1);
+          reviewApi
+            .getStats()
+            .then((sRes) => setStats(sRes.data))
+            .catch(() => {});
+          reviewApi
+            .getUpcoming(7)
+            .then((uRes) => setUpcoming(uRes.data || []))
+            .catch(() => {});
+        } else {
+          await loadReviewData(selectedSource);
+        }
+      } catch (err) {
+        toast.error(err.message || 'Lỗi khi cập nhật lịch ôn tập');
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (err) {
-      toast.error(err.message || 'Lỗi khi cập nhật lịch ôn tập');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    },
+    [vocab, isSubmitting, currentIndex, currentQueue.length, selectedSource, loadReviewData]
+  );
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (activeTab !== 'queue' || !vocab || isSubmitting || isLoading || isListLoading) return;
+
+      if (!showAnswer && (e.code === 'Space' || e.code === 'Enter')) {
+        e.preventDefault();
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+        setShowAnswer(true);
+      } else if (showAnswer) {
+        const qualityMap = { 1: 1, 2: 3, 3: 4, 4: 5 };
+        if (qualityMap[e.key]) {
+          e.preventDefault();
+          handleAnswer(qualityMap[e.key]);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeTab, showAnswer, vocab, isSubmitting, isLoading, isListLoading, handleAnswer]);
 
   if (isLoading) {
     return (

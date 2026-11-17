@@ -59,15 +59,15 @@ async function findDeadCode() {
   const importedFiles = new Set();
   for (const file of files) {
     const content = fs.readFileSync(file, 'utf-8');
-    const importPaths = content.matchAll(/from\s+['"]([^'"]+)['"]/g);
+    const importPaths = content.matchAll(/(?:from\s+|import\s*\(\s*|require\s*\(\s*)['"]([^'"]+)['"]/g);
     for (const match of importPaths) {
-      importedFiles.add(path.basename(match[1]).replace(/\.[^.]+$/, ''));
+      importedFiles.add(path.basename(match[1]).replace(/\.(js|jsx|ts|tsx)$/i, ''));
     }
   }
 
   let orphanCount = 0;
   for (const file of files) {
-    const basename = path.basename(file).replace(/\.[^.]+$/, '');
+    const basename = path.basename(file).replace(/\.(js|jsx|ts|tsx)$/i, '');
     const relative = path.relative(targetDir, file);
     if (!importedFiles.has(basename) && !['App', 'main', 'index', 'vite-env'].includes(basename)) {
       console.log(`  ⚠️  ${relative}`);

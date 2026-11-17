@@ -5,12 +5,19 @@
 
 const request = require('supertest');
 const app = require('../../src/app');
-const { sequelize, User, Vocabulary, UserVocabList } = require('../../src/models');
+const {
+  sequelize,
+  User,
+  UserVocabList,
+  UserVocabProgress,
+  ReviewSchedule
+} = require('../../src/models');
 
 describe('EngLearn v2.0 - Comprehensive API Integration Tests', () => {
   let learnerToken = null;
   let learnerId = null;
   let adminToken = null;
+  let adminId = null;
   let testVocabId = null;
   let createdListId = null;
 
@@ -25,6 +32,8 @@ describe('EngLearn v2.0 - Comprehensive API Integration Tests', () => {
   afterAll(async () => {
     try {
       if (learnerId) {
+        await UserVocabProgress.destroy({ where: { user_id: learnerId } });
+        await ReviewSchedule.destroy({ where: { user_id: learnerId } });
         await UserVocabList.destroy({ where: { user_id: learnerId } });
         await User.destroy({ where: { id: learnerId } });
       }
@@ -140,6 +149,7 @@ describe('EngLearn v2.0 - Comprehensive API Integration Tests', () => {
       expect(res.status).toBe(200);
       expect(res.body.data.user.role).toBe('admin');
       adminToken = res.body.data.accessToken;
+      adminId = res.body.data.user.id;
     });
 
     test('TC-AUTH-07: Xác thực GET /api/auth/me với token hợp lệ vs không có token', async () => {
@@ -454,6 +464,44 @@ describe('EngLearn v2.0 - Comprehensive API Integration Tests', () => {
         .set('Authorization', `Bearer ${adminToken}`);
       expect(resUnlock.status).toBe(200);
       expect(resUnlock.body.data.is_active).toBe(true);
+    });
+
+    test('TC-RBAC-04: Admin không thể tự khóa hoặc tự hạ quyền chính mình', async () => {
+      const resSelfLock = await request(app)
+        .put(`/api/admin/users/${adminId}/status`)
+        .set('Authorization', `Bearer ${adminToken}`);
+      expect(resSelfLock.status).toBe(400);
+
+      const resSelfDemote = await request(app)
+        .put(`/api/admin/users/${adminId}/role`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ role: 'learner' });
+      expect(resSelfDemote.status).toBe(400);
+    });
+  });
+
+  // ==========================================
+  // 8. STATS APIS
+  // ==========================================
+  describe('8. Learning Progress & Overview Stats APIs', () => {
+    test('TC-STAT-01: GET /api/stats/overview -> Trả về tổng số từ vựng và chủ đề', async () => {
+      const res = await request(app)
+        .get('/api/stats/overview')
+        .set('Authorization', `Bearer ${learnerToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.totalVocab).toBeGreaterThan(0);
+      expect(res.body.data.totalTopics).toBe(2);
+    });
+
+    test('TC-STAT-02: GET /api/stats/my-progress -> Trả về tiến độ học cá nhân', async () => {
+      const res = await request(app)
+        .get('/api/stats/my-progress')
+        .set('Authorization', `Bearer ${learnerToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty('learnedCount');
+      expect(res.body.data).toHaveProperty('dueTodayCount');
     });
   });
 });

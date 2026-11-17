@@ -209,9 +209,9 @@ async function runDeepE2E() {
       }
     });
 
-    await step('Click CTA "Ôn tập SM-2" trên Welcome Banner -> Điều hướng /review -> Quay lại Dashboard', async () => {
+    await step('Click CTA "Ôn tập hôm nay" trên Welcome Banner -> Điều hướng /review -> Quay lại Dashboard', async () => {
       const reviewCta = await page.$('a[href="/review"]');
-      if (!reviewCta) throw new Error('Không thấy nút CTA Ôn tập SM-2 trên banner');
+      if (!reviewCta) throw new Error('Không thấy nút CTA Ôn tập hôm nay trên banner');
       await reviewCta.click();
       await waitForPageReady(page);
       if (!page.url().includes('/review')) throw new Error('Chưa điều hướng sang /review');
@@ -248,7 +248,7 @@ async function runDeepE2E() {
     });
 
     await step('Spotlight Artwork: Click ảnh tác phẩm tiêu điểm -> Mở Darkroom Zoom Modal', async () => {
-      const spotlightImg = await page.$('.w-36.h-36 img, .w-36.h-36');
+      const spotlightImg = await page.$('.w-44.h-44 img, .w-44.h-44');
       if (!spotlightImg) throw new Error('Không tìm thấy ảnh Spotlight Artwork');
       await spotlightImg.click();
       await sleep(500);
@@ -285,7 +285,7 @@ async function runDeepE2E() {
       if (!page.url().includes('/topics')) throw new Error(`URL không đúng: ${page.url()}`);
     });
 
-    await step('Click "Ôn tập hôm nay (SM-2)" trên Header -> Điều hướng sang "/review"', async () => {
+    await step('Click "Ôn tập" trên Header -> Điều hướng sang "/review"', async () => {
       const links = await page.$$('header nav a');
       let reviewLink = null;
       for (const l of links) {
@@ -561,20 +561,20 @@ async function runDeepE2E() {
       await sleep(300);
     });
 
-    await step('Click mở rộng bối cảnh văn hóa thẻ 1 -> Kiểm tra nghệ sĩ -> Thu gọn an toàn', async () => {
+    await step('Click mở rộng chi tiết & bối cảnh thẻ 1 -> Kiểm tra ví dụ & nghệ sĩ -> Thu gọn an toàn', async () => {
       const expandBtns = await page.$$('button');
       let targetBtn = null;
       for (const btn of expandBtns) {
         const text = await page.evaluate((el) => el.innerText, btn);
-        if (text.includes('Xem bối cảnh văn hóa')) { targetBtn = btn; break; }
+        if (text.includes('Chi tiết & ví dụ') || text.includes('Xem bối cảnh văn hóa')) { targetBtn = btn; break; }
       }
-      if (!targetBtn) throw new Error('Không tìm thấy nút mở rộng bối cảnh');
+      if (!targetBtn) throw new Error('Không tìm thấy nút mở rộng chi tiết & bối cảnh');
       await targetBtn.click();
       await sleep(350);
 
-      let content = await page.evaluate(() => document.body.innerText);
-      if (!content.includes('Bối cảnh') && !content.includes('Nguồn gốc')) {
-        throw new Error('Khối bối cảnh văn hóa chưa xuất hiện sau click mở');
+      const content = await page.evaluate(() => document.body.innerText);
+      if (!content.includes('Thu gọn')) {
+        throw new Error('Khối chi tiết & bối cảnh chưa mở rộng sau khi click');
       }
 
       // Thu gọn lại
@@ -583,12 +583,12 @@ async function runDeepE2E() {
     });
 
     // =============================================================
-    // KỊCH BẢN 6: DARKROOM MODAL & TRA CỨU TỪ BÔI ĐEN (SELECTION TRANSLATOR)
+    // KỊCH BẢN 6: DARKROOM MODAL & LƯU HỌC NHANH (+ HỌC TỪ)
     // =============================================================
-    console.log('\n🎬 [PHẦN 6] DARKROOM MODAL & TRA TỪ BÔI ĐEN THÔNG MINH (6 bước)');
+    console.log('\n🎬 [PHẦN 6] DARKROOM MODAL & THAO TÁC + HỌC TỪ TRÊN THẺ TỪ VỰNG (5 bước)');
 
     await step('Click vào ảnh tranh có tính năng Zoom -> Mở Darkroom Exhibition Modal', async () => {
-      const imgThumb = await page.$('.w-20.h-20 img, .w-20.h-20');
+      const imgThumb = await page.$('.h-48 img, .h-48');
       if (!imgThumb) throw new Error('Không tìm thấy ảnh tác phẩm thumbnail');
       await imgThumb.click();
       await sleep(400);
@@ -607,7 +607,7 @@ async function runDeepE2E() {
     });
 
     await step('Click lại ảnh tranh mở Modal -> Click vùng nền đen bên ngoài -> Modal tự đóng', async () => {
-      const imgThumb = await page.$('.w-20.h-20 img, .w-20.h-20');
+      const imgThumb = await page.$('.h-48 img, .h-48');
       if (imgThumb) await imgThumb.click();
       await sleep(400);
 
@@ -618,61 +618,25 @@ async function runDeepE2E() {
       if (modal) throw new Error('Modal không đóng sau khi click vùng nền đen');
     });
 
-    await step('Bôi đen văn bản bằng kéo chuột -> Kích hoạt SelectionTranslator Tooltip', async () => {
-      const h2 = await page.$('h2');
-      if (!h2) throw new Error('Không tìm thấy tiêu đề để bôi đen');
-
-      const box = await h2.boundingBox();
-      if (!box) throw new Error('Không lấy được bounding box của h2');
-
-      // Kéo chuột bôi đen từ trái qua phải
-      await page.mouse.move(box.x + 5, box.y + box.height / 2);
-      await page.mouse.down();
-      await page.mouse.move(box.x + box.width - 5, box.y + box.height / 2);
-      await page.mouse.up();
-      await sleep(600);
-
-      const tooltipVisible = await page.evaluate(() => {
-        const allDivs = Array.from(document.querySelectorAll('div'));
-        return allDivs.some((d) => d.style.zIndex === '9999' || d.innerText.includes('Đang tra cứu'));
-      });
-
-      if (!tooltipVisible) {
-        // Dự phòng kích hoạt thông qua event
-        await page.evaluate(() => {
-          const range = document.createRange();
-          range.selectNodeContents(document.querySelector('h2'));
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-          document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
-        });
-        await sleep(600);
-      }
-    });
-
-    await step('Trên Tooltip tra từ: Click nút đổi chiều dịch [EN ⇄ VI]', async () => {
-      const swapped = await page.evaluate(() => {
-        const swapBtn = document.querySelector('button[title*="Đổi chiều"]');
-        if (swapBtn) { swapBtn.click(); return true; }
+    await step('Click nút "+ Học từ" trên thẻ từ -> Lưu ngay vào lộ trình ôn tập SM-2', async () => {
+      const clicked = await page.evaluate(() => {
+        const btns = Array.from(document.querySelectorAll('button'));
+        const learnBtn = btns.find((b) => b.innerText.includes('+ Học từ'));
+        if (learnBtn) { learnBtn.click(); return true; }
         return false;
       });
-      await sleep(400);
+      if (!clicked) throw new Error('Không tìm thấy nút + Học từ');
+      await sleep(600);
+
+      const text = await page.evaluate(() => document.body.innerText);
+      if (!text.includes('Đã lưu') || !text.includes('Ôn tập')) {
+        throw new Error('Thẻ từ chưa chuyển trạng thái Đã lưu sau khi bấm + Học từ');
+      }
     });
 
-    await step('Nhấn phím [Escape] -> Tooltip tra từ đóng an toàn', async () => {
-      await page.keyboard.press('Escape');
-      await sleep(350);
-
-      const tooltipVisible = await page.evaluate(() => {
-        const allDivs = Array.from(document.querySelectorAll('div'));
-        return allDivs.some((d) => d.style.zIndex === '9999');
-      });
-      if (tooltipVisible) {
-        // Click ngoài để đóng nếu Escape chưa kích hoạt
-        await page.mouse.click(20, 20);
-        await sleep(300);
-      }
+    await step('Kiểm tra liên kết "Ôn tập →" xuất hiện trên thẻ đã lưu', async () => {
+      const reviewLink = await page.$('a[href="/review"]');
+      if (!reviewLink) throw new Error('Không tìm thấy liên kết Ôn tập trên thẻ đã lưu');
     });
 
     // =============================================================
@@ -827,7 +791,7 @@ async function runDeepE2E() {
     });
 
     await step('Tìm kiếm từ khóa trong sổ từ: gõ từ không tồn tại "none999" -> Lọc danh sách rỗng', async () => {
-      const searchInput = await page.$('input[placeholder*="Tìm trong bộ từ"]');
+      const searchInput = await page.$('input[placeholder*="sổ từ"]');
       if (searchInput) {
         await clearAndType(page, searchInput, 'none999');
         await sleep(300);
@@ -850,40 +814,40 @@ async function runDeepE2E() {
     // =============================================================
     console.log('\n🎬 [PHẦN 9] FLASHCARD 3D, THAO TÁC PHÍM TẮT & LƯU TIẾN ĐỘ SM-2 (10 bước)');
 
-    await step('Truy cập "/topics/1/flashcards" -> Kiểm tra hiển thị MẶT TRƯỚC', async () => {
+    await step('Truy cập "/topics/1/flashcards" -> Kiểm tra hiển thị Mặt trước', async () => {
       await page.goto(`${CLIENT_URL}/topics/1/flashcards`, { waitUntil: 'domcontentloaded' });
       await waitForPageReady(page);
 
-      const text = await page.evaluate(() => document.body.innerText);
-      if (!text.includes('MẶT TRƯỚC') && !text.includes('Phím Cách')) {
+      const text = (await page.evaluate(() => document.body.innerText)).toLowerCase();
+      if (!text.includes('mặt trước') && !text.includes('nghe phát âm')) {
         throw new Error('Trang Flashcard chưa sẵn sàng');
       }
     });
 
-    await step('Click chuột vào thân thẻ -> Thẻ lật 3D sang MẶT SAU', async () => {
+    await step('Click chuột vào thân thẻ -> Thẻ lật 3D sang Mặt sau', async () => {
       const card = await page.$('.perspective-1000');
       if (!card) throw new Error('Không tìm thấy thân thẻ flashcard');
       await card.click();
       await sleep(400);
 
-      const text = await page.evaluate(() => document.body.innerText);
-      if (!text.includes('MẶT SAU')) throw new Error('Thẻ chưa lật 3D sang mặt sau');
+      const text = (await page.evaluate(() => document.body.innerText)).toLowerCase();
+      if (!text.includes('mặt sau')) throw new Error('Thẻ chưa lật 3D sang mặt sau');
     });
 
-    await step('Nhấn phím [Space] -> Thẻ lật ngược lại sang MẶT TRƯỚC', async () => {
+    await step('Nhấn phím [Space] -> Thẻ lật ngược lại sang Mặt trước', async () => {
       await page.keyboard.press('Space');
       await sleep(400);
 
-      const text = await page.evaluate(() => document.body.innerText);
-      if (!text.includes('MẶT TRƯỚC')) throw new Error('Thẻ chưa lật lại mặt trước khi nhấn Space');
+      const text = (await page.evaluate(() => document.body.innerText)).toLowerCase();
+      if (!text.includes('mặt trước')) throw new Error('Thẻ chưa lật lại mặt trước khi nhấn Space');
     });
 
-    await step('Nhấn phím [Space] lần nữa -> Thẻ lật sang MẶT SAU', async () => {
+    await step('Nhấn phím [Space] lần nữa -> Thẻ lật sang Mặt sau', async () => {
       await page.keyboard.press('Space');
       await sleep(400);
 
-      const text = await page.evaluate(() => document.body.innerText);
-      if (!text.includes('MẶT SAU')) throw new Error('Thẻ chưa lật sang mặt sau');
+      const text = (await page.evaluate(() => document.body.innerText)).toLowerCase();
+      if (!text.includes('mặt sau')) throw new Error('Thẻ chưa lật sang mặt sau');
     });
 
     await step('Nhấn phím mũi tên [→] -> Chuyển sang thẻ từ tiếp theo (thẻ số 2)', async () => {
@@ -1038,12 +1002,13 @@ async function runDeepE2E() {
       }
     });
 
-    await step('💥 [RELOAD GIỮA CHỪNG]: Nhấn F5 lúc đang làm dở -> Kiểm tra answers được khôi phục từ sessionStorage', async () => {
+    await step('💥 [RELOAD GIỮA CHỪNG]: Nhấn F5 lúc đang làm dở -> Kiểm tra bộ đề và đáp án được khôi phục từ sessionStorage', async () => {
       await page.reload({ waitUntil: 'domcontentloaded' });
       await waitForPageReady(page);
 
       const savedDraft = await page.evaluate(() => sessionStorage.getItem('exercise_draft_1'));
-      if (!savedDraft) throw new Error('sessionStorage không chứa dữ liệu bài làm nháp sau reload');
+      const savedQuestions = await page.evaluate(() => sessionStorage.getItem('exercise_questions_1'));
+      if (!savedDraft || !savedQuestions) throw new Error('sessionStorage không chứa dữ liệu đề/nháp sau reload');
 
       const parsed = JSON.parse(savedDraft);
       if (parsed[0] === undefined || parsed[1] === undefined) {
@@ -1107,7 +1072,11 @@ async function runDeepE2E() {
       await waitForPageReady(page);
 
       const hasDraft = await page.evaluate(() => sessionStorage.getItem('exercise_draft_1'));
-      if (hasDraft) throw new Error('sessionStorage chưa được reset sau khi bấm đề mới');
+      const newQuestionsRaw = await page.evaluate(() => sessionStorage.getItem('exercise_questions_1'));
+      if (hasDraft) throw new Error('sessionStorage draft chưa được reset sau khi bấm đề mới');
+      if (!newQuestionsRaw || JSON.parse(newQuestionsRaw).currentIndex !== 0) {
+        throw new Error('Đề mới chưa được khởi tạo lại ở câu đầu tiên');
+      }
     });
 
     await step('Click "Thoát bài tập" -> Quay lại trang chủ đề an toàn', async () => {
@@ -1430,14 +1399,28 @@ async function runDeepE2E() {
       await waitForPageReady(page);
     });
 
-    await step('Thao tác Khóa / Mở khóa tài khoản học viên (Toggle User Status) an toàn', async () => {
-      const toggled = await page.evaluate(() => {
+    await step('Thao tác Khóa rồi Mở khóa lại tài khoản student01 (Toggle User Status) an toàn', async () => {
+      const locked = await page.evaluate(() => {
         const lockBtn = document.querySelector('tbody button');
         if (lockBtn) { lockBtn.click(); return true; }
         return false;
       });
-      if (!toggled) throw new Error('Không tìm thấy nút khóa/mở khóa user');
+      if (!locked) throw new Error('Không tìm thấy nút khóa/mở khóa user');
       await sleep(600);
+
+      // Mở khóa lại ngay để giữ tài khoản mẫu student01 luôn hoạt động sau E2E
+      const unlocked = await page.evaluate(() => {
+        const unlockBtn = document.querySelector('tbody button');
+        if (unlockBtn) { unlockBtn.click(); return true; }
+        return false;
+      });
+      if (!unlocked) throw new Error('Không tìm thấy nút mở khóa lại user');
+      await sleep(600);
+
+      const rowText = (await page.evaluate(() => document.querySelector('tbody').innerText)).toLowerCase();
+      if (!rowText.includes('hoạt động')) {
+        throw new Error('Tài khoản student01 chưa được mở khóa trở lại trạng thái Hoạt động');
+      }
     });
 
     await step('Chuyển Tab "Thống kê tổng quan" -> Xác minh telemetry toàn sàn', async () => {
@@ -1449,6 +1432,19 @@ async function runDeepE2E() {
         const text = (await page.evaluate(() => document.body.innerText)).toLowerCase();
         if (!text.includes('tổng người dùng') && !text.includes('thuật ngữ')) {
           throw new Error('Tab thống kê admin không hiển thị');
+        }
+      }
+    });
+
+    await step('Chuyển Tab "Quản lý từ vựng" -> Xác minh bảng từ vựng quản trị', async () => {
+      const tabs = await page.$$('button.border-b-2');
+      if (tabs.length >= 3) {
+        await tabs[2].click();
+        await waitForPageReady(page);
+
+        const text = (await page.evaluate(() => document.body.innerText)).toLowerCase();
+        if (!text.includes('thêm thuật ngữ') || !text.includes('oil painting')) {
+          throw new Error('Tab quản lý từ vựng admin không hiển thị đầy đủ');
         }
       }
     });

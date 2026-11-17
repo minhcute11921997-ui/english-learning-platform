@@ -16,7 +16,8 @@ function shuffle(array) {
 
 const getVocabExercises = catchAsync(async (req, res) => {
   const { topicId } = req.params;
-  const count = parseInt(req.query.count) || 10;
+  const rawCount = parseInt(req.query.count);
+  const count = !isNaN(rawCount) ? Math.max(1, Math.min(rawCount, 50)) : 10;
 
   const topicVocabs = await Vocabulary.findAll({
     where: { topic_id: topicId, is_approved: true },
@@ -170,7 +171,9 @@ const submitVocabExercises = catchAsync(async (req, res) => {
 
     if (isCorrect) correctCount++;
     const quality = item.quality !== undefined ? item.quality : (isCorrect ? 4 : 1);
-    await SrsService.recordReviewAnswer(userId, item.vocabulary_id, quality);
+    if (v) {
+      await SrsService.recordReviewAnswer(userId, v.id, quality);
+    }
 
     // Tìm index của đáp án chính xác trong options gửi lên
     let correctOptionIdx = -1;

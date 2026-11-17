@@ -5,7 +5,7 @@
 > **Phiên bản:** 2.0.0 (Fine Arts Edition)  
 > **Đặc trưng cốt lõi:**  
 > - Chuyên biệt hóa 100% về thuật ngữ **Hội họa (Types of Paintings)** và **Ngành nghề Mỹ nghệ thủ công (Fine Arts & Crafts Professions)**.  
-> - Mỗi thuật ngữ đều có **cơ chế hiển thị hình ảnh minh họa vector chuẩn xác (`VocabImage`)** kèm cơ chế dự phòng và phóng to.  
+> - Mỗi thuật ngữ đều có **cơ chế hiển thị hình ảnh minh họa tác phẩm chuẩn xác (`VocabImage`)** kèm cơ chế dự phòng và phóng to.  
 > - Cung cấp **thông tin bên lề & bối cảnh văn hóa - lịch sử (`VocabSidebarInfo`)**, nghệ sĩ / làng nghề tiêu biểu và nguồn tham chiếu uy tín (Oxford Art, Tate, Britannica).  
 > - Tối ưu hóa trí nhớ dài hạn bằng thuật toán lặp lại ngắt quãng **SuperMemo 2 (SM-2)**.  
 > - Tạm thời tinh giản các cơ chế học nhóm, đọc hiểu và cộng đồng để tập trung tối đa vào trải nghiệm học từ vựng trực quan.
@@ -36,7 +36,7 @@
 - **Frontend:** React 19, Tailwind CSS v4, React Router DOM v7, Zustand, Axios, React Hot Toast.
 - **Backend:** Node.js, Express.js 5, Sequelize ORM 6.
 - **Cơ sở dữ liệu:** MySQL 8.0 (hỗ trợ lưu trữ văn bản Unicode UTF-8 đa ngôn ngữ, bối cảnh văn hóa chi tiết).
-- **Bộ hình ảnh:** 60 hình ảnh SVG vector mỹ thuật và thủ công tinh xảo lưu trữ cục bộ trong thư mục `client/public/images/vocab/`.
+- **Bộ hình ảnh:** 60 hình ảnh minh họa tác phẩm mỹ thuật & thủ công (`.jpg`) kèm ảnh dự phòng `_placeholder.svg` lưu trữ cục bộ trong thư mục `client/public/images/vocab/`.
 
 ---
 
@@ -91,7 +91,7 @@ flowchart TD
 
 ### Phân hệ 3: Cơ chế Hình ảnh Minh họa & Thông tin Bên lề
 - **Component `VocabImage`:**
-  - Hiển thị hình ảnh minh họa vector sắc nét cho từng từ vựng.
+  - Hiển thị hình ảnh minh họa sắc nét cho từng từ vựng.
   - Tự động hiển thị khung chờ (skeleton loading) khi đang tải ảnh.
   - Tự động bắt lỗi và hiển thị ảnh dự phòng chuẩn nghệ thuật (`/images/vocab/_placeholder.svg`) nếu ảnh thiếu hoặc link lỗi.
   - Hỗ trợ tính năng Click để phóng to (Zoom Preview Modal) cho phép người học chiêm ngưỡng chi tiết tranh.

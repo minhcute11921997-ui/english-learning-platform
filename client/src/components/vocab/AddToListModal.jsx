@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { vocabListApi, vocabApi } from '../../api/services';
+import { vocabListApi } from '../../api/services';
 import {
   HiX,
   HiPlus,
@@ -13,43 +13,65 @@ import {
 export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
   const [lists, setLists] = useState([]);
   const [selectedListIds, setSelectedListIds] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(Boolean(isOpen && (vocab?.id || vocab?.word)));
   const [isSaving, setIsSaving] = useState(false);
   const [showCreateInput, setShowCreateInput] = useState(false);
   const [newListName, setNewListName] = useState('');
   const [isCreatingList, setIsCreatingList] = useState(false);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
 
-  useEffect(() => {
-    if (isOpen && vocab) {
-      loadData();
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    if (isOpen) {
+      setIsLoading(true);
     } else {
       setShowCreateInput(false);
       setNewListName('');
     }
-  }, [isOpen, vocab?.id, vocab?.word]);
+  }
 
-  const loadData = async () => {
-    try {
-      setIsLoading(true);
-      const [listsRes, membershipRes] = await Promise.all([
-        vocabListApi.getAll(),
-        vocabListApi.getWordMembership({
-          vocabId: vocab.id,
-          word: vocab.word
-        })
-      ]);
+  const vocabId = vocab?.id;
+  const vocabWord = vocab?.word;
 
-      const userLists = listsRes.data || [];
-      const currentMemberIds = membershipRes?.data?.listIds || [];
+  useEffect(() => {
+    if (!isOpen || (!vocabId && !vocabWord)) return;
+    let active = true;
 
-      setLists(userLists);
-      setSelectedListIds(currentMemberIds);
-    } catch {
-      toast.error('Không thể tải danh sách bộ từ');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const fetchMembership = async () => {
+      try {
+        const [listsRes, membershipRes] = await Promise.all([
+          vocabListApi.getAll(),
+          vocabListApi.getWordMembership({
+            vocabId,
+            word: vocabWord
+          })
+        ]);
+        if (!active) return;
+        setLists(listsRes.data || []);
+        setSelectedListIds(membershipRes?.data?.listIds || []);
+      } catch {
+        if (active) toast.error('Không thể tải danh sách bộ từ');
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    };
+
+    fetchMembership();
+    return () => {
+      active = false;
+    };
+  }, [isOpen, vocabId, vocabWord]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   const handleToggleList = (listId) => {
     setSelectedListIds((prev) =>
@@ -94,14 +116,6 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
         list_ids: selectedListIds
       });
 
-      if (vocab.id && selectedListIds.length > 0) {
-        try {
-          await vocabApi.markAsLearned(vocab.id);
-        } catch {
-          // ignore
-        }
-      }
-
       toast.success(
         selectedListIds.length > 0
           ? `Đã lưu từ "${vocab.word}" vào ${selectedListIds.length} danh sách!`
@@ -122,7 +136,10 @@ export default function AddToListModal({ isOpen, onClose, vocab, onSuccess }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-150">
+    <div
+      className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-150"
+      onClick={onClose}
+    >
       <div
         className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}

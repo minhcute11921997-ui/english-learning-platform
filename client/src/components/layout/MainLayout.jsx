@@ -6,7 +6,7 @@ import Header from './Header';
  */
 export default function MainLayout() {
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#1F2421] selection:bg-[#dcefe7] selection:text-[#12392f]">
+    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-100 selection:text-blue-900">
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Outlet />

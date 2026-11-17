@@ -16,7 +16,8 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || '/dashboard';
+  const fromObj = location.state?.from;
+  const from = fromObj ? `${fromObj.pathname}${fromObj.search || ''}` : '/dashboard';
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

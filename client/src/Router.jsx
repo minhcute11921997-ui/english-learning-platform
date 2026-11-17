@@ -1,29 +1,25 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import useAuthStore from './stores/authStore';
 import MainLayout from './components/layout/MainLayout';
 import AuthLayout from './components/layout/AuthLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import LoadingSpinner from './components/ui/LoadingSpinner';
 
 // Auth Pages
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 
-// Main Pages
-import DashboardPage from './pages/DashboardPage';
-import ProfilePage from './pages/profile/ProfilePage';
-
-// Fine Arts Vocab Pages
-import TopicsPage from './pages/vocab/TopicsPage';
-import TopicDetailPage from './pages/vocab/TopicDetailPage';
-import FlashcardPage from './pages/vocab/FlashcardPage';
-import ExercisePage from './pages/vocab/ExercisePage';
-import UserVocabListDetailPage from './pages/vocab/UserVocabListDetailPage';
-
-// Review SRS (SM-2) Page
-import ReviewPage from './pages/review/ReviewPage';
-
-// Admin Page
-import AdminPage from './pages/admin/AdminPage';
+// Main & Feature Pages (Route-based code splitting)
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const ProfilePage = lazy(() => import('./pages/profile/ProfilePage'));
+const TopicsPage = lazy(() => import('./pages/vocab/TopicsPage'));
+const TopicDetailPage = lazy(() => import('./pages/vocab/TopicDetailPage'));
+const FlashcardPage = lazy(() => import('./pages/vocab/FlashcardPage'));
+const ExercisePage = lazy(() => import('./pages/vocab/ExercisePage'));
+const UserVocabListDetailPage = lazy(() => import('./pages/vocab/UserVocabListDetailPage'));
+const ReviewPage = lazy(() => import('./pages/review/ReviewPage'));
+const AdminPage = lazy(() => import('./pages/admin/AdminPage'));
 
 function RootRedirect() {
   const { isAuthenticated, isLoading } = useAuthStore();
@@ -98,5 +94,15 @@ const router = createBrowserRouter([
 ]);
 
 export default function Router() {
-  return <RouterProvider router={router} />;
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-slate-50">
+          <LoadingSpinner size="lg" />
+        </div>
+      }
+    >
+      <RouterProvider router={router} />
+    </Suspense>
+  );
 }

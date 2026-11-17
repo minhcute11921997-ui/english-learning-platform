@@ -1,6 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { HiUser, HiLogout, HiMenu, HiX } from 'react-icons/hi';
-import { HiSparkles, HiSquares2X2 } from 'react-icons/hi2';
+import { HiLogout, HiMenu, HiX } from 'react-icons/hi';
+import { HiSparkles } from 'react-icons/hi2';
 import { useState } from 'react';
 import useAuthStore from '../../stores/authStore';
 

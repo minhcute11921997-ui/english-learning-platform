@@ -43,7 +43,7 @@ const useAuthStore = create((set, get) => ({
   logout: async () => {
     try {
       await authApi.logout();
-    } catch (error) {
+    } catch {
       // Ignore logout errors
     }
     localStorage.removeItem('accessToken');
@@ -64,7 +64,7 @@ const useAuthStore = create((set, get) => ({
     try {
       const response = await authApi.getMe();
       set({ user: response.data, isAuthenticated: true, isLoading: false });
-    } catch (error) {
+    } catch {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       set({ user: null, isAuthenticated: false, isLoading: false });

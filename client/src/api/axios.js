@@ -70,8 +70,12 @@ api.interceptors.response.use(
 
         const { data } = await axios.post('/api/auth/refresh', { refreshToken });
         const newAccessToken = data.data.accessToken;
+        const newRefreshToken = data.data.refreshToken;
 
         localStorage.setItem('accessToken', newAccessToken);
+        if (newRefreshToken) {
+          localStorage.setItem('refreshToken', newRefreshToken);
+        }
         api.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
@@ -87,6 +91,18 @@ api.interceptors.response.use(
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
+      }
+    }
+
+    if (
+      error.response?.status === 403 &&
+      !isAuthEndpoint &&
+      error.response?.data?.message?.includes('bị khóa')
+    ) {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
       }
     }
 

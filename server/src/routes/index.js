@@ -9,8 +9,6 @@ const exerciseRoutes = require('./exercise.routes');
 const reviewRoutes = require('./review.routes');
 const adminRoutes = require('./admin.routes');
 const statsRoutes = require('./stats.routes');
-// Tạm thời tắt chức năng dịch khi bôi đen theo yêu cầu
-// const translateRoutes = require('./translate.routes');
 
 const router = express.Router();
 
@@ -23,6 +21,5 @@ router.use('/exercises', exerciseRoutes);
 router.use('/reviews', reviewRoutes);
 router.use('/admin', adminRoutes);
 router.use('/stats', statsRoutes);
-// router.use('/translate', translateRoutes);
 
 module.exports = router;

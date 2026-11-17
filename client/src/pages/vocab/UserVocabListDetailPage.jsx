@@ -31,25 +31,33 @@ export default function UserVocabListDetailPage() {
   const [expandedInfoIds, setExpandedInfoIds] = useState({});
 
   useEffect(() => {
-    loadData();
-  }, [id]);
-
-  const loadData = async () => {
-    try {
-      setIsLoading(true);
-      const res = await vocabListApi.getById(id);
-      const data = res.data;
-      setList(data);
-      setVocabularies(data.vocabularies || []);
-      setEditName(data.name || '');
-      setEditDesc(data.description || '');
-    } catch (err) {
-      toast.error(err.message || 'Không thể tải danh sách từ vựng');
-      navigate('/topics');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    let active = true;
+    const fetchList = async () => {
+      try {
+        const res = await vocabListApi.getById(id);
+        if (!active) return;
+        const data = res.data;
+        setList(data);
+        setVocabularies(data.vocabularies || []);
+        setEditName(data.name || '');
+        setEditDesc(data.description || '');
+      } catch (err) {
+        if (active) {
+          toast.error(err.message || 'Không thể tải danh sách từ vựng');
+          navigate('/topics');
+        }
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    };
+    fetchList();
+    return () => {
+      active = false;
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [id, navigate]);
 
   const handleSpeak = (word) => {
     if ('speechSynthesis' in window) {

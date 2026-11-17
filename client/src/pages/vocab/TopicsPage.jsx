@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { topicApi, vocabListApi } from '../../api/services';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
@@ -31,7 +31,8 @@ const iconMap = {
 };
 
 export default function TopicsPage() {
-  const [activeTab, setActiveTab] = useState('topics'); // 'topics' | 'my-lists'
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') === 'my-lists' ? 'my-lists' : 'topics';
   const [topics, setTopics] = useState([]);
   const [myLists, setMyLists] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,25 +41,43 @@ export default function TopicsPage() {
   const [newListDesc, setNewListDesc] = useState('');
   const [isCreating, setIsCreating] = useState(false);
 
+  const handleTabChange = (tab) => {
+    setSearchParams(tab === 'my-lists' ? { tab: 'my-lists' } : {});
+  };
+
   useEffect(() => {
-    loadData();
+    let active = true;
+    const fetchInitialData = async () => {
+      try {
+        const [tRes, lRes] = await Promise.all([
+          topicApi.getAll(),
+          vocabListApi.getAll().catch(() => ({ data: [] }))
+        ]);
+        if (!active) return;
+        setTopics(tRes.data || []);
+        setMyLists(lRes.data || []);
+      } catch (err) {
+        if (active) toast.error(err.message || 'Không thể tải dữ liệu');
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    };
+    fetchInitialData();
+    return () => {
+      active = false;
+    };
   }, []);
 
-  const loadData = async () => {
-    try {
-      setIsLoading(true);
-      const [tRes, lRes] = await Promise.all([
-        topicApi.getAll(),
-        vocabListApi.getAll().catch(() => ({ data: [] }))
-      ]);
-      setTopics(tRes.data || []);
-      setMyLists(lRes.data || []);
-    } catch (err) {
-      toast.error(err.message || 'Không thể tải dữ liệu');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  useEffect(() => {
+    if (!showCreateModal) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowCreateModal(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showCreateModal]);
 
   const handleCreateList = async (e) => {
     e.preventDefault();
@@ -102,7 +121,7 @@ export default function TopicsPage() {
         <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-2xl self-start sm:self-auto border border-slate-200/80">
           <button
             type="button"
-            onClick={() => setActiveTab('topics')}
+            onClick={() => handleTabChange('topics')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'topics'
                 ? 'bg-white text-blue-600 shadow-sm shadow-slate-900/5'
@@ -113,7 +132,7 @@ export default function TopicsPage() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('my-lists')}
+            onClick={() => handleTabChange('my-lists')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'my-lists'
                 ? 'bg-white text-blue-600 shadow-sm shadow-slate-900/5'
@@ -292,7 +311,10 @@ export default function TopicsPage() {
 
       {/* MODAL TẠO BỘ TỪ MỚI */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setShowCreateModal(false)}
+        >
           <div
             className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}

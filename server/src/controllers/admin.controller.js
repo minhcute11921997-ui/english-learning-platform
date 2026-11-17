@@ -45,6 +45,10 @@ const updateUserRole = catchAsync(async (req, res) => {
     throw new AppError('Vai trò (role) không hợp lệ.', 400);
   }
 
+  if (Number(id) === Number(req.user.id) && role !== 'admin') {
+    throw new AppError('Bạn không thể tự hạ quyền quản trị của chính mình.', 400);
+  }
+
   const user = await User.findByPk(id);
   if (!user) throw new AppError('Không tìm thấy người dùng.', 404);
 
@@ -56,6 +60,11 @@ const updateUserRole = catchAsync(async (req, res) => {
 
 const toggleUserStatus = catchAsync(async (req, res) => {
   const { id } = req.params;
+
+  if (Number(id) === Number(req.user.id)) {
+    throw new AppError('Bạn không thể tự khóa tài khoản của chính mình.', 400);
+  }
+
   const user = await User.findByPk(id);
   if (!user) throw new AppError('Không tìm thấy người dùng.', 404);
 

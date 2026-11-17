@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * 🎨 Content & Visual Asset Validator (Fine Arts Edition)
- * Kiểm tra chất lượng dữ liệu thuật ngữ Mỹ thuật & tính toàn vẹn của hình ảnh SVG
+ * Kiểm tra chất lượng dữ liệu thuật ngữ Mỹ thuật & tính toàn vẹn của hình ảnh minh họa
  *
  * Usage:
  *   node content/content-validator.js
@@ -78,7 +78,7 @@ function validate() {
   console.log(`   📊 Tổng số thuật ngữ cần thẩm định: ${vocabList.length}\n`);
 
   // 3. Kiểm định từng thuật ngữ & file ảnh vật lý
-  console.log('🔍 [BƯỚC 3] Thẩm định từng thuật ngữ, bối cảnh văn hóa & file SVG trên đĩa:');
+  console.log('🔍 [BƯỚC 3] Thẩm định từng thuật ngữ, bối cảnh văn hóa & file ảnh minh họa trên đĩa:');
 
   let totalIssues = 0;
   let missingSvgCount = 0;
@@ -134,12 +134,12 @@ function validate() {
   console.log('📊 TỔNG KẾT KIỂM ĐỊNH NỘI DUNG & TÀI NGUYÊN MỸ THUẬT');
   console.log('----------------------------------------------------------------');
   console.log(`  • Tổng số thuật ngữ:           ${vocabList.length} từ`);
-  console.log(`  • File vector SVG hợp lệ:      ${validSvgCount} / ${vocabList.length} (${Math.round((validSvgCount / (vocabList.length || 1)) * 100)}%)`);
-  console.log(`  • File SVG thiếu:              ${missingSvgCount}`);
+  console.log(`  • File ảnh minh họa hợp lệ:    ${validSvgCount} / ${vocabList.length} (${Math.round((validSvgCount / (vocabList.length || 1)) * 100)}%)`);
+  console.log(`  • File ảnh thiếu:              ${missingSvgCount}`);
   console.log(`  • Tổng số lỗi phát hiện:       ${totalIssues}`);
 
   if (totalIssues === 0) {
-    console.log('\n🎉 HOÀN HẢO: 100% Thuật ngữ Mỹ thuật, bối cảnh văn hóa & file SVG đạt chuẩn tuyệt đối!\n');
+    console.log('\n🎉 HOÀN HẢO: 100% Thuật ngữ Mỹ thuật, bối cảnh văn hóa & file ảnh minh họa đạt chuẩn tuyệt đối!\n');
     process.exit(0);
   } else {
     console.log(`\n⚠️  Cảnh báo: Có ${totalIssues} vấn đề cần kiểm tra.\n`);

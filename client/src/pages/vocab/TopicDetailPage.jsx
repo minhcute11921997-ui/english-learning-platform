@@ -30,22 +30,44 @@ export default function TopicDetailPage() {
   const [expandedInfoIds, setExpandedInfoIds] = useState({});
 
   useEffect(() => {
-    loadData();
+    let active = true;
+    const fetchTopicData = async () => {
+      try {
+        const [tRes, vRes] = await Promise.all([
+          topicApi.getById(id),
+          vocabApi.getByTopic(id, { difficulty, limit: 100 })
+        ]);
+        if (!active) return;
+        setTopic(tRes.data);
+        setVocabularies(vRes.data || []);
+      } catch (err) {
+        if (active) toast.error(err.message || 'Không thể tải dữ liệu chủ đề');
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    };
+    fetchTopicData();
+    return () => {
+      active = false;
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
   }, [id, difficulty]);
 
-  const loadData = async () => {
+  const handleMarkLearned = async (vocab) => {
     try {
-      setIsLoading(true);
-      const [tRes, vRes] = await Promise.all([
-        topicApi.getById(id),
-        vocabApi.getByTopic(id, { difficulty, limit: 100 })
-      ]);
-      setTopic(tRes.data);
-      setVocabularies(vRes.data || []);
+      await vocabApi.markAsLearned(vocab.id);
+      setVocabularies((prev) =>
+        prev.map((v) =>
+          v.id === vocab.id
+            ? { ...v, user_progress: { status: 'learning', correct_count: 1 } }
+            : v
+        )
+      );
+      toast.success(`Đã thêm "${vocab.word}" vào lộ trình ôn tập!`);
     } catch (err) {
-      toast.error(err.message || 'Không thể tải dữ liệu chủ đề');
-    } finally {
-      setIsLoading(false);
+      toast.error(err.message || 'Không thể lưu tiến độ học');
     }
   };
 
@@ -279,7 +301,7 @@ export default function TopicDetailPage() {
                   ) : (
                     <button
                       type="button"
-                      onClick={() => setSelectedVocabForModal(vocab)}
+                      onClick={() => handleMarkLearned(vocab)}
                       className="py-1.5 px-3 text-xs rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-bold transition-colors cursor-pointer shadow-sm shadow-blue-600/25"
                     >
                       + Học từ
@@ -304,14 +326,16 @@ export default function TopicDetailPage() {
           isOpen={!!selectedVocabForModal}
           onClose={() => setSelectedVocabForModal(null)}
           vocab={selectedVocabForModal}
-          onSuccess={() => {
-            setVocabularies((prev) =>
-              prev.map((v) =>
-                v.id === selectedVocabForModal.id
-                  ? { ...v, user_progress: { status: 'learning', correct_count: 1 } }
-                  : v
-              )
-            );
+          onSuccess={(selectedListIds) => {
+            if (Array.isArray(selectedListIds) && selectedListIds.length > 0) {
+              setVocabularies((prev) =>
+                prev.map((v) =>
+                  v.id === selectedVocabForModal.id
+                    ? { ...v, user_progress: { status: 'learning', correct_count: 1 } }
+                    : v
+                )
+              );
+            }
           }}
         />
       )}

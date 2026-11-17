@@ -11,7 +11,7 @@ module.exports = (sequelize) => {
     username: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      unique: true,
+      unique: 'username',
       validate: {
         len: { args: [3, 50], msg: 'Username phải từ 3-50 ký tự' },
         isAlphanumeric: { msg: 'Username chỉ chứa chữ cái và số' }
@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
     email: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      unique: true,
+      unique: 'email',
       validate: {
         isEmail: { msg: 'Email không hợp lệ' }
       }

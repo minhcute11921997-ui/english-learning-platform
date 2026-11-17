@@ -248,8 +248,8 @@ const addWordToLists = catchAsync(async (req, res) => {
     });
   }
 
-  // 3. Tự động khởi tạo tiến độ học & lịch SRS cho từ này nếu chưa có
-  if (auto_learn) {
+  // 3. Tự động khởi tạo tiến độ học & lịch SRS nếu từ được lưu vào ít nhất 1 danh sách
+  if (auto_learn && validTargetListIds.length > 0) {
     const existingProgress = await UserVocabProgress.findOne({
       where: { user_id: userId, vocabulary_id: targetVocabId }
     });

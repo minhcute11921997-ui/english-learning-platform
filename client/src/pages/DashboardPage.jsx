@@ -21,33 +21,37 @@ export default function DashboardPage() {
   const [featuredVocab, setFeaturedVocab] = useState(null);
 
   useEffect(() => {
-    loadDashboardData();
-  }, []);
+    let active = true;
+    const loadDashboardData = async () => {
+      try {
+        const [sRes, revRes, topRes] = await Promise.all([
+          statsApi.getMyProgress(),
+          reviewApi.getStats(),
+          topicApi.getAll()
+        ]);
+        if (!active) return;
+        setStats(sRes.data);
+        setReviewStats(revRes.data);
+        const loadedTopics = topRes.data || [];
+        setTopics(loadedTopics);
 
-  const loadDashboardData = async () => {
-    try {
-      const [sRes, revRes, topRes] = await Promise.all([
-        statsApi.getMyProgress(),
-        reviewApi.getStats(),
-        topicApi.getAll()
-      ]);
-      setStats(sRes.data);
-      setReviewStats(revRes.data);
-      const loadedTopics = topRes.data || [];
-      setTopics(loadedTopics);
-
-      // Lấy tác phẩm tiêu điểm
-      if (loadedTopics.length > 0) {
-        const vRes = await vocabApi.getByTopic(loadedTopics[0].id, { limit: 10 });
-        const list = vRes.data || [];
-        if (list.length > 0) {
-          setFeaturedVocab(list[0]);
+        // Lấy tác phẩm tiêu điểm
+        if (loadedTopics.length > 0) {
+          const vRes = await vocabApi.getByTopic(loadedTopics[0].id, { limit: 10 });
+          const list = vRes.data || [];
+          if (active && list.length > 0) {
+            setFeaturedVocab(list[0]);
+          }
         }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
-    }
-  };
+    };
+    loadDashboardData();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <div className="space-y-7 pb-14">
@@ -227,7 +231,7 @@ export default function DashboardPage() {
 
           {/* Sổ từ vựng cá nhân */}
           <Link
-            to="/topics"
+            to="/topics?tab=my-lists"
             className="card p-6 border-slate-200/90 rounded-3xl bg-white shadow-sm flex items-center justify-between group hover:border-blue-300 transition-colors"
           >
             <div className="flex items-center gap-3.5">

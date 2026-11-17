@@ -4,6 +4,11 @@
  */
 
 const SrsService = require('../../src/services/srs.service');
+const { sequelize } = require('../../src/models');
+
+afterAll(async () => {
+  await sequelize.close();
+});
 
 describe('SrsService - Thuật toán SM-2 (calculateSM2)', () => {
   describe('1. Khởi tạo & Lần học đầu tiên (Repetition 0 -> 1)', () => {

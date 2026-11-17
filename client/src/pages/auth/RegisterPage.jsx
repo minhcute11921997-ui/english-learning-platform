@@ -39,7 +39,7 @@ export default function RegisterPage() {
 
     setIsLoading(true);
     try {
-      const { confirmPassword, ...data } = formData;
+      const { confirmPassword: _confirmPassword, ...data } = formData;
       await register(data);
       toast.success('Đăng ký thành công!');
       navigate('/dashboard', { replace: true });

@@ -18,13 +18,13 @@ Bộ công cụ và quy trình kiểm thử toàn diện theo chuẩn ISTQB & OW
 
 ## 🚀 Các lệnh thực thi nhanh
 
-### 1. Kiểm tra tính toàn vẹn 60 thuật ngữ & 60 file SVG
+### 1. Kiểm tra tính toàn vẹn 60 thuật ngữ & 60 file ảnh minh họa
 ```bash
 cd tools
 node content/content-validator.js
 ```
 - Kiểm tra tính đầy đủ của 60 thuật ngữ nghệ thuật trong `server/src/seeders/artVocabData.js`.
-- Xác minh file SVG thực tế tồn tại trong `client/public/images/vocab/`.
+- Xác minh file ảnh minh họa (`.jpg`) và ảnh dự phòng `_placeholder.svg` thực tế tồn tại trong `client/public/images/vocab/`.
 - Xác minh các trường bối cảnh văn hóa (`cultural_note`), nghệ sĩ/làng nghề (`related_artist`), nguồn từ điển (`source_ref`), câu ví dụ và phiên âm IPA.
 
 ### 2. Chạy Unit & Integration Tests (Jest & Supertest)

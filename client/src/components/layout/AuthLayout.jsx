@@ -1,10 +1,16 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, Navigate } from 'react-router-dom';
 import { HiSparkles } from 'react-icons/hi2';
+import useAuthStore from '../../stores/authStore';
 
 /**
  * Layout cho trang đăng nhập/đăng ký - Contemporary Fine Arts & Crafts
  */
 export default function AuthLayout() {
+  const { isAuthenticated, isLoading } = useAuthStore();
+
+  if (!isLoading && isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
   return (
     <div className="min-h-screen bg-slate-50 bg-modern-grid flex items-center justify-center p-4">
       <div className="w-full max-w-md">
