@@ -11,6 +11,7 @@ const getAllTopics = catchAsync(async (req, res) => {
   const result = [];
 
   for (const topic of topics) {
+    if (topic.name === 'Personal Vocabulary') continue;
     const vocabCount = await Vocabulary.count({
       where: { topic_id: topic.id, is_approved: true }
     });

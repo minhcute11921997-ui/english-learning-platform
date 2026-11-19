@@ -29,6 +29,8 @@ const UserVocabProgress = require('./UserVocabProgress')(sequelize);
 const ReviewSchedule = require('./ReviewSchedule')(sequelize);
 const UserVocabList = require('./UserVocabList')(sequelize);
 const UserVocabListItem = require('./UserVocabListItem')(sequelize);
+const ExerciseAttempt = require('./ExerciseAttempt')(sequelize);
+const ReviewEvent = require('./ReviewEvent')(sequelize);
 
 // ===== ASSOCIATIONS =====
 
@@ -90,7 +92,9 @@ const db = {
   UserVocabProgress,
   ReviewSchedule,
   UserVocabList,
-  UserVocabListItem
+  UserVocabListItem,
+  ExerciseAttempt,
+  ReviewEvent
 };
 
 module.exports = db;

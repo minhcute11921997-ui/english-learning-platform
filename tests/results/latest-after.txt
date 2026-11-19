@@ -1,0 +1,301 @@
+
+> test
+> node --test tests/regression.test.cjs tests/sm2.test.cjs tests/frontend.test.cjs
+
+TAP version 13
+# Subtest: F01 reload resumes the owned attempt, answers and question position
+ok 1 - F01 reload resumes the owned attempt, answers and question position
+  ---
+  duration_ms: 4.1542
+  ...
+# Subtest: F02 expired attempts create a fresh quiz without applying old answers
+ok 2 - F02 expired attempts create a fresh quiz without applying old answers
+  ---
+  duration_ms: 3.8242
+  ...
+# Subtest: F03 a temporary resume failure preserves the stored attempt for retry
+ok 3 - F03 a temporary resume failure preserves the stored attempt for retry
+  ---
+  duration_ms: 2.7329
+  ...
+# Subtest: F04 another account never loads the previous account draft
+ok 4 - F04 another account never loads the previous account draft
+  ---
+  duration_ms: 2.2102
+  ...
+# Subtest: F05 late quiz responses cannot overwrite a newer load
+ok 5 - F05 late quiz responses cannot overwrite a newer load
+  ---
+  duration_ms: 2.195
+  ...
+# Subtest: F06 corrupt or blocked session storage does not prevent starting a quiz
+ok 6 - F06 corrupt or blocked session storage does not prevent starting a quiz
+  ---
+  duration_ms: 7.1555
+  ...
+# Subtest: F07 HTTP status survives interception so an expired attempt can be replaced
+ok 7 - F07 HTTP status survives interception so an expired attempt can be replaced
+  ---
+  duration_ms: 3.3816
+  ...
+# Subtest: F08 simultaneous expired requests share one token refresh and retry once
+ok 8 - F08 simultaneous expired requests share one token refresh and retry once
+  ---
+  duration_ms: 2.5009
+  ...
+# đŸ¨ Starting Fine Arts & Crafts Database Seeding...
+# đŸ“Œ Seeding 2 Fine Arts & Crafts Topics...
+# đŸ‘¤ Seeding Test Users...
+# đŸ“ Seeding 60 Fine Arts Vocabularies with images & cultural side-notes...
+# âœ… Seeded/Updated 0 vocabularies with cultural notes & artwork visuals
+# đŸ‰ Fine Arts Database Seeding completed successfully!
+# Subtest: R01 public registration cannot grant admin privileges
+ok 9 - R01 public registration cannot grant admin privileges
+  ---
+  duration_ms: 10.5246
+  ...
+# Subtest: R02 seed preserves existing data and schema
+ok 10 - R02 seed preserves existing data and schema
+  ---
+  duration_ms: 6.169
+  ...
+# Subtest: R03 boolean-only forged quiz payload is rejected without writes
+ok 11 - R03 boolean-only forged quiz payload is rejected without writes
+  ---
+  duration_ms: 13.6868
+  ...
+# Subtest: R04 scoring uses issued options, ignores forged options/quality, and replay is idempotent
+ok 12 - R04 scoring uses issued options, ignores forged options/quality, and replay is idempotent
+  ---
+  duration_ms: 15.1297
+  ...
+# Subtest: R05 a failure on the second answer rolls back the whole quiz
+ok 13 - R05 a failure on the second answer rolls back the whole quiz
+  ---
+  duration_ms: 7.1234
+  ...
+# Subtest: R06 simultaneous reviews preserve both answers and exactly one next schedule
+ok 14 - R06 simultaneous reviews preserve both answers and exactly one next schedule
+  ---
+  duration_ms: 3.635
+  ...
+# Subtest: R07 review quality must be a finite integer from 0 to 5
+ok 15 - R07 review quality must be a finite integer from 0 to 5
+  ---
+  duration_ms: 2.9273
+  ...
+# Subtest: R08 creating a personal word supplies a valid topic and keeps it private
+ok 16 - R08 creating a personal word supplies a valid topic and keeps it private
+  ---
+  duration_ms: 3.5638
+  ...
+# Subtest: R09 history counts two reviews of the same word on the same day
+ok 17 - R09 history counts two reviews of the same word on the same day
+  ---
+  duration_ms: 2.9128
+  ...
+# Subtest: R10 last active admin cannot be demoted or disabled
+ok 18 - R10 last active admin cannot be demoted or disabled
+  ---
+  duration_ms: 5.4606
+  ...
+# Subtest: R11 production refuses missing or public JWT secrets
+ok 19 - R11 production refuses missing or public JWT secrets
+  ---
+  duration_ms: 4.1676
+  ...
+# Subtest: R12 test DB never falls back to the application database
+ok 20 - R12 test DB never falls back to the application database
+  ---
+  duration_ms: 1.9815
+  ...
+# Subtest: R13 uploaded png/jpg paths reach backend before nginx static regex
+ok 21 - R13 uploaded png/jpg paths reach backend before nginx static regex
+  ---
+  duration_ms: 3.0687
+  ...
+# Subtest: R14 refresh saves both renewed tokens
+ok 22 - R14 refresh saves both renewed tokens
+  ---
+  duration_ms: 2.3189
+  ...
+# đŸ¨ Starting Fine Arts & Crafts Database Seeding...
+# đŸ“Œ Seeding 2 Fine Arts & Crafts Topics...
+# đŸ‘¤ Seeding Test Users...
+# đŸ“ Seeding 60 Fine Arts Vocabularies with images & cultural side-notes...
+# âœ… Seeded/Updated 1 vocabularies with cultural notes & artwork visuals
+# đŸ‰ Fine Arts Database Seeding completed successfully!
+# Subtest: R15 legacy answers are discarded when issuing a new server-owned quiz
+ok 23 - R15 legacy answers are discarded when issuing a new server-owned quiz
+  ---
+  duration_ms: 21.5882
+  ...
+# Subtest: R16 admin UI can request pages beyond the first 20 users
+ok 24 - R16 admin UI can request pages beyond the first 20 users
+  ---
+  duration_ms: 1.364
+  ...
+# Subtest: R17 an issued attempt can be resumed only by its owner and topic
+ok 25 - R17 an issued attempt can be resumed only by its owner and topic
+  ---
+  duration_ms: 6.8351
+  ...
+# Subtest: R18 invalid, duplicate, missing and expired answers do not change progress
+ok 26 - R18 invalid, duplicate, missing and expired answers do not change progress
+  ---
+  duration_ms: 6.6023
+  ...
+# Subtest: R19 correct server-issued answers score 100 percent
+ok 27 - R19 correct server-issued answers score 100 percent
+  ---
+  duration_ms: 8.6157
+  ...
+# Subtest: R20 private vocabulary is not readable or learnable by other users
+ok 28 - R20 private vocabulary is not readable or learnable by other users
+  ---
+  duration_ms: 3.259
+  ...
+# Subtest: R21 personal list sync rolls back a newly created word on schedule failure
+ok 29 - R21 personal list sync rolls back a newly created word on schedule failure
+  ---
+  duration_ms: 4.2283
+  ...
+# Subtest: R22 test mode refuses an explicitly shared application database
+ok 30 - R22 test mode refuses an explicitly shared application database
+  ---
+  duration_ms: 2.335
+  ...
+# Subtest: R23 admin may change other accounts when another active admin remains
+ok 31 - R23 admin may change other accounts when another active admin remains
+  ---
+  duration_ms: 3.1907
+  ...
+# Subtest: R24 production accepts two independently generated JWT keys
+ok 32 - R24 production accepts two independently generated JWT keys
+  ---
+  duration_ms: 2.5877
+  ...
+# Subtest: R25 demo refresh preserves IDs and private data while updating system images
+ok 33 - R25 demo refresh preserves IDs and private data while updating system images
+  ---
+  duration_ms: 3.5338
+  ...
+# Subtest: R26 admins cannot disable or demote themselves when another admin exists
+ok 34 - R26 admins cannot disable or demote themselves when another admin exists
+  ---
+  duration_ms: 5.2285
+  ...
+# Subtest: R27 removing every list membership does not auto-enroll a word
+ok 35 - R27 removing every list membership does not auto-enroll a word
+  ---
+  duration_ms: 2.4514
+  ...
+# Subtest: SrsService - Thuáº­t toĂ¡n SM-2 (calculateSM2)
+    # Subtest: 1. Khá»Ÿi táº¡o & Láº§n há»c Ä‘áº§u tiĂªn (Repetition 0 -> 1)
+        # Subtest: TC-SM2-01: Láº§n Ä‘áº§u nhá»› tá»‘t (quality = 4) -> interval = 1 ngĂ y, rep = 1, ease factor giá»¯ nguyĂªn 2.5
+        ok 1 - TC-SM2-01: Láº§n Ä‘áº§u nhá»› tá»‘t (quality = 4) -> interval = 1 ngĂ y, rep = 1, ease factor giá»¯ nguyĂªn 2.5
+          ---
+          duration_ms: 1.1858
+          ...
+        # Subtest: TC-SM2-02: Láº§n Ä‘áº§u ráº¥t dá»… (quality = 5) -> interval = 1 ngĂ y, ease factor tÄƒng lĂªn 2.6
+        ok 2 - TC-SM2-02: Láº§n Ä‘áº§u ráº¥t dá»… (quality = 5) -> interval = 1 ngĂ y, ease factor tÄƒng lĂªn 2.6
+          ---
+          duration_ms: 0.4516
+          ...
+        # Subtest: TC-SM2-03: Láº§n Ä‘áº§u khĂ³ nhá»› (quality = 3) -> interval = 1 ngĂ y, ease factor giáº£m nháº¹
+        ok 3 - TC-SM2-03: Láº§n Ä‘áº§u khĂ³ nhá»› (quality = 3) -> interval = 1 ngĂ y, ease factor giáº£m nháº¹
+          ---
+          duration_ms: 0.2921
+          ...
+        1..3
+    ok 1 - 1. Khá»Ÿi táº¡o & Láº§n há»c Ä‘áº§u tiĂªn (Repetition 0 -> 1)
+      ---
+      duration_ms: 3.2363
+      type: 'suite'
+      ...
+    # Subtest: 2. CĂ¡c chu ká»³ Ă´n táº­p tiáº¿p theo (Repetition >= 1)
+        # Subtest: TC-SM2-04: Láº§n thá»© hai Ä‘Ăºng (Rep 1 -> 2) -> interval = 6 ngĂ y
+        ok 1 - TC-SM2-04: Láº§n thá»© hai Ä‘Ăºng (Rep 1 -> 2) -> interval = 6 ngĂ y
+          ---
+          duration_ms: 0.4047
+          ...
+        # Subtest: TC-SM2-05: Láº§n thá»© ba Ä‘Ăºng (Rep 2 -> 3) -> interval = round(6 * 2.5) = 15 ngĂ y
+        ok 2 - TC-SM2-05: Láº§n thá»© ba Ä‘Ăºng (Rep 2 -> 3) -> interval = round(6 * 2.5) = 15 ngĂ y
+          ---
+          duration_ms: 0.1751
+          ...
+        # Subtest: TC-SM2-06: Äáº¡t Ä‘iá»u kiá»‡n thuáº§n thá»¥c (rep >= 4 & interval >= 15) -> status chuyá»ƒn thĂ nh "mastered"
+        ok 3 - TC-SM2-06: Äáº¡t Ä‘iá»u kiá»‡n thuáº§n thá»¥c (rep >= 4 & interval >= 15) -> status chuyá»ƒn thĂ nh "mastered"
+          ---
+          duration_ms: 0.2723
+          ...
+        1..3
+    ok 2 - 2. CĂ¡c chu ká»³ Ă´n táº­p tiáº¿p theo (Repetition >= 1)
+      ---
+      duration_ms: 1.3381
+      type: 'suite'
+      ...
+    # Subtest: 3. Xá»­ lĂ½ khi quĂªn hoáº·c tráº£ lá»i sai (quality < 3)
+        # Subtest: TC-SM2-07: Tá»« Ä‘ang mastered nhÆ°ng bá»‹ quĂªn (quality = 1) -> reset rep = 0, interval = 1, rá»›t xuá»‘ng learning
+        ok 1 - TC-SM2-07: Tá»« Ä‘ang mastered nhÆ°ng bá»‹ quĂªn (quality = 1) -> reset rep = 0, interval = 1, rá»›t xuá»‘ng learning
+          ---
+          duration_ms: 0.6977
+          ...
+        # Subtest: TC-SM2-08: HoĂ n toĂ n khĂ´ng nhá»› gĂ¬ (quality = 0) -> EF giáº£m máº¡nh nháº¥t
+        ok 2 - TC-SM2-08: HoĂ n toĂ n khĂ´ng nhá»› gĂ¬ (quality = 0) -> EF giáº£m máº¡nh nháº¥t
+          ---
+          duration_ms: 0.2924
+          ...
+        1..2
+    ok 3 - 3. Xá»­ lĂ½ khi quĂªn hoáº·c tráº£ lá»i sai (quality < 3)
+      ---
+      duration_ms: 1.472
+      type: 'suite'
+      ...
+    # Subtest: 4. Kiá»ƒm tra biĂªn (Boundary Value Analysis)
+        # Subtest: TC-SM2-09: Ease Factor khĂ´ng bao giá» tháº¥p hÆ¡n biĂªn sĂ n 1.30
+        ok 1 - TC-SM2-09: Ease Factor khĂ´ng bao giá» tháº¥p hÆ¡n biĂªn sĂ n 1.30
+          ---
+          duration_ms: 0.4562
+          ...
+        # Subtest: TC-SM2-10: Khoáº£ng cĂ¡ch Ă´n táº­p khĂ´ng vÆ°á»£t quĂ¡ biĂªn tráº§n 365 ngĂ y
+        ok 2 - TC-SM2-10: Khoáº£ng cĂ¡ch Ă´n táº­p khĂ´ng vÆ°á»£t quĂ¡ biĂªn tráº§n 365 ngĂ y
+          ---
+          duration_ms: 0.4037
+          ...
+        # Subtest: TC-SM2-11: Quality Ă¢m Ä‘Æ°á»£c lĂ m trĂ²n vĂ  káº¹p lĂªn 0
+        ok 3 - TC-SM2-11: Quality Ă¢m Ä‘Æ°á»£c lĂ m trĂ²n vĂ  káº¹p lĂªn 0
+          ---
+          duration_ms: 0.1848
+          ...
+        # Subtest: TC-SM2-12: Quality > 5 Ä‘Æ°á»£c lĂ m trĂ²n vĂ  káº¹p xuá»‘ng 5
+        ok 4 - TC-SM2-12: Quality > 5 Ä‘Æ°á»£c lĂ m trĂ²n vĂ  káº¹p xuá»‘ng 5
+          ---
+          duration_ms: 0.1691
+          ...
+        # Subtest: TC-SM2-13: Next review timestamp tÆ°Æ¡ng thĂ­ch vá»›i sá»‘ ngĂ y interval
+        ok 5 - TC-SM2-13: Next review timestamp tÆ°Æ¡ng thĂ­ch vá»›i sá»‘ ngĂ y interval
+          ---
+          duration_ms: 1.3873
+          ...
+        1..5
+    ok 4 - 4. Kiá»ƒm tra biĂªn (Boundary Value Analysis)
+      ---
+      duration_ms: 2.949
+      type: 'suite'
+      ...
+    1..4
+ok 36 - SrsService - Thuáº­t toĂ¡n SM-2 (calculateSM2)
+  ---
+  duration_ms: 10.9999
+  type: 'suite'
+  ...
+1..36
+# tests 48
+# suites 5
+# pass 48
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 293.4764

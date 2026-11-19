@@ -1,7 +1,8 @@
 services:
   # 1. Cơ sở dữ liệu MySQL 8.0
   mysql:
-    image: mysql:8.0
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    image: mysql:8.0-debian
     container_name: englearn_mysql
     restart: always
     environment:
@@ -25,21 +26,23 @@ services:
 
   # 2. Backend API (Node.js Express + Sequelize)
   server:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     build:
       context: ./server
       dockerfile: Dockerfile
     container_name: englearn_server
     restart: always
     environment:
-      NODE_ENV: development
+      NODE_ENV: ${NODE_ENV:-development}
+      SEED_DEMO: ${SEED_DEMO:-false}
       PORT: 3000
       DB_HOST: mysql
       DB_PORT: 3306
       DB_NAME: english_learning
       DB_USER: englearn_user
       DB_PASSWORD: englearn_pass
-      JWT_SECRET: englearn_jwt_secret_key_production_2026_super_secure
-      JWT_REFRESH_SECRET: englearn_jwt_refresh_secret_key_production_2026_super_secure
+      JWT_SECRET: ${JWT_SECRET:-}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-}
       CLIENT_URL: http://localhost:5173
     depends_on:
       mysql:
@@ -53,6 +56,7 @@ services:
 
   # 3. Frontend Client (React + Nginx Reverse Proxy)
   client:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     build:
       context: ./client
       dockerfile: Dockerfile

@@ -1,4 +1,5 @@
-const { Vocabulary, Topic, VocabExample } = require('../models');
+const { randomUUID } = require('crypto');
+const { Vocabulary, Topic, VocabExample, ExerciseAttempt, User, sequelize } = require('../models');
 const SrsService = require('../services/srs.service');
 const ApiResponse = require('../utils/apiResponse');
 const catchAsync = require('../utils/catchAsync');
@@ -16,8 +17,14 @@ function shuffle(array) {
 
 const getVocabExercises = catchAsync(async (req, res) => {
   const { topicId } = req.params;
-  const rawCount = parseInt(req.query.count);
-  const count = !isNaN(rawCount) ? Math.max(1, Math.min(rawCount, 50)) : 10;
+  if (req.query.attemptId) {
+    const attempt = await ExerciseAttempt.findOne({ where: { id: req.query.attemptId, user_id: req.user.id, topic_id: topicId } });
+    if (!attempt) throw new AppError('Attempt not found.', 404);
+    if (attempt.result || new Date(attempt.expires_at) <= new Date()) throw new AppError('Attempt expired or already submitted.', 409);
+    return ApiResponse.success(res, publicAttempt(attempt));
+  }
+  const count = req.query.count === undefined ? 10 : Number(req.query.count);
+  if (!Number.isInteger(count) || count < 1 || count > 50) throw new AppError('Count must be between 1 and 50.', 400);
 
   const topicVocabs = await Vocabulary.findAll({
     where: { topic_id: topicId, is_approved: true },
@@ -132,80 +139,66 @@ const getVocabExercises = catchAsync(async (req, res) => {
     }
   }
 
-  return ApiResponse.success(res, exercises, 'Tạo bài tập củng cố thành công');
+  const questions = exercises.map(q => {
+    const target = topicVocabs.find(v => v.id === q.vocabulary_id);
+    const answer = q.type === 'en_to_vi' ? target.meaning_vi : target.word;
+    return { ...q, correct_option: q.options.indexOf(answer) };
+  });
+  const attempt = await ExerciseAttempt.create({ id: randomUUID(), user_id: req.user.id,
+    topic_id: Number(topicId), questions, expires_at: new Date(Date.now() + 24*60*60*1000), result: null });
+  return ApiResponse.success(res, publicAttempt(attempt), 'Tạo bài tập củng cố thành công');
 });
 
+function publicAttempt(attempt) {
+  return { attempt_id: attempt.id, expires_at: attempt.expires_at,
+    exercises: attempt.questions.map(({ correct_option, ...question }) => question) };
+}
+
 const submitVocabExercises = catchAsync(async (req, res) => {
-  const { results } = req.body; // array: [{ id, vocabulary_id, selected_option, options, is_correct, quality }]
-  if (!results || !Array.isArray(results)) {
-    throw new AppError('Dữ liệu nộp bài không hợp lệ.', 400);
+  const { attempt_id, results } = req.body;
+  if (typeof attempt_id !== 'string' || !Array.isArray(results) || results.length < 1 || results.length > 100) {
+    throw new AppError('An issued attempt and answers are required.', 400);
   }
-
-  const userId = req.user.id;
-  const vocabIds = results.map((r) => r.vocabulary_id);
-  const vocabs = await Vocabulary.findAll({
-    where: { id: vocabIds }
-  });
-  const vocabMap = {};
-  vocabs.forEach((v) => {
-    vocabMap[v.id] = v;
-  });
-
-  let correctCount = 0;
-  const explanations = [];
-
-  for (const item of results) {
-    const v = vocabMap[item.vocabulary_id];
-    let isCorrect = false;
-
-    // Server-side scoring check
-    if (item.options && Array.isArray(item.options) && item.selected_option !== undefined && item.selected_option !== null && item.selected_option >= 0) {
-      const chosen = item.options[item.selected_option];
-      if (v && (chosen === v.word || chosen === v.meaning_vi)) {
-        isCorrect = true;
+  const result = await sequelize.transaction(async t => {
+    // Global lock order: user, attempt, progress. Replayed requests return stored results.
+    await User.findByPk(req.user.id, { transaction: t, lock: t.LOCK.UPDATE });
+    const attempt = await ExerciseAttempt.findOne({ where: { id: attempt_id, user_id: req.user.id },
+      transaction: t, lock: t.LOCK.UPDATE });
+    if (!attempt) throw new AppError('Attempt not found.', 404);
+    if (attempt.result) return attempt.result;
+    if (new Date(attempt.expires_at) <= new Date()) throw new AppError('Attempt expired.', 409);
+    const questions = attempt.questions;
+    const answers = new Map();
+    for (const item of results) {
+      const q = item && questions.find(q => q.id === item.id);
+      if (!q || answers.has(item.id) || (item.selected_option !== null &&
+        (!Number.isInteger(item.selected_option) || item.selected_option < 0 || item.selected_option >= q.options.length))) {
+        throw new AppError('Invalid or duplicate question/answer.', 400);
       }
-    } else if (typeof item.is_correct === 'boolean') {
-      // Fallback for direct boolean test payloads
-      isCorrect = item.is_correct;
+      answers.set(item.id, item.selected_option);
     }
-
-    if (isCorrect) correctCount++;
-    const quality = item.quality !== undefined ? item.quality : (isCorrect ? 4 : 1);
-    if (v) {
-      await SrsService.recordReviewAnswer(userId, v.id, quality);
+    if (answers.size !== questions.length) throw new AppError('Submit every question, using null for unanswered items.', 400);
+    const vocabs = await Vocabulary.findAll({ where: { id: questions.map(q => q.vocabulary_id), is_approved: true }, transaction: t });
+    const vocabMap = new Map(vocabs.map(v => [v.id, v]));
+    if (questions.some(q => !vocabMap.has(q.vocabulary_id))) throw new AppError('A question is no longer available. Start a new attempt.', 409);
+    let correct = 0;
+    const explanations = [];
+    for (const q of questions) {
+      const v = vocabMap.get(q.vocabulary_id), selected = answers.get(q.id);
+      const isCorrect = selected === q.correct_option;
+      if (isCorrect) correct++;
+      await SrsService.recordReviewAnswer(req.user.id, q.vocabulary_id, isCorrect ? 4 : 1, { transaction: t });
+      explanations.push({ id: q.id, vocabulary_id: v.id, selected_option: selected,
+        correct_option: q.correct_option, is_correct: isCorrect,
+        ...Object.fromEntries(['word','pronunciation','meaning_vi','image_url','image_alt','cultural_note',
+          'related_artist','source_ref','example_sentence','example_translation'].map(key => [key,v[key]])) });
     }
-
-    // Tìm index của đáp án chính xác trong options gửi lên
-    let correctOptionIdx = -1;
-    if (v && item.options && Array.isArray(item.options)) {
-      correctOptionIdx = item.options.findIndex((opt) => opt === v.word || opt === v.meaning_vi);
-    }
-
-    explanations.push({
-      id: item.id,
-      vocabulary_id: item.vocabulary_id,
-      selected_option: item.selected_option,
-      correct_option: correctOptionIdx,
-      is_correct: isCorrect,
-      word: v?.word,
-      pronunciation: v?.pronunciation,
-      meaning_vi: v?.meaning_vi,
-      image_url: v?.image_url,
-      image_alt: v?.image_alt,
-      cultural_note: v?.cultural_note,
-      related_artist: v?.related_artist,
-      source_ref: v?.source_ref,
-      example_sentence: v?.example_sentence,
-      example_translation: v?.example_translation
-    });
-  }
-
-  return ApiResponse.success(res, {
-    total: results.length,
-    correct: correctCount,
-    percentage: results.length > 0 ? Math.round((correctCount / results.length) * 100) : 0,
-    explanations
-  }, 'Đã chấm điểm và cập nhật tiến độ ôn tập');
+    const scored = { total: questions.length, correct, percentage: Math.round(correct/questions.length*100), explanations };
+    attempt.result = scored;
+    await attempt.save({ transaction: t });
+    return scored;
+  });
+  return ApiResponse.success(res, result, 'Đã chấm điểm và cập nhật tiến độ ôn tập');
 });
 
 module.exports = {

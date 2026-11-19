@@ -9,8 +9,8 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Stage 2: Phục vụ ứng dụng qua Nginx Alpine siêu nhẹ (~25MB)
-FROM nginx:alpine
+# Stage 2: Serve the app with the Debian-based Nginx image.
+FROM nginx:stable
 
 # Xóa các file mặc định của Nginx
 RUN rm -rf /usr/share/nginx/html/*

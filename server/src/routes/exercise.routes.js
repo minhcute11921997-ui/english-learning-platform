@@ -4,7 +4,7 @@ const { authenticate } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.get('/vocab/:topicId', exerciseController.getVocabExercises);
+router.get('/vocab/:topicId', authenticate, exerciseController.getVocabExercises);
 router.post('/vocab/submit', authenticate, exerciseController.submitVocabExercises);
 
 module.exports = router;

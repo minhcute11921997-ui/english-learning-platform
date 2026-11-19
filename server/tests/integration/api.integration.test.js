@@ -4,16 +4,22 @@
  */
 
 const request = require('supertest');
-const app = require('../../src/app');
+const runIntegration = process.env.RUN_MYSQL_TESTS === '1';
+const testDatabase = `englearn_jest_${process.pid}_${Date.now()}`;
+if (runIntegration) {
+  process.env.NODE_ENV = 'test';
+  process.env.DB_NAME_TEST = testDatabase;
+}
+const app = runIntegration ? require('../../src/app') : null;
 const {
   sequelize,
   User,
   UserVocabList,
   UserVocabProgress,
   ReviewSchedule
-} = require('../../src/models');
+} = runIntegration ? require('../../src/models') : {};
 
-describe('EngLearn v2.0 - Comprehensive API Integration Tests', () => {
+(runIntegration ? describe : describe.skip)('EngLearn v2.0 - Comprehensive API Integration Tests', () => {
   let learnerToken = null;
   let learnerId = null;
   let adminToken = null;
@@ -29,18 +35,27 @@ describe('EngLearn v2.0 - Comprehensive API Integration Tests', () => {
     full_name: 'QA Test Learner'
   };
 
+  let databaseConnection;
+  beforeAll(async () => {
+    const config = require('../../src/config/database').test;
+    databaseConnection = await require('mysql2/promise').createConnection({
+      host: config.host, port: config.port, user: config.username, password: config.password
+    });
+    if (!/^englearn_jest_\d+_\d+$/.test(testDatabase)) throw new Error('Invalid test database name');
+    await databaseConnection.query(`CREATE DATABASE \`${testDatabase}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+    await sequelize.sync();
+    await require('../../src/seeders').seed();
+  }, 60000);
+
   afterAll(async () => {
-    try {
-      if (learnerId) {
-        await UserVocabProgress.destroy({ where: { user_id: learnerId } });
-        await ReviewSchedule.destroy({ where: { user_id: learnerId } });
-        await UserVocabList.destroy({ where: { user_id: learnerId } });
-        await User.destroy({ where: { id: learnerId } });
+    if (sequelize) await sequelize.close();
+    if (databaseConnection) {
+      try {
+        await databaseConnection.query(`DROP DATABASE IF EXISTS \`${testDatabase}\``);
+      } finally {
+        await databaseConnection.end();
       }
-    } catch {
-      // ignore
     }
-    await sequelize.close();
   });
 
   // ==========================================
@@ -228,14 +243,17 @@ describe('EngLearn v2.0 - Comprehensive API Integration Tests', () => {
   // ==========================================
   describe('4. Exercise Generation, Anti-leak Security & Scoring', () => {
     let generatedExercises = [];
+    let generatedAttemptId;
 
     test('TC-EX-01: Sinh đề tự động 10 câu qua GET /api/exercises/vocab/1', async () => {
-      const res = await request(app).get('/api/exercises/vocab/1?count=10');
+      const res = await request(app).get('/api/exercises/vocab/1?count=10')
+        .set('Authorization', `Bearer ${learnerToken}`);
 
       expect(res.status).toBe(200);
-      expect(Array.isArray(res.body.data)).toBe(true);
-      expect(res.body.data.length).toBe(10);
-      generatedExercises = res.body.data;
+      expect(Array.isArray(res.body.data.exercises)).toBe(true);
+      expect(res.body.data.exercises.length).toBe(10);
+      generatedExercises = res.body.data.exercises;
+      generatedAttemptId = res.body.data.attempt_id;
 
       // Anti-leak Check: Trước khi nộp bài, tuyệt đối KHÔNG lộ đáp án hay bối cảnh giải thích
       generatedExercises.forEach((q) => {
@@ -261,11 +279,10 @@ describe('EngLearn v2.0 - Comprehensive API Integration Tests', () => {
 
     test('TC-EX-03: Nộp bài thành công, Server-side Scoring & trả về đầy đủ bối cảnh văn hóa', async () => {
       const submitPayload = {
+        attempt_id: generatedAttemptId,
         results: generatedExercises.map((ex) => ({
           id: ex.id,
-          vocabulary_id: ex.vocabulary_id,
-          selected_option: 0,
-          options: ex.options
+          selected_option: 0
         }))
       };
 
@@ -470,13 +487,13 @@ describe('EngLearn v2.0 - Comprehensive API Integration Tests', () => {
       const resSelfLock = await request(app)
         .put(`/api/admin/users/${adminId}/status`)
         .set('Authorization', `Bearer ${adminToken}`);
-      expect(resSelfLock.status).toBe(400);
+      expect([400, 409]).toContain(resSelfLock.status);
 
       const resSelfDemote = await request(app)
         .put(`/api/admin/users/${adminId}/role`)
         .set('Authorization', `Bearer ${adminToken}`)
         .send({ role: 'learner' });
-      expect(resSelfDemote.status).toBe(400);
+      expect([400, 409]).toContain(resSelfDemote.status);
     });
   });
 

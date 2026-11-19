@@ -1,4 +1,4 @@
-const { Vocabulary, VocabExample, Topic, UserVocabProgress, ReviewSchedule } = require('../models');
+const { Vocabulary, VocabExample, Topic, User, sequelize, UserVocabProgress, ReviewSchedule } = require('../models');
 const { Op } = require('sequelize');
 const ApiResponse = require('../utils/apiResponse');
 const catchAsync = require('../utils/catchAsync');
@@ -31,6 +31,7 @@ const getVocabulariesByTopic = catchAsync(async (req, res) => {
       { model: VocabExample, as: 'examples' },
       { model: Topic, as: 'topic', attributes: ['id', 'name', 'name_vi'] }
     ],
+    distinct: true,
     limit: parseInt(limit),
     offset: parseInt(offset),
     order: [['id', 'ASC']]
@@ -76,7 +77,7 @@ const getVocabularyById = catchAsync(async (req, res) => {
     ]
   });
 
-  if (!vocabulary) {
+  if (!vocabulary || (!vocabulary.is_approved && vocabulary.created_by !== req.user?.id)) {
     throw new AppError('Không tìm thấy từ vựng.', 404);
   }
 
@@ -96,38 +97,19 @@ const markAsLearned = catchAsync(async (req, res) => {
   const userId = req.user.id;
 
   const vocabulary = await Vocabulary.findByPk(id);
-  if (!vocabulary) {
+  if (!vocabulary || (!vocabulary.is_approved && vocabulary.created_by !== req.user?.id)) {
     throw new AppError('Không tìm thấy từ vựng.', 404);
   }
 
-  let progress = await UserVocabProgress.findOne({
-    where: { user_id: userId, vocabulary_id: id }
+  const progress = await sequelize.transaction(async t => {
+    await User.findByPk(userId,{transaction:t,lock:t.LOCK.UPDATE});
+    const [progress,created] = await UserVocabProgress.findOrCreate({where:{user_id:userId,vocabulary_id:id},
+      defaults:{status:'learning',correct_count:0,incorrect_count:0,ease_factor:2.5,interval_days:1,
+        repetition_count:0,next_review_at:new Date(Date.now()+86400000)},transaction:t});
+    if(created) await ReviewSchedule.create({user_id:userId,vocabulary_id:id,
+      scheduled_at:progress.next_review_at,is_completed:false,source:'personal'},{transaction:t});
+    return progress;
   });
-
-  if (!progress) {
-    // Khởi tạo tiến độ ban đầu và lịch ôn tập vào ngày mai
-    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    progress = await UserVocabProgress.create({
-      user_id: userId,
-      vocabulary_id: id,
-      status: 'learning',
-      correct_count: 1,
-      incorrect_count: 0,
-      ease_factor: 2.5,
-      interval_days: 1,
-      repetition_count: 1,
-      last_reviewed_at: new Date(),
-      next_review_at: tomorrow
-    });
-
-    await ReviewSchedule.create({
-      user_id: userId,
-      vocabulary_id: id,
-      scheduled_at: tomorrow,
-      is_completed: false,
-      source: 'personal'
-    });
-  }
 
   return ApiResponse.success(res, progress, 'Đã lưu tiến độ học từ vựng');
 });

@@ -45,6 +45,9 @@ export default function AdminPage() {
   const [vocabSearch, setVocabSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [searchUser, setSearchUser] = useState('');
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const [showVocabModal, setShowVocabModal] = useState(false);
   const [editingVocab, setEditingVocab] = useState(null);
@@ -55,8 +58,9 @@ export default function AdminPage() {
     try {
       setIsLoading(true);
       if (activeTab === 'users') {
-        const res = await adminApi.getUsers({ search: searchUser || undefined });
+        const res = await adminApi.getUsers({ search: search || undefined, page, limit: 20 });
         setUsers(res.data || []);
+        setTotalPages(Math.max(1, res.pagination?.totalPages || 1));
       } else if (activeTab === 'stats') {
         const res = await statsApi.getOverview();
         setStats(res.data);
@@ -79,9 +83,13 @@ export default function AdminPage() {
     let active = true;
     const fetchTab = async () => {
       try {
+        setIsLoading(true);
         if (activeTab === 'users') {
-          const res = await adminApi.getUsers();
-          if (active) setUsers(res.data || []);
+          const res = await adminApi.getUsers({ search: search || undefined, page, limit: 20 });
+          if (active) {
+            setUsers(res.data || []);
+            setTotalPages(Math.max(1, res.pagination?.totalPages || 1));
+          }
         } else if (activeTab === 'stats') {
           const res = await statsApi.getOverview();
           if (active) setStats(res.data);
@@ -104,7 +112,13 @@ export default function AdminPage() {
     return () => {
       active = false;
     };
-  }, [activeTab, selectedTopicId]);
+  }, [activeTab, selectedTopicId, page, search]);
+
+  const applySearch = () => {
+    const term = searchUser.trim();
+    if (page === 1 && term === search) loadData();
+    else { setPage(1); setSearch(term); }
+  };
 
   useEffect(() => {
     if (!showVocabModal) return;
@@ -311,7 +325,7 @@ export default function AdminPage() {
                     placeholder="Tìm username hoặc email..."
                     value={searchUser}
                     onChange={(e) => setSearchUser(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && loadData()}
+                    onKeyDown={(e) => e.key === 'Enter' && applySearch()}
                   />
                 </div>
                 <Button onClick={loadData} variant="secondary" size="sm" className="rounded-xl text-xs py-2 px-4">
@@ -399,6 +413,15 @@ export default function AdminPage() {
                     })}
                   </tbody>
                 </table>
+              </div>
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <Button variant="secondary" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>
+                  Trang trước
+                </Button>
+                <span>Trang {page} / {totalPages}</span>
+                <Button variant="secondary" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>
+                  Trang sau
+                </Button>
               </div>
             </div>
           )}

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import useAuthStore from '../../stores/authStore';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { exerciseApi, topicApi } from '../../api/services';
@@ -14,143 +15,30 @@ import {
   HiLightningBolt
 } from 'react-icons/hi';
 
-const readDraftAnswers = (topicId) => {
-  try {
-    const saved = sessionStorage.getItem(`exercise_draft_${topicId}`);
-    return saved ? JSON.parse(saved) : {};
-  } catch {
-    return {};
-  }
-};
-
-const readCachedQuestions = (topicId) => {
-  try {
-    const raw = sessionStorage.getItem(`exercise_questions_${topicId}`);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed?.exercises) && parsed.exercises.length > 0) {
-      const safeIdx =
-        typeof parsed.currentIndex === 'number' &&
-        parsed.currentIndex >= 0 &&
-        parsed.currentIndex < parsed.exercises.length
-          ? parsed.currentIndex
-          : 0;
-      return { exercises: parsed.exercises, currentIndex: safeIdx };
-    }
-  } catch {
-    // ignore malformed storage
-  }
-  return null;
-};
-
 export default function ExercisePage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuthStore();
+  const draftKey = `exercise_draft_${user?.id}_${id}`;
+  const loadVersion = useRef(0);
 
-  const [prevId, setPrevId] = useState(id);
   const [topic, setTopic] = useState(null);
-  const [exercises, setExercises] = useState(() => readCachedQuestions(id)?.exercises || []);
-  const [currentIndex, setCurrentIndex] = useState(() => readCachedQuestions(id)?.currentIndex || 0);
-  const [answers, setAnswers] = useState(() => readDraftAnswers(id));
+  const [exercises, setExercises] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [attemptId, setAttemptId] = useState(null);
+  const [draftContext, setDraftContext] = useState(null);
   const [results, setResults] = useState(null);
-  const [isLoading, setIsLoading] = useState(() => !readCachedQuestions(id));
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  if (id !== prevId) {
-    setPrevId(id);
-    const nextCached = readCachedQuestions(id);
-    setExercises(nextCached?.exercises || []);
-    setCurrentIndex(nextCached?.currentIndex || 0);
-    setAnswers(readDraftAnswers(id));
-    setResults(null);
-    setTopic(null);
-    setIsLoading(!nextCached);
-  }
-
-  const loadNewExercises = async () => {
-    try {
-      setIsLoading(true);
-      const [tRes, eRes] = await Promise.all([
-        topicApi.getById(id),
-        exerciseApi.getVocabExercises(id, 10)
-      ]);
-      const loadedExercises = eRes.data || [];
-      setTopic(tRes.data);
-      setExercises(loadedExercises);
-      setResults(null);
-      setCurrentIndex(0);
-      if (loadedExercises.length > 0) {
-        sessionStorage.setItem(
-          `exercise_questions_${id}`,
-          JSON.stringify({ exercises: loadedExercises, currentIndex: 0 })
-        );
-      }
-    } catch (err) {
-      toast.error(err.message || 'Không thể tạo bài tập');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  // The server owns the question order. Persist only this user's attempt and answers.
   useEffect(() => {
-    let active = true;
-    const initExercises = async () => {
-      try {
-        const cached = readCachedQuestions(id);
-        if (cached) {
-          const tRes = await topicApi.getById(id);
-          if (!active) return;
-          setTopic(tRes.data);
-          setExercises(cached.exercises);
-          setCurrentIndex(cached.currentIndex);
-          setResults(null);
-        } else {
-          const [tRes, eRes] = await Promise.all([
-            topicApi.getById(id),
-            exerciseApi.getVocabExercises(id, 10)
-          ]);
-          if (!active) return;
-          const loadedExercises = eRes.data || [];
-          setTopic(tRes.data);
-          setExercises(loadedExercises);
-          setResults(null);
-          setCurrentIndex(0);
-          if (loadedExercises.length > 0) {
-            sessionStorage.setItem(
-              `exercise_questions_${id}`,
-              JSON.stringify({ exercises: loadedExercises, currentIndex: 0 })
-            );
-          }
-        }
-      } catch (err) {
-        if (active) toast.error(err.message || 'Không thể tạo bài tập');
-      } finally {
-        if (active) setIsLoading(false);
-      }
-    };
-
-    initExercises();
-    return () => {
-      active = false;
-    };
-  }, [id]);
-
-  // Lưu tạm bài làm vào sessionStorage
-  useEffect(() => {
-    if (!results && Object.keys(answers).length > 0) {
-      sessionStorage.setItem(`exercise_draft_${id}`, JSON.stringify(answers));
+    if (!results && attemptId && draftContext === draftKey) {
+      try { sessionStorage.setItem(draftKey, JSON.stringify({ attempt_id: attemptId, answers, currentIndex })); }
+      catch { /* A blocked/full session store must not interrupt the quiz. */ }
     }
-  }, [answers, results, id]);
-
-  // Đồng bộ vị trí câu hỏi hiện tại với bộ đề lưu nháp
-  useEffect(() => {
-    if (!results && exercises.length > 0) {
-      sessionStorage.setItem(
-        `exercise_questions_${id}`,
-        JSON.stringify({ exercises, currentIndex })
-      );
-    }
-  }, [exercises, currentIndex, results, id]);
+  }, [answers, currentIndex, results, attemptId, draftContext, draftKey]);
 
   // Cảnh báo người dùng khi reload hoặc rời trang lúc đang làm bài
   useEffect(() => {
@@ -163,6 +51,56 @@ export default function ExercisePage() {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [answers, results]);
+
+  const loadData = useCallback(async (forceNew = false) => {
+    const version = ++loadVersion.current;
+    try {
+      setIsLoading(true);
+      setDraftContext(null);
+      setExercises([]);
+      setAnswers({});
+      setAttemptId(null);
+      setTopic(null);
+      let saved = null;
+      try {
+        saved = forceNew ? null : JSON.parse(sessionStorage.getItem(draftKey) || 'null');
+        if (!saved || typeof saved.attempt_id !== 'string' || !saved.answers ||
+          typeof saved.answers !== 'object' || Array.isArray(saved.answers)) saved = null;
+      } catch { /* Ignore corrupted or legacy drafts. */ }
+      let eRes;
+      if (saved) {
+        try { eRes = await exerciseApi.getVocabExercises(id, 10, saved.attempt_id); }
+        catch (err) {
+          if (![404,409].includes(err.status)) throw err;
+          saved = null;
+        }
+      }
+      if (!eRes) eRes = await exerciseApi.getVocabExercises(id, 10);
+      const tRes = await topicApi.getById(id);
+      if (version !== loadVersion.current) return;
+      setTopic(tRes.data);
+      const data = eRes.data;
+      setExercises(data.exercises || []);
+      setAttemptId(data.attempt_id);
+      setAnswers(saved?.answers || {});
+      setDraftContext(draftKey);
+      setResults(null);
+      const restoredIndex = saved?.currentIndex;
+      setCurrentIndex(Number.isInteger(restoredIndex) && restoredIndex >= 0 &&
+        restoredIndex < (data.exercises?.length || 0) ? restoredIndex : 0);
+    } catch (err) {
+      if (version === loadVersion.current) toast.error(err.message || 'Không thể tạo bài tập');
+    } finally {
+      if (version === loadVersion.current) setIsLoading(false);
+    }
+  }, [draftKey, id]);
+
+  useEffect(() => {
+    let active = true;
+    // StrictMode cleanup cancels an obsolete start before it issues another quiz.
+    queueMicrotask(() => { if (active) loadData(); });
+    return () => { active = false; loadVersion.current += 1; };
+  }, [loadData]);
 
   const handleSelectOption = (optIdx) => {
     setAnswers((prev) => ({
@@ -183,36 +121,20 @@ export default function ExercisePage() {
     }
   };
 
-  const handleResetQuiz = () => {
-    if (
-      Object.keys(answers).length > 0 &&
-      !window.confirm('Bạn muốn hủy bài làm hiện tại và tạo đề mới?')
-    ) {
-      return;
-    }
-    sessionStorage.removeItem(`exercise_draft_${id}`);
-    sessionStorage.removeItem(`exercise_questions_${id}`);
-    setAnswers({});
-    loadNewExercises();
-  };
-
   const handleSubmit = async () => {
-    if (isSubmitting) return;
+    if (isSubmitting || !attemptId) return;
     const formatted = exercises.map((ex, idx) => {
       const selected = answers[idx];
       return {
         id: ex.id,
-        vocabulary_id: ex.vocabulary_id,
-        selected_option: selected !== undefined ? selected : null,
-        options: ex.options
+        selected_option: selected !== undefined ? selected : null
       };
     });
 
     try {
       setIsSubmitting(true);
-      const res = await exerciseApi.submitVocabExercises(formatted);
-      sessionStorage.removeItem(`exercise_draft_${id}`);
-      sessionStorage.removeItem(`exercise_questions_${id}`);
+      const res = await exerciseApi.submitVocabExercises(formatted, attemptId);
+      try { sessionStorage.removeItem(draftKey); } catch { /* Storage may be disabled. */ }
       const explanations = res.data?.explanations || [];
       const expMap = {};
       explanations.forEach((e) => {
@@ -239,6 +161,12 @@ export default function ExercisePage() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleResetQuiz = () => {
+    if (Object.keys(answers).length && !window.confirm('Bạn muốn hủy bài làm hiện tại và tạo đề mới?')) return;
+    try { sessionStorage.removeItem(draftKey); } catch { /* Storage may be disabled. */ }
+    loadData(true);
   };
 
   if (isLoading) {
@@ -273,10 +201,10 @@ export default function ExercisePage() {
             <Button
               variant="secondary"
               onClick={() => {
-                sessionStorage.removeItem(`exercise_draft_${id}`);
-                sessionStorage.removeItem(`exercise_questions_${id}`);
+                try { sessionStorage.removeItem(draftKey); } catch { /* Storage may be disabled. */ }
+
                 setAnswers({});
-                loadNewExercises();
+                loadData(true);
               }}
               className="gap-2 rounded-xl text-xs py-2.5 px-4"
             >

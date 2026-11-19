@@ -3,6 +3,7 @@ const {
   Vocabulary,
   UserVocabProgress,
   ReviewSchedule,
+  ReviewEvent,
   Topic
 } = require('../models');
 const { Op } = require('sequelize');
@@ -91,17 +92,17 @@ const getLearningTrends = catchAsync(async (req, res) => {
     const endD = new Date(d);
     endD.setHours(23, 59, 59, 999);
 
-    const count = await UserVocabProgress.count({
+    const count = await ReviewEvent.count({
       where: {
         user_id: userId,
-        last_reviewed_at: {
+        reviewed_at: {
           [Op.between]: [d, endD]
         }
       }
     });
 
     past7Days.push({
-      date: d.toISOString().split('T')[0],
+      date: [d.getFullYear(), String(d.getMonth()+1).padStart(2,'0'), String(d.getDate()).padStart(2,'0')].join('-'),
       dayName: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][d.getDay()],
       reviewsCount: count
     });

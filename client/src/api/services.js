@@ -23,8 +23,8 @@ export const vocabApi = {
 };
 
 export const exerciseApi = {
-  getVocabExercises: (topicId, count = 10) => api.get(`/exercises/vocab/${topicId}`, { params: { count } }),
-  submitVocabExercises: (results) => api.post('/exercises/vocab/submit', { results })
+  getVocabExercises: (topicId, count = 10, attemptId) => api.get(`/exercises/vocab/${topicId}`, { params: { count, attemptId } }),
+  submitVocabExercises: (results, attempt_id) => api.post('/exercises/vocab/submit', { attempt_id, results })
 };
 
 export const reviewApi = {
