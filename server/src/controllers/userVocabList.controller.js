@@ -1,4 +1,6 @@
 const {
+  User,
+  Topic,
   UserVocabList,
   UserVocabListItem,
   Vocabulary,
@@ -182,110 +184,44 @@ const deleteList = catchAsync(async (req, res) => {
  */
 const addWordToLists = catchAsync(async (req, res) => {
   const userId = req.user.id;
-  const {
-    vocabulary_id,
-    word,
-    meaning_vi,
-    pronunciation,
-    part_of_speech,
-    list_ids = [],
-    auto_learn = true
-  } = req.body;
-
-  let targetVocabId = vocabulary_id;
-
-  // Nếu không có vocabulary_id nhưng có từ (ví dụ lưu từ popup bôi đen)
-  if (!targetVocabId && word) {
-    const cleanWord = word.trim().toLowerCase();
-    let existing = await Vocabulary.findOne({ where: { word: cleanWord } });
-    if (!existing) {
-      existing = await Vocabulary.create({
-        word: cleanWord,
-        meaning_vi: meaning_vi || cleanWord,
-        pronunciation: pronunciation || '',
-        part_of_speech: part_of_speech || 'noun',
-        difficulty: 'medium',
-        is_approved: true,
-        created_by: userId
-      });
-    }
-    targetVocabId = existing.id;
+  const { vocabulary_id, word, meaning_vi, pronunciation, part_of_speech, list_ids = [], auto_learn = true } = req.body;
+  if (!Array.isArray(list_ids) || list_ids.some(id => !Number.isInteger(Number(id)) || Number(id) < 1)) {
+    throw new AppError('Invalid list IDs.', 400);
   }
-
-  if (!targetVocabId) {
-    throw new AppError('Vui lòng cung cấp từ vựng cần lưu', 400);
-  }
-
-  // Lấy tất cả danh sách của user này để kiểm tra quyền
-  const userLists = await UserVocabList.findAll({
-    where: { user_id: userId },
-    attributes: ['id']
-  });
-  const userListIds = userLists.map((l) => l.id);
-
-  // Lọc chỉ giữ lại list_ids thuộc quyền sở hữu của user
-  const validTargetListIds = (Array.isArray(list_ids) ? list_ids : [])
-    .map(Number)
-    .filter((id) => userListIds.includes(id));
-
-  // 1. Thêm vào các danh sách được chọn
-  for (const listId of validTargetListIds) {
-    await UserVocabListItem.findOrCreate({
-      where: { list_id: listId, vocabulary_id: targetVocabId }
-    });
-  }
-
-  // 2. Gỡ khỏi các danh sách của user mà không nằm trong validTargetListIds
-  if (userListIds.length > 0) {
-    await UserVocabListItem.destroy({
-      where: {
-        vocabulary_id: targetVocabId,
-        list_id: {
-          [Op.in]: userListIds,
-          [Op.notIn]: validTargetListIds
-        }
+  const result = await sequelize.transaction(async t => {
+    await User.findByPk(userId, {transaction:t,lock:t.LOCK.UPDATE});
+    const userLists = await UserVocabList.findAll({where:{user_id:userId},transaction:t});
+    const userListIds = userLists.map(l=>l.id);
+    const targetIds = [...new Set(list_ids.map(Number))];
+    if (targetIds.some(id=>!userListIds.includes(id))) throw new AppError('List not found.',404);
+    let vocab;
+    if (vocabulary_id) {
+      vocab = await Vocabulary.findByPk(vocabulary_id,{transaction:t});
+      if (!vocab || (!vocab.is_approved && vocab.created_by !== userId)) throw new AppError('Vocabulary not found.',404);
+    } else {
+      if (typeof word !== 'string' || !word.trim() || word.trim().length > 100) throw new AppError('Invalid word.',400);
+      const cleanWord = word.trim().toLowerCase();
+      vocab = await Vocabulary.findOne({where:{word:cleanWord,[Op.or]:[{is_approved:true},{created_by:userId}]},transaction:t});
+      if (!vocab) {
+        const [topic] = await Topic.findOrCreate({where:{name:'Personal Vocabulary'},defaults:{name_vi:'Từ cá nhân',display_order:999},transaction:t});
+        vocab = await Vocabulary.create({topic_id:topic.id,word:cleanWord,meaning_vi:meaning_vi || cleanWord,
+          pronunciation:pronunciation || '',part_of_speech:part_of_speech || 'noun',difficulty:'medium',
+          source_type:'community',is_approved:false,created_by:userId},{transaction:t});
       }
-    });
-  }
-
-  // 3. Tự động khởi tạo tiến độ học & lịch SRS nếu từ được lưu vào ít nhất 1 danh sách
-  if (auto_learn && validTargetListIds.length > 0) {
-    const existingProgress = await UserVocabProgress.findOne({
-      where: { user_id: userId, vocabulary_id: targetVocabId }
-    });
-    if (!existingProgress) {
-      const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
-      await UserVocabProgress.create({
-        user_id: userId,
-        vocabulary_id: targetVocabId,
-        status: 'learning',
-        correct_count: 1,
-        incorrect_count: 0,
-        ease_factor: 2.5,
-        interval_days: 1,
-        repetition_count: 1,
-        last_reviewed_at: new Date(),
-        next_review_at: tomorrow
-      });
-
-      await ReviewSchedule.create({
-        user_id: userId,
-        vocabulary_id: targetVocabId,
-        scheduled_at: tomorrow,
-        is_completed: false,
-        source: 'personal'
-      });
     }
-  }
-
-  return ApiResponse.success(
-    res,
-    {
-      vocabulary_id: targetVocabId,
-      assigned_list_ids: validTargetListIds
-    },
-    'Đã cập nhật danh sách lưu từ vựng'
-  );
+    for (const listId of targetIds) await UserVocabListItem.findOrCreate({where:{list_id:listId,vocabulary_id:vocab.id},transaction:t});
+    if (userListIds.length) await UserVocabListItem.destroy({where:{vocabulary_id:vocab.id,
+      list_id:{[Op.in]:userListIds,[Op.notIn]:targetIds}},transaction:t});
+    if (auto_learn && targetIds.length) {
+      const [progress,created] = await UserVocabProgress.findOrCreate({where:{user_id:userId,vocabulary_id:vocab.id},
+        defaults:{status:'learning',correct_count:0,incorrect_count:0,ease_factor:2.5,interval_days:1,repetition_count:0,
+          next_review_at:new Date(Date.now()+86400000)},transaction:t});
+      if(created) await ReviewSchedule.create({user_id:userId,vocabulary_id:vocab.id,
+        scheduled_at:progress.next_review_at,is_completed:false,source:'personal'},{transaction:t});
+    }
+    return {vocabulary_id:vocab.id,assigned_list_ids:targetIds};
+  });
+  return ApiResponse.success(res,result,'Đã cập nhật danh sách lưu từ vựng');
 });
 
 /**

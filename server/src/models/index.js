@@ -30,6 +30,8 @@ const ReviewSchedule = require('./ReviewSchedule')(sequelize);
 const UserVocabList = require('./UserVocabList')(sequelize);
 const UserVocabListItem = require('./UserVocabListItem')(sequelize);
 const AiFeedback = require('./AiFeedback')(sequelize);
+const ExerciseAttempt = require('./ExerciseAttempt')(sequelize);
+const ReviewEvent = require('./ReviewEvent')(sequelize);
 
 // ===== ASSOCIATIONS =====
 
@@ -94,7 +96,9 @@ const db = {
   ReviewSchedule,
   UserVocabList,
   UserVocabListItem,
-  AiFeedback
+  AiFeedback,
+  ExerciseAttempt,
+  ReviewEvent
 };
 
 module.exports = db;

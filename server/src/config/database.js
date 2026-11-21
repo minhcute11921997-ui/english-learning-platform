@@ -1,5 +1,8 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+if (process.env.NODE_ENV === 'test' && (process.env.DB_NAME_TEST || 'english_learning_test') === (process.env.DB_NAME || 'english_learning')) {
+  throw new Error('DB_NAME_TEST must be different from the application database');
+}
 
 module.exports = {
   development: {
@@ -27,7 +30,7 @@ module.exports = {
   test: {
     username: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME_TEST || process.env.DB_NAME || 'english_learning',
+    database: process.env.DB_NAME_TEST || 'english_learning_test',
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 3306,
     dialect: 'mysql',

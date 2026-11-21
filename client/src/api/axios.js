@@ -46,8 +46,9 @@ api.interceptors.response.use(
                            originalRequest?.url?.includes('/auth/register');
 
     // Nếu token hết hạn (401) và không phải API auth
-    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry && !isAuthEndpoint) {
       if (isRefreshing) {
+        originalRequest._retry = true;
         // Đưa request vào hàng đợi chờ token mới
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -68,7 +69,7 @@ api.interceptors.response.use(
           throw new Error('Không có refresh token');
         }
 
-        const { data } = await axios.post('/api/auth/refresh', { refreshToken });
+        const { data } = await axios.post('/api/auth/refresh', { refreshToken }, { timeout: 10000 });
         const newAccessToken = data.data.accessToken;
         const newRefreshToken = data.data.refreshToken;
 
@@ -76,7 +77,6 @@ api.interceptors.response.use(
         if (newRefreshToken) {
           localStorage.setItem('refreshToken', newRefreshToken);
         }
-        api.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         processQueue(null, newAccessToken);
@@ -108,7 +108,9 @@ api.interceptors.response.use(
 
     // Trả về error message từ server
     const message = error.response?.data?.message || error.message || 'Đã có lỗi xảy ra';
-    return Promise.reject(new Error(message));
+    const failure = new Error(message);
+    failure.status = error.response?.status;
+    return Promise.reject(failure);
   }
 );
 

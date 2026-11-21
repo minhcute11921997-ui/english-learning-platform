@@ -14,7 +14,9 @@ const visionService = require('../services/vision.service');
 // === QUẢN TRỊ NGƯỜI DÙNG ===
 
 const getUsers = catchAsync(async (req, res) => {
-  const { search, role, page = 1, limit = 20 } = req.query;
+  const {search,role} = req.query;
+  const page = Number(req.query.page || 1), limit = Number(req.query.limit || 20);
+  if (!Number.isInteger(page) || page<1 || !Number.isInteger(limit) || limit<1 || limit>100) throw new AppError('Invalid pagination.',400);
   const offset = (page - 1) * limit;
 
   const where = {};
@@ -38,41 +40,33 @@ const getUsers = catchAsync(async (req, res) => {
   return ApiResponse.paginated(res, users, { page: parseInt(page), limit: parseInt(limit), total }, 'Lấy danh sách người dùng thành công');
 });
 
-const updateUserRole = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const { role } = req.body;
-
-  if (!['learner', 'admin'].includes(role)) {
-    throw new AppError('Vai trò (role) không hợp lệ.', 400);
-  }
-
-  if (Number(id) === Number(req.user.id) && role !== 'admin') {
-    throw new AppError('Bạn không thể tự hạ quyền quản trị của chính mình.', 400);
-  }
-
-  const user = await User.findByPk(id);
-  if (!user) throw new AppError('Không tìm thấy người dùng.', 404);
-
-  user.role = role;
-  await user.save();
-
-  return ApiResponse.success(res, user, 'Cập nhật quyền người dùng thành công');
+// Lock all active admins in a stable order before any role/status change.
+async function changeUser(id, change, actorId) {
+  return sequelize.transaction(async t => {
+    const admins = await User.findAll({where:{role:'admin',is_active:true},order:[['id','ASC']],transaction:t,lock:t.LOCK.UPDATE});
+    const user = await User.findByPk(id,{transaction:t,lock:t.LOCK.UPDATE});
+    if(!user) throw new AppError('User not found.',404);
+    const next = change(user);
+    if(user.role==='admin' && user.is_active && (next.role==='learner' || next.is_active===false) && admins.length<=1) {
+      throw new AppError('The last active admin cannot be disabled or demoted.',409);
+    }
+    if (Number(id) === Number(actorId) && (next.role === 'learner' || next.is_active === false)) {
+      throw new AppError('You cannot disable or demote your own account.',400);
+    }
+    Object.assign(user,next);
+    await user.save({transaction:t});
+    return user;
+  });
+}
+const updateUserRole = catchAsync(async (req,res)=>{
+  const {role}=req.body;
+  if(!['learner','admin'].includes(role)) throw new AppError('Invalid role.',400);
+  const user=await changeUser(req.params.id,()=>({role}),req.user.id);
+  return ApiResponse.success(res,user,'Cập nhật quyền người dùng thành công');
 });
-
-const toggleUserStatus = catchAsync(async (req, res) => {
-  const { id } = req.params;
-
-  if (Number(id) === Number(req.user.id)) {
-    throw new AppError('Bạn không thể tự khóa tài khoản của chính mình.', 400);
-  }
-
-  const user = await User.findByPk(id);
-  if (!user) throw new AppError('Không tìm thấy người dùng.', 404);
-
-  user.is_active = !user.is_active;
-  await user.save();
-
-  return ApiResponse.success(res, user, `Tài khoản đã ${user.is_active ? 'mở khóa' : 'bị khóa'}`);
+const toggleUserStatus = catchAsync(async (req,res)=>{
+  const user=await changeUser(req.params.id,user=>({is_active:!user.is_active}),req.user.id);
+  return ApiResponse.success(res,user,'Cập nhật trạng thái thành công');
 });
 
 // === QUẢN TRỊ TỪ VỰNG MỸ THUẬT & MỸ NGHỆ ===

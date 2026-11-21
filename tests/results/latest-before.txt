@@ -1,0 +1,1646 @@
+TAP version 13
+# đŸ¨ Starting Fine Arts & Crafts Database Seeding...
+# Subtest: R01 public registration cannot grant admin privileges
+not ok 1 - R01 public registration cannot grant admin privileges
+  ---
+  duration_ms: 16.5717
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:11:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    'admin' !== 'learner'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'learner'
+  actual: 'admin'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:14:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: R02 seed preserves existing data and schema
+not ok 2 - R02 seed preserves existing data and schema
+  ---
+  duration_ms: 3.2607
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:16:1'
+  failureType: 'testCodeFailure'
+  error: 'Destructive seed SQL: SET FOREIGN_KEY_CHECKS = 0;'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.query (E:\DTDA\englearn-latest-20261119\tests\helpers.cjs:75:94)
+    Object.seed (E:\DTDA\englearn-latest-20261119\server\src\seeders\index.js:60:19)
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:19:15)
+    Test.runInAsyncScope (node:async_hooks:211:14)
+    Test.run (node:internal/test_runner/test:979:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:677:18)
+    Test.postRun (node:internal/test_runner/test:1090:19)
+    Test.run (node:internal/test_runner/test:1018:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: R03 boolean-only forged quiz payload is rejected without writes
+not ok 3 - R03 boolean-only forged quiz payload is rejected without writes
+  ---
+  duration_ms: 11.3487
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:21:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:23:2)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R04 scoring uses issued options, ignores forged options/quality, and replay is idempotent
+not ok 4 - R04 scoring uses issued options, ignores forged options/quality, and replay is idempotent
+  ---
+  duration_ms: 7.9818
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:26:1'
+  failureType: 'testCodeFailure'
+  error: 'server must issue an attempt'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:27:63)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R05 a failure on the second answer rolls back the whole quiz
+not ok 5 - R05 a failure on the second answer rolls back the whole quiz
+  ---
+  duration_ms: 17.1698
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:33:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+
+      assert.ok(a.attempt_id)
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:34:63)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R06 simultaneous reviews preserve both answers and exactly one next schedule
+not ok 6 - R06 simultaneous reviews preserve both answers and exactly one next schedule
+  ---
+  duration_ms: 3.5018
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:39:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    2 !== 3
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:43:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R07 review quality must be a finite integer from 0 to 5
+not ok 7 - R07 review quality must be a finite integer from 0 to 5
+  ---
+  duration_ms: 2.367
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:45:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:47:47)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R08 creating a personal word supplies a valid topic and keeps it private
+not ok 8 - R08 creating a personal word supplies a valid topic and keeps it private
+  ---
+  duration_ms: 2.8413
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:50:1'
+  failureType: 'testCodeFailure'
+  error: 'Vocabulary.topic_id cannot be null'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.create (E:\DTDA\englearn-latest-20261119\tests\helpers.cjs:62:56)
+    Object.addWordToLists (E:\DTDA\englearn-latest-20261119\server\src\controllers\userVocabList.controller.js:202:35)
+    async TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:52:2)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R09 history counts two reviews of the same word on the same day
+not ok 9 - R09 history counts two reviews of the same word on the same day
+  ---
+  duration_ms: 4.7442
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:56:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    1 !== 2
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:60:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R10 last active admin cannot be demoted or disabled
+not ok 10 - R10 last active admin cannot be demoted or disabled
+  ---
+  duration_ms: 3.3498
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:62:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+
+    Caught error:
+
+    Error: Báº¡n khĂ´ng thá»ƒ tá»± háº¡ quyá»n quáº£n trá»‹ cá»§a chĂ­nh mĂ¬nh.
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:65:2)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R11 production refuses missing or public JWT secrets
+not ok 11 - R11 production refuses missing or public JWT secrets
+  ---
+  duration_ms: 2.3675
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:69:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:70:148)
+    Test.runInAsyncScope (node:async_hooks:211:14)
+    Test.run (node:internal/test_runner/test:979:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:677:18)
+    Test.postRun (node:internal/test_runner/test:1090:19)
+    Test.run (node:internal/test_runner/test:1018:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R12 test DB never falls back to the application database
+not ok 12 - R12 test DB never falls back to the application database
+  ---
+  duration_ms: 1.4392
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:72:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected "actual" to be strictly unequal to:
+
+    'real_data'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'real_data'
+  actual: 'real_data'
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:74:9)
+    Test.runInAsyncScope (node:async_hooks:211:14)
+    Test.run (node:internal/test_runner/test:979:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:677:18)
+    Test.postRun (node:internal/test_runner/test:1090:19)
+    Test.run (node:internal/test_runner/test:1018:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R13 uploaded png/jpg paths reach backend before nginx static regex
+not ok 13 - R13 uploaded png/jpg paths reach backend before nginx static regex
+  ---
+  duration_ms: 1.5942
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:76:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /location\s+\^~\s+\/uploads\//. Input:
+
+    'server {\n' +
+      '    listen 80;\n' +
+      '    server_name localhost;\n' +
+      '\n' +
+      '    root /usr/share/nginx/html;\n' +
+      '    index index.html;\n' +
+      '\n' +
+      '    # Gzip nĂ©n dá»¯ liá»‡u giĂºp táº£i trang nhanh hÆ¡n\n' +
+      '    gzip on;\n' +
+      '    gzip_vary on;\n' +
+      '    gzip_min_length 1024;\n' +
+      '    gzip_proxied expired no-cache no-store private auth;\n' +
+      '    gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml application/javascript application/json;\n' +
+      '    gzip_disable "MSIE [1-6]\\.";\n' +
+      '\n' +
+      '    # Reverse proxy API requests sang Backend container\n' +
+      '    location /api/ {\n' +
+      '        proxy_pass http://server:3000/api/;\n' +
+      '        proxy_http_version 1.1;\n' +
+      '        proxy_set_header Upgrade $http_upgrade;\n' +
+      "        proxy_set_header Connection 'upgrade';\n" +
+      '        proxy_set_header Host $host;\n' +
+      '        proxy_cache_bypass $http_upgrade;\n' +
+      '        proxy_set_header X-Real-IP $remote_addr;\n' +
+      '        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n' +
+      '        proxy_set_header X-Forwarded-Proto $scheme;\n' +
+      '    }\n' +
+      '\n' +
+      '    # Reverse proxy cĂ¡c file áº£nh upload tá»« backend\n' +
+      '    location /uploads/ {\n' +
+      '        proxy_pass http://server:3000/uploads/;\n' +
+      '        proxy_set_header Host $host;\n' +
+      '        proxy_set_header X-Real-IP $remote_addr;\n' +
+      '        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n' +
+      '    }\n' +
+      '\n' +
+      '    # Há»— trá»£ Ä‘iá»u hÆ°á»›ng SPA React Router (fallback vá» index.html)\n' +
+      '    location / {\n' +
+      '        try_files $uri $uri/ /index.html;\n' +
+      '    }\n' +
+      '\n' +
+      '    # Caching tÄ©nh cho JS, CSS, Font vĂ  áº¢nh\n' +
+      '    location ~* \\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {\n' +
+      '        expires 1y;\n' +
+      '        add_header Cache-Control "public, no-transform";\n' +
+      '    }\n' +
+      '\n' +
+      '    error_page 500 502 503 504 /50x.html;\n' +
+      '    location = /50x.html {\n' +
+      '        root /usr/share/nginx/html;\n' +
+      '    }\n' +
+      '}\n'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    server {
+        listen 80;
+        server_name localhost;
+
+        root /usr/share/nginx/html;
+        index index.html;
+
+        # Gzip nĂ©n dá»¯ liá»‡u giĂºp táº£i trang nhanh hÆ¡n
+        gzip on;
+        gzip_vary on;
+        gzip_min_length 1024;
+        gzip_proxied expired no-cache no-store private auth;
+        gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml application/javascript application/json;
+        gzip_disable "MSIE [1-6]\.";
+
+        # Reverse proxy API requests sang Backend container
+        location /api/ {
+            proxy_pass http://server:3000/api/;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Reverse proxy cĂ¡c file áº£nh upload tá»« backend
+        location /uploads/ {
+            proxy_pass http://server:3000/uploads/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+
+        # Há»— trá»£ Ä‘iá»u hÆ°á»›ng SPA React Router (fallback vá» index.html)
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+
+        # Caching tÄ©nh cho JS, CSS, Font vĂ  áº¢nh
+        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+            expires 1y;
+            add_header Cache-Control "public, no-transform";
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+            root /usr/share/nginx/html;
+        }
+    }
+
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:77:46)
+    Test.runInAsyncScope (node:async_hooks:211:14)
+    Test.run (node:internal/test_runner/test:979:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:677:18)
+    Test.postRun (node:internal/test_runner/test:1090:19)
+    Test.run (node:internal/test_runner/test:1018:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R14 refresh saves both renewed tokens
+ok 14 - R14 refresh saves both renewed tokens
+  ---
+  duration_ms: 2.2076
+  ...
+# Subtest: R15 legacy answers are discarded when issuing a new server-owned quiz
+not ok 15 - R15 legacy answers are discarded when issuing a new server-owned quiz
+  ---
+  duration_ms: 18.6866
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:89:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    1 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:104:9)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R16 admin UI can request pages beyond the first 20 users
+not ok 16 - R16 admin UI can request pages beyond the first 20 users
+  ---
+  duration_ms: 2.5301
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:106:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /getUsers\([\s\S]*?\bpage\b/. Input:
+
+    "import { useState, useEffect } from 'react';\n" +
+      "import { toast } from 'react-hot-toast';\n" +
+      "import { adminApi, statsApi, topicApi, vocabApi } from '../../api/services';\n" +
+      "import useAuthStore from '../../stores/authStore';\n" +
+      "import Button from '../../components/ui/Button';\n" +
+      "import LoadingSpinner from '../../components/ui/LoadingSpinner';\n" +
+      "import VocabImage from '../../components/vocab/VocabImage';\n" +
+      'import {\n' +
+      '  HiUsers,\n' +
+      '  HiChartBar,\n' +
+      '  HiLockClosed,\n' +
+      '  HiLockOpen,\n' +
+      '  HiSearch,\n' +
+      '  HiBookOpen,\n' +
+      '  HiPlus,\n' +
+      '  HiPencil,\n' +
+      '  HiTrash,\n' +
+      '  HiX\n' +
+      "} from 'react-icons/hi';\n" +
+      '\n' +
+      'const EMPTY_VOCAB_FORM = {\n' +
+      "  topic_id: '1',\n" +
+      "  word: '',\n" +
+      "  pronunciation: '',\n" +
+      "  part_of_speech: 'noun',\n" +
+      "  difficulty: 'easy',\n" +
+      "  meaning_vi: '',\n" +
+      "  example_sentence: '',\n" +
+      "  example_translation: '',\n" +
+      "  image_url: '/images/vocab/_placeholder.svg',\n" +
+      "  image_alt: '',\n" +
+      "  related_artist: '',\n" +
+      "  source_ref: '',\n" +
+      "  cultural_note: ''\n" +
+      '};\n' +
+      '\n' +
+      'export default function AdminPage() {\n' +
+      '  const { user: currentUser } = useAuthStore();\n' +
+      "  const [activeTab, setActiveTab] = useState('users');\n" +
+      '  const [users, setUsers] = useState([]);\n' +
+      '  const [stats, setStats] = useState(null);\n' +
+      '  const [topics, setTopics] = useState([]);\n' +
+      "  const [selectedTopicId, setSelectedTopicId] = useState('1');\n" +
+      '  const [vocabs, setVocabs] = useState([]);\n' +
+      "  const [vocabSearch, setVocabSearch] = useState('');\n" +
+      '  const [isLoading, setIsLoading] = useState(true);\n' +
+      "  const [searchUser, setSearchUser] = useState('');\n" +
+      '\n' +
+      '  const [showVocabModal, setShowVocabModal] = useState(false);\n' +
+      '  const [editingVocab, setEditingVocab] = useState(null);\n' +
+      '  const [vocabForm, setVocabForm] = useState(EMPTY_VOCAB_FORM);\n' +
+      '  const [isSavingVocab, setIsSavingVocab] = useState(false);\n' +
+      '\n' +
+      '  const loadData = async () => {\n' +
+      '    try {\n' +
+      '      setIsLoading(true);\n' +
+      "      if (activeTab === 'users') {\n" +
+      '        const res = await adminApi.getUsers({ search: searchUser || undefined });\n' +
+      '        setUsers(res.data || []);\n' +
+      "      } else if (activeTab === 'stats') {\n" +
+      '        const res = await statsApi.getOverview();\n' +
+      '        setStats(res.data);\n' +
+      "      } else if (activeTab === 'vocabularies') {\n" +
+      '        const tRes = await topicApi.getAll();\n' +
+      '        const loadedTopics = tRes.data || [];\n' +
+      '        setTopics(loadedTopics);\n' +
+      "        const targetTopicId = selectedTopicId || String(loadedTopics[0]?.id || '1');\n" +
+      '        const vRes = await vocabApi.getByTopic(targetTopicId, { limit: 100 });\n' +
+      '        setVocabs(vRes.data || []);\n' +
+      '      }\n' +
+      '    } catch (err) {\n' +
+      "      toast.error(err.message || 'KhĂ´ng thá»ƒ táº£i dá»¯ liá»‡u quáº£n trá»‹');\n" +
+      '    } finally {\n' +
+      '      setIsLoading(false);\n' +
+      '    }\n' +
+      '  };\n' +
+      '\n' +
+      '  useEffect(() => {\n' +
+      '    let active = true;\n' +
+      '    const fetchTab = async () => {\n' +
+      '      try {\n' +
+      "        if (activeTab === 'users') {\n" +
+      '          const res = await adminApi.getUsers();\n' +
+      '          if (active) setUsers(res.data || []);\n' +
+      "        } else if (activeTab === 'stats') {\n" +
+      '          const res = await statsApi.getOverview();\n' +
+      '          if (active) setStats(res.data);\n' +
+      "        } else if (activeTab === 'vocabularies') {\n" +
+      '          const tRes = await topicApi.getAll();\n' +
+      '          if (!active) return;\n' +
+      '          const loadedTopics = tRes.data || [];\n' +
+      '          setTopics(loadedTopics);\n' +
+      "          const targetTopicId = selectedTopicId || String(loadedTopics[0]?.id || '1');\n" +
+      '          const vRes = await vocabApi.getByTopic(targetTopicId, { limit: 100 });\n' +
+      '          if (active) setVocabs(vRes.data || []);\n' +
+      '        }\n' +
+      '      } catch (err) {\n' +
+      "        if (active) toast.error(err.message || 'KhĂ´ng thá»ƒ táº£i dá»¯ liá»‡u quáº£n trá»‹');\n" +
+      '      } finally {\n' +
+      '        if (active) setIsLoading(false);\n' +
+      '      }\n' +
+      '    };\n' +
+      '    fetchTab();\n' +
+      '    return () => {\n' +
+      '      active = false;\n' +
+      '    };\n' +
+      '  }, [activeTab, selectedTopicId]);\n' +
+      '\n' +
+      '  useEffect(() => {\n' +
+      '    if (!showVocabModal) return;\n' +
+      '    const handleKeyDown = (e) => {\n' +
+      "      if (e.key === 'Escape') {\n" +
+      '        setShowVocabModal(false);\n' +
+      '      }\n' +
+      '    };\n' +
+      "    window.addEventListener('keydown', handleKeyDown);\n" +
+      "    return () => window.removeEventListener('keydown', handleKeyDown);\n" +
+      '  }, [showVocabModal]);\n' +
+      '\n' +
+      '  const handleTabSelect = (tab) => {\n' +
+      '    if (tab !== activeTab) {\n' +
+      '      setIsLoading(true);\n' +
+      '      setActiveTab(tab);\n' +
+      '    }\n' +
+      '  };\n' +
+      '\n' +
+      '  const handleToggleUserStatus = async (userId) => {\n' +
+      '    if (userId === currentUser?.id) {\n' +
+      "      toast.error('Báº¡n khĂ´ng thá»ƒ tá»± khĂ³a tĂ i khoáº£n cá»§a chĂ­nh mĂ¬nh.');\n" +
+      '      return;\n' +
+      '    }\n' +
+      '    try {\n' +
+      '      const res = await adminApi.toggleStatus(userId);\n' +
+      "      toast.success(res.message || 'ÄĂ£ cáº­p nháº­t tráº¡ng thĂ¡i');\n" +
+      '      setUsers((prev) =>\n' +
+      '        prev.map((u) => (u.id === userId ? { ...u, is_active: !u.is_active } : u))\n' +
+      '      );\n' +
+      '    } catch (err) {\n' +
+      "      toast.error(err.message || 'Thao tĂ¡c tháº¥t báº¡i');\n" +
+      '    }\n' +
+      '  };\n' +
+      '\n' +
+      '  const handleRoleChange = async (userId, newRole) => {\n' +
+      "    if (userId === currentUser?.id && newRole !== 'admin') {\n" +
+      "      toast.error('Báº¡n khĂ´ng thá»ƒ tá»± háº¡ quyá»n quáº£n trá»‹ cá»§a chĂ­nh mĂ¬nh.');\n" +
+      '      return;\n' +
+      '    }\n' +
+      '    try {\n' +
+      '      await adminApi.updateRole(userId, newRole);\n' +
+      "      toast.success('ÄĂ£ cáº­p nháº­t vai trĂ² ngÆ°á»i dĂ¹ng!');\n" +
+      '      setUsers((prev) =>\n' +
+      '        prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))\n' +
+      '      );\n' +
+      '    } catch (err) {\n' +
+      "      toast.error(err.message || 'Äá»•i vai trĂ² tháº¥t báº¡i');\n" +
+      '    }\n' +
+      '  };\n' +
+      '\n' +
+      '  const openCreateVocabModal = () => {\n' +
+      '    setEditingVocab(null);\n' +
+      '    setVocabForm({\n' +
+      '      ...EMPTY_VOCAB_FORM,\n' +
+      "      topic_id: selectedTopicId || String(topics[0]?.id || '1')\n" +
+      '    });\n' +
+      '    setShowVocabModal(true);\n' +
+      '  };\n' +
+      '\n' +
+      '  const openEditVocabModal = (vocab) => {\n' +
+      '    setEditingVocab(vocab);\n' +
+      '    setVocabForm({\n' +
+      "      topic_id: String(vocab.topic_id || selectedTopicId || '1'),\n" +
+      "      word: vocab.word || '',\n" +
+      "      pronunciation: vocab.pronunciation || '',\n" +
+      "      part_of_speech: vocab.part_of_speech || 'noun',\n" +
+      "      difficulty: vocab.difficulty || 'easy',\n" +
+      "      meaning_vi: vocab.meaning_vi || '',\n" +
+      "      example_sentence: vocab.example_sentence || '',\n" +
+      "      example_translation: vocab.example_translation || '',\n" +
+      "      image_url: vocab.image_url || '/images/vocab/_placeholder.svg',\n" +
+      "      image_alt: vocab.image_alt || '',\n" +
+      "      related_artist: vocab.related_artist || '',\n" +
+      "      source_ref: vocab.source_ref || '',\n" +
+      "      cultural_note: vocab.cultural_note || ''\n" +
+      '    });\n' +
+      '    setShowVocabModal(true);\n' +
+      '  };\n' +
+      '\n' +
+      '  const handleSaveVocab = async (e) => {\n' +
+      '    e.preventDefault();\n' +
+      '    if (!vocabForm.word.trim() || !vocabForm.meaning_vi.trim()) {\n' +
+      "      toast.error('Vui lĂ²ng nháº­p Ä‘áº§y Ä‘á»§ tá»« tiáº¿ng Anh vĂ  nghÄ©a tiáº¿ng Viá»‡t.');\n" +
+      '      return;\n' +
+      '    }\n' +
+      '\n' +
+      '    const payload = {\n' +
+      '      ...vocabForm,\n' +
+      '      topic_id: Number(vocabForm.topic_id),\n' +
+      '      word: vocabForm.word.trim(),\n' +
+      '      meaning_vi: vocabForm.meaning_vi.trim(),\n' +
+      '      pronunciation: vocabForm.pronunciation.trim() || null,\n' +
+      '      example_sentence: vocabForm.example_sentence.trim() || null,\n' +
+      '      example_translation: vocabForm.example_translation.trim() || null,\n' +
+      "      image_url: vocabForm.image_url.trim() || '/images/vocab/_placeholder.svg',\n" +
+      '      image_alt: vocabForm.image_alt.trim() || vocabForm.word.trim(),\n' +
+      '      related_artist: vocabForm.related_artist.trim() || null,\n' +
+      '      source_ref: vocabForm.source_ref.trim() || null,\n' +
+      '      cultural_note: vocabForm.cultural_note.trim() || null\n' +
+      '    };\n' +
+      '\n' +
+      '    try {\n' +
+      '      setIsSavingVocab(true);\n' +
+      '      if (editingVocab) {\n' +
+      '        await adminApi.updateVocab(editingVocab.id, payload);\n' +
+      '        toast.success(`ÄĂ£ cáº­p nháº­t thuáº­t ngá»¯ "${payload.word}"`);\n' +
+      '      } else {\n' +
+      '        await adminApi.createVocab(payload);\n' +
+      '        toast.success(`ÄĂ£ thĂªm thuáº­t ngá»¯ "${payload.word}"`);\n' +
+      '      }\n' +
+      '      setShowVocabModal(false);\n' +
+      '      await loadData();\n' +
+      '    } catch (err) {\n' +
+      "      toast.error(err.message || 'LÆ°u thuáº­t ngá»¯ tháº¥t báº¡i');\n" +
+      '    } finally {\n' +
+      '      setIsSavingVocab(false);\n' +
+      '    }\n' +
+      '  };\n' +
+      '\n' +
+      '  const handleDeleteVocab = async (vocab) => {\n' +
+      '    if (!window.confirm(`Báº¡n cĂ³ cháº¯c muá»‘n xĂ³a thuáº­t ngá»¯ "${vocab.word}"?`)) {\n' +
+      '      return;\n' +
+      '    }\n' +
+      '    try {\n' +
+      '      await adminApi.deleteVocab(vocab.id);\n' +
+      '      toast.success(`ÄĂ£ xĂ³a "${vocab.word}"`);\n' +
+      '      setVocabs((prev) => prev.filter((item) => item.id !== vocab.id));\n' +
+      '    } catch (err) {\n' +
+      "      toast.error(err.message || 'XĂ³a thuáº­t ngá»¯ tháº¥t báº¡i');\n" +
+      '    }\n' +
+      '  };\n' +
+      '\n' +
+      '  const filteredVocabs = vocabs.filter((v) => {\n' +
+      '    const q = vocabSearch.toLowerCase().trim();\n' +
+      '    if (!q) return true;\n' +
+      '    return (\n' +
+      '      v.word.toLowerCase().includes(q) ||\n' +
+      '      v.meaning_vi.toLowerCase().includes(q) ||\n' +
+      '      (v.related_artist && v.related_artist.toLowerCase().includes(q))\n' +
+      '    );\n' +
+      '  });\n' +
+      '\n' +
+      '  return (\n' +
+      '    <div className="space-y-7 max-w-5xl mx-auto pb-14">\n' +
+      '      <div>\n' +
+      '        <span className="font-mono text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">\n' +
+      '          System Administration\n' +
+      '        </span>\n' +
+      '        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">\n' +
+      '          Báº£ng Äiá»u Khiá»ƒn Quáº£n Trá»‹ Há»‡ Thá»‘ng\n' +
+      '        </h1>\n' +
+      '        <p className="text-xs sm:text-sm text-slate-500 mt-1">\n' +
+      '          Quáº£n lĂ½ ngÆ°á»i dĂ¹ng, kho thuáº­t ngá»¯ Má»¹ thuáº­t &amp; giĂ¡m sĂ¡t thá»‘ng kĂª toĂ n sĂ n\n' +
+      '        </p>\n' +
+      '      </div>\n' +
+      '\n' +
+      '      {/* Tabs */}\n' +
+      '      <div className="flex border-b border-slate-200 text-xs sm:text-sm font-bold gap-3 overflow-x-auto">\n' +
+      '        <button\n' +
+      '          type="button"\n' +
+      "          onClick={() => handleTabSelect('users')}\n" +
+      '          className={`py-3 px-4 border-b-2 transition-colors cursor-pointer flex items-center gap-2 shrink-0 ${\n' +
+      "            activeTab === 'users' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'\n" +
+      '          }`}\n' +
+      '        >\n' +
+      '          <HiUsers className="w-4 h-4" /> Quáº£n lĂ½ ngÆ°á»i dĂ¹ng\n' +
+      '        </button>\n' +
+      '        <button\n' +
+      '          type="button"\n' +
+      "          onClick={() => handleTabSelect('stats')}\n" +
+      '          className={`py-3 px-4 border-b-2 transition-colors cursor-pointer flex items-center gap-2 shrink-0 ${\n' +
+      "            activeTab === 'stats' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'\n" +
+      '          }`}\n' +
+      '        >\n' +
+      '          <HiChartBar className="w-4 h-4" /> Thá»‘ng kĂª tá»•ng quan\n' +
+      '        </button>\n' +
+      '        <button\n' +
+      '          type="button"\n' +
+      "          onClick={() => handleTabSelect('vocabularies')}\n" +
+      '          className={`py-3 px-4 border-b-2 transition-colors cursor-pointer flex items-center gap-'... 20300 more characters
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    import { useState, useEffect } from 'react';
+    import { toast } from 'react-hot-toast';
+    import { adminApi, statsApi, topicApi, vocabApi } from '../../api/services';
+    import useAuthStore from '../../stores/authStore';
+    import Button from '../../components/ui/Button';
+    import LoadingSpinner from '../../components/ui/LoadingSpinner';
+    import VocabImage from '../../components/vocab/VocabImage';
+    import {
+      HiUsers,
+      HiChartBar,
+      HiLockClosed,
+      HiLockOpen,
+      HiSearch,
+      HiBookOpen,
+      HiPlus,
+      HiPencil,
+      HiTrash,
+      HiX
+    } from 'react-icons/hi';
+
+    const EMPTY_VOCAB_FORM = {
+      topic_id: '1',
+      word: '',
+      pronunciation: '',
+      part_of_speech: 'noun',
+      difficulty: 'easy',
+      meaning_vi: '',
+      example_sentence: '',
+      example_translation: '',
+      image_url: '/images/vocab/_placeholder.svg',
+      image_alt: '',
+      related_artist: '',
+      source_ref: '',
+      cultural_note: ''
+    };
+
+    export default function AdminPage() {
+      const { user: currentUser } = useAuthStore();
+      const [activeTab, setActiveTab] = useState('users');
+      const [users, setUsers] = useState([]);
+      const [stats, setStats] = useState(null);
+      const [topics, setTopics] = useState([]);
+      const [selectedTopicId, setSelectedTopicId] = useState('1');
+      const [vocabs, setVocabs] = useState([]);
+      const [vocabSearch, setVocabSearch] = useState('');
+      const [isLoading, setIsLoading] = useState(true);
+      const [searchUser, setSearchUser] = useState('');
+
+      const [showVocabModal, setShowVocabModal] = useState(false);
+      const [editingVocab, setEditingVocab] = useState(null);
+      const [vocabForm, setVocabForm] = useState(EMPTY_VOCAB_FORM);
+      const [isSavingVocab, setIsSavingVocab] = useState(false);
+
+      const loadData = async () => {
+        try {
+          setIsLoading(true);
+          if (activeTab === 'users') {
+            const res = await adminApi.getUsers({ search: searchUser || undefined });
+            setUsers(res.data || []);
+          } else if (activeTab === 'stats') {
+            const res = await statsApi.getOverview();
+            setStats(res.data);
+          } else if (activeTab === 'vocabularies') {
+            const tRes = await topicApi.getAll();
+            const loadedTopics = tRes.data || [];
+            setTopics(loadedTopics);
+            const targetTopicId = selectedTopicId || String(loadedTopics[0]?.id || '1');
+            const vRes = await vocabApi.getByTopic(targetTopicId, { limit: 100 });
+            setVocabs(vRes.data || []);
+          }
+        } catch (err) {
+          toast.error(err.message || 'KhĂ´ng thá»ƒ táº£i dá»¯ liá»‡u quáº£n trá»‹');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      useEffect(() => {
+        let active = true;
+        const fetchTab = async () => {
+          try {
+            if (activeTab === 'users') {
+              const res = await adminApi.getUsers();
+              if (active) setUsers(res.data || []);
+            } else if (activeTab === 'stats') {
+              const res = await statsApi.getOverview();
+              if (active) setStats(res.data);
+            } else if (activeTab === 'vocabularies') {
+              const tRes = await topicApi.getAll();
+              if (!active) return;
+              const loadedTopics = tRes.data || [];
+              setTopics(loadedTopics);
+              const targetTopicId = selectedTopicId || String(loadedTopics[0]?.id || '1');
+              const vRes = await vocabApi.getByTopic(targetTopicId, { limit: 100 });
+              if (active) setVocabs(vRes.data || []);
+            }
+          } catch (err) {
+            if (active) toast.error(err.message || 'KhĂ´ng thá»ƒ táº£i dá»¯ liá»‡u quáº£n trá»‹');
+          } finally {
+            if (active) setIsLoading(false);
+          }
+        };
+        fetchTab();
+        return () => {
+          active = false;
+        };
+      }, [activeTab, selectedTopicId]);
+
+      useEffect(() => {
+        if (!showVocabModal) return;
+        const handleKeyDown = (e) => {
+          if (e.key === 'Escape') {
+            setShowVocabModal(false);
+          }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [showVocabModal]);
+
+      const handleTabSelect = (tab) => {
+        if (tab !== activeTab) {
+          setIsLoading(true);
+          setActiveTab(tab);
+        }
+      };
+
+      const handleToggleUserStatus = async (userId) => {
+        if (userId === currentUser?.id) {
+          toast.error('Báº¡n khĂ´ng thá»ƒ tá»± khĂ³a tĂ i khoáº£n cá»§a chĂ­nh mĂ¬nh.');
+          return;
+        }
+        try {
+          const res = await adminApi.toggleStatus(userId);
+          toast.success(res.message || 'ÄĂ£ cáº­p nháº­t tráº¡ng thĂ¡i');
+          setUsers((prev) =>
+            prev.map((u) => (u.id === userId ? { ...u, is_active: !u.is_active } : u))
+          );
+        } catch (err) {
+          toast.error(err.message || 'Thao tĂ¡c tháº¥t báº¡i');
+        }
+      };
+
+      const handleRoleChange = async (userId, newRole) => {
+        if (userId === currentUser?.id && newRole !== 'admin') {
+          toast.error('Báº¡n khĂ´ng thá»ƒ tá»± háº¡ quyá»n quáº£n trá»‹ cá»§a chĂ­nh mĂ¬nh.');
+          return;
+        }
+        try {
+          await adminApi.updateRole(userId, newRole);
+          toast.success('ÄĂ£ cáº­p nháº­t vai trĂ² ngÆ°á»i dĂ¹ng!');
+          setUsers((prev) =>
+            prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
+          );
+        } catch (err) {
+          toast.error(err.message || 'Äá»•i vai trĂ² tháº¥t báº¡i');
+        }
+      };
+
+      const openCreateVocabModal = () => {
+        setEditingVocab(null);
+        setVocabForm({
+          ...EMPTY_VOCAB_FORM,
+          topic_id: selectedTopicId || String(topics[0]?.id || '1')
+        });
+        setShowVocabModal(true);
+      };
+
+      const openEditVocabModal = (vocab) => {
+        setEditingVocab(vocab);
+        setVocabForm({
+          topic_id: String(vocab.topic_id || selectedTopicId || '1'),
+          word: vocab.word || '',
+          pronunciation: vocab.pronunciation || '',
+          part_of_speech: vocab.part_of_speech || 'noun',
+          difficulty: vocab.difficulty || 'easy',
+          meaning_vi: vocab.meaning_vi || '',
+          example_sentence: vocab.example_sentence || '',
+          example_translation: vocab.example_translation || '',
+          image_url: vocab.image_url || '/images/vocab/_placeholder.svg',
+          image_alt: vocab.image_alt || '',
+          related_artist: vocab.related_artist || '',
+          source_ref: vocab.source_ref || '',
+          cultural_note: vocab.cultural_note || ''
+        });
+        setShowVocabModal(true);
+      };
+
+      const handleSaveVocab = async (e) => {
+        e.preventDefault();
+        if (!vocabForm.word.trim() || !vocabForm.meaning_vi.trim()) {
+          toast.error('Vui lĂ²ng nháº­p Ä‘áº§y Ä‘á»§ tá»« tiáº¿ng Anh vĂ  nghÄ©a tiáº¿ng Viá»‡t.');
+          return;
+        }
+
+        const payload = {
+          ...vocabForm,
+          topic_id: Number(vocabForm.topic_id),
+          word: vocabForm.word.trim(),
+          meaning_vi: vocabForm.meaning_vi.trim(),
+          pronunciation: vocabForm.pronunciation.trim() || null,
+          example_sentence: vocabForm.example_sentence.trim() || null,
+          example_translation: vocabForm.example_translation.trim() || null,
+          image_url: vocabForm.image_url.trim() || '/images/vocab/_placeholder.svg',
+          image_alt: vocabForm.image_alt.trim() || vocabForm.word.trim(),
+          related_artist: vocabForm.related_artist.trim() || null,
+          source_ref: vocabForm.source_ref.trim() || null,
+          cultural_note: vocabForm.cultural_note.trim() || null
+        };
+
+        try {
+          setIsSavingVocab(true);
+          if (editingVocab) {
+            await adminApi.updateVocab(editingVocab.id, payload);
+            toast.success(`ÄĂ£ cáº­p nháº­t thuáº­t ngá»¯ "${payload.word}"`);
+          } else {
+            await adminApi.createVocab(payload);
+            toast.success(`ÄĂ£ thĂªm thuáº­t ngá»¯ "${payload.word}"`);
+          }
+          setShowVocabModal(false);
+          await loadData();
+        } catch (err) {
+          toast.error(err.message || 'LÆ°u thuáº­t ngá»¯ tháº¥t báº¡i');
+        } finally {
+          setIsSavingVocab(false);
+        }
+      };
+
+      const handleDeleteVocab = async (vocab) => {
+        if (!window.confirm(`Báº¡n cĂ³ cháº¯c muá»‘n xĂ³a thuáº­t ngá»¯ "${vocab.word}"?`)) {
+          return;
+        }
+        try {
+          await adminApi.deleteVocab(vocab.id);
+          toast.success(`ÄĂ£ xĂ³a "${vocab.word}"`);
+          setVocabs((prev) => prev.filter((item) => item.id !== vocab.id));
+        } catch (err) {
+          toast.error(err.message || 'XĂ³a thuáº­t ngá»¯ tháº¥t báº¡i');
+        }
+      };
+
+      const filteredVocabs = vocabs.filter((v) => {
+        const q = vocabSearch.toLowerCase().trim();
+        if (!q) return true;
+        return (
+          v.word.toLowerCase().includes(q) ||
+          v.meaning_vi.toLowerCase().includes(q) ||
+          (v.related_artist && v.related_artist.toLowerCase().includes(q))
+        );
+      });
+
+      return (
+        <div className="space-y-7 max-w-5xl mx-auto pb-14">
+          <div>
+            <span className="font-mono text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
+              System Administration
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Báº£ng Äiá»u Khiá»ƒn Quáº£n Trá»‹ Há»‡ Thá»‘ng
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              Quáº£n lĂ½ ngÆ°á»i dĂ¹ng, kho thuáº­t ngá»¯ Má»¹ thuáº­t &amp; giĂ¡m sĂ¡t thá»‘ng kĂª toĂ n sĂ n
+            </p>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex border-b border-slate-200 text-xs sm:text-sm font-bold gap-3 overflow-x-auto">
+            <button
+              type="button"
+              onClick={() => handleTabSelect('users')}
+              className={`py-3 px-4 border-b-2 transition-colors cursor-pointer flex items-center gap-2 shrink-0 ${
+                activeTab === 'users' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <HiUsers className="w-4 h-4" /> Quáº£n lĂ½ ngÆ°á»i dĂ¹ng
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTabSelect('stats')}
+              className={`py-3 px-4 border-b-2 transition-colors cursor-pointer flex items-center gap-2 shrink-0 ${
+                activeTab === 'stats' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <HiChartBar className="w-4 h-4" /> Thá»‘ng kĂª tá»•ng quan
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTabSelect('vocabularies')}
+              className={`py-3 px-4 border-b-2 transition-colors cursor-pointer flex items-center gap-2 shrink-0 ${
+                activeTab === 'vocabularies' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <HiBookOpen className="w-4 h-4" /> Quáº£n lĂ½ tá»« vá»±ng
+            </button>
+          </div>
+
+          {isLoading ? (
+            <div className="py-24 flex justify-center">
+              <LoadingSpinner size="lg" text="Äang táº£i dá»¯ liá»‡u quáº£n trá»‹..." />
+            </div>
+          ) : (
+            <>
+              {/* Tab 1: Users */}
+              {activeTab === 'users' && (
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center gap-4">
+                    <div className="relative w-80">
+                      <HiSearch className="absolute left-3.5 top-3 text-slate-400 w-4 h-4" />
+                      <input
+                        type="text"
+                        className="input pl-10 py-2 text-xs rounded-xl"
+                        placeholder="TĂ¬m username hoáº·c email..."
+                        value={searchUser}
+                        onChange={(e) => setSearchUser(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && loadData()}
+                      />
+                    </div>
+                    <Button onClick={loadData} variant="secondary" size="sm" className="rounded-xl text-xs py-2 px-4">
+                      LĂ m má»›i
+                    </Button>
+                  </div>
+
+                  <div className="card overflow-x-auto p-0 border border-slate-200/90 rounded-3xl shadow-sm bg-white">
+                    <table className="w-full text-left text-sm">
+                      <thead className="bg-slate-50 text-slate-500 font-mono text-[11px] uppercase font-bold border-b border-slate-200">
+                        <tr>
+                          <th className="p-4">NgÆ°á»i dĂ¹ng</th>
+                          <th className="p-4">Email</th>
+                          <th className="p-4">Vai trĂ²</th>
+                          <th className="p-4">Tráº¡ng thĂ¡i</th>
+                          <th className="p-4">Thao tĂ¡c</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 text-slate-700">
+                        {users.map((u) => {
+                          const isSelf = u.id === currentUser?.id;
+                          return (
+                            <tr key={u.id} className="hover:bg-slate-50/70">
+                              <td className="p-4 font-bold text-slate-900">
+                                <div>
+                                  <p>
+                                    {u.full_name}
+                                    {isSelf && (
+                                      <span className="ml-2 text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                                        Báº¡n
+                                      </span>
+                                    )}
+                                  </p>
+                                  <p className="text-xs text-slate-400 font-mono font-normal">@{u.username}</p>
+                                </div>
+                              </td>
+                              <td className="p-4 text-xs font-mono text-slate-600">{u.email}</td>
+                              <td className="p-4">
+                                <select
+                                  className="input py-1 text-xs rounded-xl w-auto disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed"
+                                  value={u.role}
+                                  disabled={isSelf}
+                                  onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                                >
+                                  <option value="learner">Há»c viĂªn (learner)</option>
+                                  <option value="admin">Quáº£n trá»‹ viĂªn (admin)</option>
+                                </select>
+                              </td>
+                              <td className="p-4">
+                                <span
+                                  className={`badge text-[10px] uppercase font-mono font-bold px-2 py-0.5 ${
+                                    u.is_active
+                                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                      : 'bg-rose-50 text-rose-700 border border-rose-200'
+                                  }`}
+                                >
+                                  {u.is_active ? 'Hoáº¡t Ä‘á»™ng' : 'ÄĂ£ khĂ³a'}
+                                </span>
+                              </td>
+                              <td className="p-4">
+                                {isSelf ? (
+                                  <span className="text-xs font-mono text-slate-400">Äang Ä‘Äƒng nháº­p</span>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleToggleUserStatus(u.id)}
+                                    className={`btn py-1 px-3 text-xs gap-1 rounded-xl cursor-pointer ${
+                                      u.is_active ? 'btn-danger' : 'btn-success'
+                                    }`}
+                                  >
+                                    {u.is_active ? (
+                                      <>
+                                        <HiLockClosed /> KhĂ³a
+                                      </>
+                                    ) : (
+                                      <>
+                                        <HiLockOpen /> Má»Ÿ khĂ³a
+                                      </>
+                                    )}
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Tab 2: Overview stats */}
+              {activeTab === 'stats' && stats && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="card text-center p-7 bg-white border border-slate-200/90 rounded-3xl shadow-sm">
+                    <p className="font-mono text-xs uppercase font-bold text-slate-500">Tá»•ng ngÆ°á»i dĂ¹ng</p>
+                    <p className="text-4xl font-extrabold text-slate-900 tracking-tight mt-2">{stats.totalUsers}</p>
+                  </div>
+
+                  <div className="card text-center p-7 bg-white border border-blue-200/80 bg-blue-50/20 rounded-3xl shadow-sm">
+                    <p className="font-mono text-xs uppercase font-bold text-blue-700">Thuáº­t ngá»¯ má»¹ thuáº­t</p>
+                    <p className="text-4xl font-extrabold text-blue-600 tracking-tight mt-2">{stats.totalVocab}</p>
+                  </div>
+
+                  <div className="card text-center p-7 bg-white border border-emerald-200/80 bg-emerald-50/20 rounded-3xl shadow-sm">
+                    <p className="font-mono text-xs uppercase font-bold text-emerald-700">ChuyĂªn Ä‘á» má»¹ thuáº­t</p>
+                    <p className="text-4xl font-extrabold text-emerald-600 tracking-tight mt-2">{stats.totalTopics}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Tab 3: Vocabularies */}
+              {activeTab === 'vocabularies' && (
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3 flex-1">
+                      <select
+                        value={selectedTopicId}
+                        onChange={(e) => {
+                          setIsLoading(true);
+                          setSelectedTopicId(e.target.value);
+                        }}
+                        className="input py-2 text-xs rounded-xl sm:w-64"
+                      >
+                        {topics.map((t) => (
+                          <option key={t.id} value={String(t.id)}>
+                            {t.name_vi} ({t.vocab_count} tá»«)
+                          </option>
+                        ))}
+                      </select>
+
+                      <div className="relative flex-1 max-w-sm">
+                        <HiSearch className="absolute left-3.5 top-3 text-slate-400 w-4 h-4" />
+                        <input
+                          type="text"
+                          className="input pl-10 py-2 text-xs rounded-xl"
+                          placeholder="TĂ¬m thuáº­t ngá»¯, nghÄ©a hoáº·c nghá»‡ sÄ©..."
+                          value={vocabSearch}
+                          onChange={(e) => setVocabSearch(e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={openCreateVocabModal}
+                      className="btn-primary rounded-xl text-xs py-2.5 px-4 gap-1.5 shrink-0"
+                    >
+                      <HiPlus className="w-4 h-4" /> ThĂªm thuáº­t ngá»¯
+                    </Button>
+                  </div>
+
+                  <div className="card overflow-x-auto p-0 border border-slate-200/90 rounded-3xl shadow-sm bg-white">
+                    <table className="w-full text-left text-sm">
+                      <thead className="bg-slate-50 text-slate-500 font-mono text-[11px] uppercase font-bold border-b border-slate-200">
+                        <tr>
+                          <th className="p-4">Thuáº­t ngá»¯</th>
+                          <th className="p-4">NghÄ©a tiáº¿ng Viá»‡t</th>
+                          <th className="p-4">Tá»« loáº¡i &amp; Äá»™ khĂ³</th>
+                          <th className="p-4">Nghá»‡ sÄ© / LĂ ng nghá»</th>
+                          <th className="p-4 text-right">Thao tĂ¡c</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 text-slate-700">
+                        {filteredVocabs.map((v) => (
+                          <tr key={v.id} className="hover:bg-slate-50/70">
+                            <td className="p-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-11 h-11 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 shrink-0">
+                                  <VocabImage src={v.image_url} alt={v.word} fit="cover" className="w-full h-full" />
+                                </div>
+                                <div>
+                                  <p className="font-bold text-slate-900">{v.word}</p>
+                                  <p className="text-[11px] font-mono text-slate-400">{v.pronunciation}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="p-4 text-xs sm:text-sm font-semibold text-slate-800">{v.meaning_vi}</td>
+                            <td className="p-4">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="badge bg-slate-100 text-slate-700 font-mono text-[10px] uppercase">
+                                  {v.part_of_speech}
+                                </span>
+                                <span className="badge bg-blue-50 text-blue-700 border border-blue-200 font-mono text-[10px] uppercase">
+                                  {v.difficulty}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="p-4 text-xs text-slate-600 max-w-xs truncate">
+                              {v.related_artist || 'â€”'}
+                            </td>
+                            <td className="p-4">
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => openEditVocabModal(v)}
+                                  className="p-2 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 cursor-pointer"
+                                  title="Chá»‰nh sá»­a"
+                                >
+                                  <HiPencil className="w-4 h-4" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteVocab(v)}
+                                  className="p-2 rounded-xl border border-rose-200 hover:bg-rose-50 text-rose-600 cursor-pointer"
+                                  title="XĂ³a"
+                                >
+                                  <HiTrash className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Modal ThĂªm / Sá»­a Thuáº­t Ngá»¯ */}
+          {showVocabModal && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm"
+              onClick={() => setShowVocabModal(false)}
+            >
+              <div
+                className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50 sticky top-0 z-10">
+                  <h3 className="text-lg font-extrabold text-slate-900">
+                    {editingVocab ? `Chá»‰nh sá»­a: ${editingVocab.word}` : 'ThĂªm thuáº­t ngá»¯ má»›i'}
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowVocabModal(false)}
+                    className="p-2 rounded-xl hover:bg-slate-200 text-slate-500 cursor-pointer"
+                  >
+                    <HiX className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <form onSubmit={handleSaveVocab} className="p-6 space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="label">ChuyĂªn Ä‘á»</label>
+                      <select
+                        className="input text-xs py-2"
+                        value={vocabForm.topic_id}
+                        onChange={(e) => setVocabForm({ ...vocabForm, topic_id: e.target.value })}
+                      >
+                        {topics.map((t) => (
+                          <option key={t.id} value={String(t.id)}>
+                            {t.name_vi}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="label">Thuáº­t ngá»¯ tiáº¿ng Anh *</label>
+                      <input
+                        type="text"
+                        required
+                        className="input text-xs py-2"
+                        value={vocabForm.word}
+                        onChange={(e) => setVocabForm({ ...vocabForm, word: e.target.value })}
+                        placeholder="VĂ­ dá»¥: oil painting"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="label">PhiĂªn Ă¢m IPA</label>
+                      <input
+                        type="text"
+                        className="input text-xs py-2 font-mono"
+                        value={vocabForm.pronunciation}
+                        onChange={(e) => setVocabForm({ ...vocabForm, pronunciation: e.target.value })}
+                        placeholder="/É”Éªl ËˆpeÉªn.tÉªÅ‹/"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="label">NghÄ©a tiáº¿ng Viá»‡t *</label>
+                      <input
+                        type="text"
+                        required
+                        className="input text-xs py-2"
+                        value={vocabForm.meaning_vi}
+                        onChange={(e) => setVocabForm({ ...vocabForm, meaning_vi: e.target.value })}
+                        placeholder="Tranh sÆ¡n dáº§u"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="label">Tá»« loáº¡i</label>
+                      <select
+                        className="input text-xs py-2"
+                        value={vocabForm.part_of_speech}
+                        onChange={(e) => setVocabForm({ ...vocabForm, part_of_speech: e.target.value })}
+                      >
+                        <option value="noun">noun</option>
+                        <option value="verb">verb</option>
+                        <option value="adjective">adjective</option>
+                        <option value="adverb">adverb</option>
+                        <option value="preposition">preposition</option>
+                        <option value="conjunction">conjunction</option>
+                        <option value="pronoun">pronoun</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="label">Äá»™ khĂ³</label>
+                      <select
+                        className="input text-xs py-2"
+                        value={vocabForm.difficulty}
+                        onChange={(e) => setVocabForm({ ...vocabForm, difficulty: e.target.value })}
+                      >
+                        <option value="easy">easy</option>
+                        <option value="medium">medium</option>
+                        <option value="hard">hard</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="label">ÄÆ°á»ng dáº«n áº£nh</label>
+                      <input
+                        type="text"
+                        className="input text-xs py-2 font-mono"
+                        value={vocabForm.image_url}
+                        onChange={(e) => setVocabForm({ ...vocabForm, image_url: e.target.value })}
+                        placeholder="/images/vocab/oil_painting.jpg"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="label">Nguá»“n tham chiáº¿u</label>
+                      <input
+                        type="text"
+                        className="input text-xs py-2"
+                        value={vocabForm.source_ref}
+                        onChange={(e) => setVocabForm({ ...vocabForm, source_ref: e.target.value })}
+                        placeholder="Oxford Art Dictionary"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="label">Nghá»‡ sÄ© / LĂ ng nghá» tiĂªu biá»ƒu</label>
+                    <input
+                      type="text"
+                      className="input text-xs py-2"
+                      value={vocabForm.related_artist}
+                      onChange={(e) => setVocabForm({ ...vocabForm, related_artist: e.target.value })}
+                      placeholder="Jan van Eyck, TĂ´ Ngá»c VĂ¢n..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="label">CĂ¢u vĂ­ dá»¥ tiáº¿ng Anh</label>
+                    <input
+                      type="text"
+                      className="input text-xs py-2"
+                      value={vocabForm.example_sentence}
+                      onChange={(e) => setVocabForm({ ...vocabForm, example_sentence: e.target.value })}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="label">Dá»‹ch cĂ¢u vĂ­ dá»¥</label>
+                    <input
+                      type="text"
+                      className="input text-xs py-2"
+                      value={vocabForm.example_translation}
+                      onChange={(e) => setVocabForm({ ...vocabForm, example_translation: e.target.value })}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="label">Bá»‘i cáº£nh vÄƒn hĂ³a &amp; lá»‹ch sá»­</label>
+                    <textarea
+                      rows="3"
+                      className="input text-xs py-2"
+                      value={vocabForm.cultural_note}
+                      onChange={(e) => setVocabForm({ ...vocabForm, cultural_note: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100 flex justify-end gap-2.5">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => setShowVocabModal(false)}
+                      className="rounded-xl text-xs py-2 px-4"
+                    >
+                      Há»§y
+                    </Button>
+                    <Button
+                      type="submit"
+                      isLoading={isSavingVocab}
+                      className="btn-primary rounded-xl text-xs py-2 px-5"
+                    >
+                      {editingVocab ? 'LÆ°u thay Ä‘á»•i' : 'ThĂªm thuáº­t ngá»¯'}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:107:64)
+    Test.runInAsyncScope (node:async_hooks:211:14)
+    Test.run (node:internal/test_runner/test:979:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:677:18)
+    Test.postRun (node:internal/test_runner/test:1090:19)
+    Test.run (node:internal/test_runner/test:1018:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R17 an issued attempt can be resumed only by its owner and topic
+not ok 17 - R17 an issued attempt can be resumed only by its owner and topic
+  ---
+  duration_ms: 5.396
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:110:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'some')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:112:27)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R18 invalid, duplicate, missing and expired answers do not change progress
+not ok 18 - R18 invalid, duplicate, missing and expired answers do not change progress
+  ---
+  duration_ms: 4.5837
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:120:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'map')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:122:26)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R19 correct server-issued answers score 100 percent
+not ok 19 - R19 correct server-issued answers score 100 percent
+  ---
+  duration_ms: 4.0896
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:130:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'map')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:132:28)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R20 private vocabulary is not readable or learnable by other users
+not ok 20 - R20 private vocabulary is not readable or learnable by other users
+  ---
+  duration_ms: 2.6155
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:136:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:139:60)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R21 personal list sync rolls back a newly created word on schedule failure
+not ok 21 - R21 personal list sync rolls back a newly created word on schedule failure
+  ---
+  duration_ms: 2.3578
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:142:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Injected/. Input:
+
+    'Error: Vocabulary.topic_id cannot be null'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'Vocabulary.topic_id cannot be null'
+  stack: |-
+    Object.create (E:\DTDA\englearn-latest-20261119\tests\helpers.cjs:62:56)
+    Object.addWordToLists (E:\DTDA\englearn-latest-20261119\server\src\controllers\userVocabList.controller.js:202:35)
+    async waitForActual (node:assert:875:5)
+    async Function.rejects (node:assert:996:25)
+    async TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:144:2)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:144:2)
+    async Test.run (node:internal/test_runner/test:980:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R22 test mode refuses an explicitly shared application database
+not ok 22 - R22 test mode refuses an explicitly shared application database
+  ---
+  duration_ms: 1.3018
+  location: 'E:\\DTDA\\englearn-latest-20261119\\tests\\regression.test.cjs:147:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (E:\DTDA\englearn-latest-20261119\tests\regression.test.cjs:148:9)
+    Test.runInAsyncScope (node:async_hooks:211:14)
+    Test.run (node:internal/test_runner/test:979:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:677:18)
+    Test.postRun (node:internal/test_runner/test:1090:19)
+    Test.run (node:internal/test_runner/test:1018:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:677:7)
+  ...
+# Subtest: R23 admin may change other accounts when another active admin remains
+ok 23 - R23 admin may change other accounts when another active admin remains
+  ---
+  duration_ms: 2.2102
+  ...
+# Subtest: R24 production accepts two independently generated JWT keys
+ok 24 - R24 production accepts two independently generated JWT keys
+  ---
+  duration_ms: 6.0764
+  ...
+# Subtest: SrsService - Thuáº­t toĂ¡n SM-2 (calculateSM2)
+    # Subtest: 1. Khá»Ÿi táº¡o & Láº§n há»c Ä‘áº§u tiĂªn (Repetition 0 -> 1)
+        # Subtest: TC-SM2-01: Láº§n Ä‘áº§u nhá»› tá»‘t (quality = 4) -> interval = 1 ngĂ y, rep = 1, ease factor giá»¯ nguyĂªn 2.5
+        ok 1 - TC-SM2-01: Láº§n Ä‘áº§u nhá»› tá»‘t (quality = 4) -> interval = 1 ngĂ y, rep = 1, ease factor giá»¯ nguyĂªn 2.5
+          ---
+          duration_ms: 1.8106
+          ...
+        # Subtest: TC-SM2-02: Láº§n Ä‘áº§u ráº¥t dá»… (quality = 5) -> interval = 1 ngĂ y, ease factor tÄƒng lĂªn 2.6
+        ok 2 - TC-SM2-02: Láº§n Ä‘áº§u ráº¥t dá»… (quality = 5) -> interval = 1 ngĂ y, ease factor tÄƒng lĂªn 2.6
+          ---
+          duration_ms: 0.2902
+          ...
+        # Subtest: TC-SM2-03: Láº§n Ä‘áº§u khĂ³ nhá»› (quality = 3) -> interval = 1 ngĂ y, ease factor giáº£m nháº¹
+        ok 3 - TC-SM2-03: Láº§n Ä‘áº§u khĂ³ nhá»› (quality = 3) -> interval = 1 ngĂ y, ease factor giáº£m nháº¹
+          ---
+          duration_ms: 0.2855
+          ...
+        1..3
+    ok 1 - 1. Khá»Ÿi táº¡o & Láº§n há»c Ä‘áº§u tiĂªn (Repetition 0 -> 1)
+      ---
+      duration_ms: 3.3172
+      type: 'suite'
+      ...
+    # Subtest: 2. CĂ¡c chu ká»³ Ă´n táº­p tiáº¿p theo (Repetition >= 1)
+        # Subtest: TC-SM2-04: Láº§n thá»© hai Ä‘Ăºng (Rep 1 -> 2) -> interval = 6 ngĂ y
+        ok 1 - TC-SM2-04: Láº§n thá»© hai Ä‘Ăºng (Rep 1 -> 2) -> interval = 6 ngĂ y
+          ---
+          duration_ms: 0.2447
+          ...
+        # Subtest: TC-SM2-05: Láº§n thá»© ba Ä‘Ăºng (Rep 2 -> 3) -> interval = round(6 * 2.5) = 15 ngĂ y
+        ok 2 - TC-SM2-05: Láº§n thá»© ba Ä‘Ăºng (Rep 2 -> 3) -> interval = round(6 * 2.5) = 15 ngĂ y
+          ---
+          duration_ms: 0.2108
+          ...
+        # Subtest: TC-SM2-06: Äáº¡t Ä‘iá»u kiá»‡n thuáº§n thá»¥c (rep >= 4 & interval >= 15) -> status chuyá»ƒn thĂ nh "mastered"
+        ok 3 - TC-SM2-06: Äáº¡t Ä‘iá»u kiá»‡n thuáº§n thá»¥c (rep >= 4 & interval >= 15) -> status chuyá»ƒn thĂ nh "mastered"
+          ---
+          duration_ms: 0.2606
+          ...
+        1..3
+    ok 2 - 2. CĂ¡c chu ká»³ Ă´n táº­p tiáº¿p theo (Repetition >= 1)
+      ---
+      duration_ms: 1.0563
+      type: 'suite'
+      ...
+    # Subtest: 3. Xá»­ lĂ½ khi quĂªn hoáº·c tráº£ lá»i sai (quality < 3)
+        # Subtest: TC-SM2-07: Tá»« Ä‘ang mastered nhÆ°ng bá»‹ quĂªn (quality = 1) -> reset rep = 0, interval = 1, rá»›t xuá»‘ng learning
+        ok 1 - TC-SM2-07: Tá»« Ä‘ang mastered nhÆ°ng bá»‹ quĂªn (quality = 1) -> reset rep = 0, interval = 1, rá»›t xuá»‘ng learning
+          ---
+          duration_ms: 0.4413
+          ...
+        # Subtest: TC-SM2-08: HoĂ n toĂ n khĂ´ng nhá»› gĂ¬ (quality = 0) -> EF giáº£m máº¡nh nháº¥t
+        ok 2 - TC-SM2-08: HoĂ n toĂ n khĂ´ng nhá»› gĂ¬ (quality = 0) -> EF giáº£m máº¡nh nháº¥t
+          ---
+          duration_ms: 0.1853
+          ...
+        1..2
+    ok 3 - 3. Xá»­ lĂ½ khi quĂªn hoáº·c tráº£ lá»i sai (quality < 3)
+      ---
+      duration_ms: 0.9186
+      type: 'suite'
+      ...
+    # Subtest: 4. Kiá»ƒm tra biĂªn (Boundary Value Analysis)
+        # Subtest: TC-SM2-09: Ease Factor khĂ´ng bao giá» tháº¥p hÆ¡n biĂªn sĂ n 1.30
+        ok 1 - TC-SM2-09: Ease Factor khĂ´ng bao giá» tháº¥p hÆ¡n biĂªn sĂ n 1.30
+          ---
+          duration_ms: 0.3709
+          ...
+        # Subtest: TC-SM2-10: Khoáº£ng cĂ¡ch Ă´n táº­p khĂ´ng vÆ°á»£t quĂ¡ biĂªn tráº§n 365 ngĂ y
+        ok 2 - TC-SM2-10: Khoáº£ng cĂ¡ch Ă´n táº­p khĂ´ng vÆ°á»£t quĂ¡ biĂªn tráº§n 365 ngĂ y
+          ---
+          duration_ms: 0.3361
+          ...
+        # Subtest: TC-SM2-11: Quality Ă¢m Ä‘Æ°á»£c lĂ m trĂ²n vĂ  káº¹p lĂªn 0
+        ok 3 - TC-SM2-11: Quality Ă¢m Ä‘Æ°á»£c lĂ m trĂ²n vĂ  káº¹p lĂªn 0
+          ---
+          duration_ms: 0.1545
+          ...
+        # Subtest: TC-SM2-12: Quality > 5 Ä‘Æ°á»£c lĂ m trĂ²n vĂ  káº¹p xuá»‘ng 5
+        ok 4 - TC-SM2-12: Quality > 5 Ä‘Æ°á»£c lĂ m trĂ²n vĂ  káº¹p xuá»‘ng 5
+          ---
+          duration_ms: 0.1461
+          ...
+        # Subtest: TC-SM2-13: Next review timestamp tÆ°Æ¡ng thĂ­ch vá»›i sá»‘ ngĂ y interval
+        ok 5 - TC-SM2-13: Next review timestamp tÆ°Æ¡ng thĂ­ch vá»›i sá»‘ ngĂ y interval
+          ---
+          duration_ms: 0.175
+          ...
+        1..5
+    ok 4 - 4. Kiá»ƒm tra biĂªn (Boundary Value Analysis)
+      ---
+      duration_ms: 1.3977
+      type: 'suite'
+      ...
+    1..4
+ok 25 - SrsService - Thuáº­t toĂ¡n SM-2 (calculateSM2)
+  ---
+  duration_ms: 7.6551
+  type: 'suite'
+  ...
+1..25
+# tests 37
+# suites 5
+# pass 16
+# fail 21
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 243.5074

@@ -1,0 +1,9 @@
+{
+  "name": "englearn-quality-checks",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/regression.test.cjs tests/sm2.test.cjs tests/frontend.test.cjs",
+    "test:mysql": "node --test tests/mysql.integration.cjs"
+  },
+  "engines": { "node": ">=22.12.0" }
+}

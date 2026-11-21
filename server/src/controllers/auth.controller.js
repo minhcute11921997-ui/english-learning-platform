@@ -5,8 +5,8 @@ const AppError = require('../utils/AppError');
 const { User } = require('../models');
 
 const register = catchAsync(async (req, res) => {
-  const { username, email, password, full_name, role } = req.body;
-  const result = await AuthService.register({ username, email, password, full_name, role });
+  const { username, email, password, full_name } = req.body;
+  const result = await AuthService.register({ username, email, password, full_name });
   return ApiResponse.created(res, result, 'Đăng ký tài khoản thành công');
 });
 

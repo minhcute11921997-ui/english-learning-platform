@@ -1,4 +1,5 @@
-const { UserVocabProgress, ReviewSchedule, Vocabulary, Topic, sequelize } = require('../models');
+const AppError = require('../utils/AppError');
+const { UserVocabProgress, ReviewSchedule, Vocabulary, Topic, User, ReviewEvent, sequelize } = require('../models');
 const { Op } = require('sequelize');
 
 class SrsService {
@@ -58,59 +59,43 @@ class SrsService {
   /**
    * Cập nhật tiến độ học từ vựng khi ôn tập
    */
-  static async recordReviewAnswer(userId, vocabularyId, quality) {
-    let progress = await UserVocabProgress.findOne({
-      where: { user_id: userId, vocabulary_id: vocabularyId }
-    });
-
-    if (!progress) {
-      progress = await UserVocabProgress.create({
-        user_id: userId,
-        vocabulary_id: vocabularyId,
-        status: 'new',
-        correct_count: 0,
-        incorrect_count: 0,
-        ease_factor: 2.5,
-        interval_days: 0,
-        repetition_count: 0
-      });
+  static async recordReviewAnswer(userId, vocabularyId, quality, options = {}) {
+    if (!Number.isInteger(quality) || quality < 0 || quality > 5) {
+      throw new AppError('Quality must be an integer from 0 to 5.', 400);
     }
-
-    const sm2Result = this.calculateSM2(progress, quality);
-
-    const isCorrect = quality >= 3;
-    progress.correct_count = (progress.correct_count || 0) + (isCorrect ? 1 : 0);
-    progress.incorrect_count = (progress.incorrect_count || 0) + (isCorrect ? 0 : 1);
-    progress.ease_factor = sm2Result.ease_factor;
-    progress.interval_days = sm2Result.interval_days;
-    progress.repetition_count = sm2Result.repetition_count;
-    progress.last_reviewed_at = new Date();
-    progress.next_review_at = sm2Result.next_review_at;
-    progress.status = sm2Result.status;
-
-    await sequelize.transaction(async (t) => {
-      await progress.save({ transaction: t });
-
-      // Đánh dấu lịch ôn tập cũ là đã hoàn thành và dọn dẹp các mục cũ
-      await ReviewSchedule.destroy({
-        where: {
-          user_id: userId,
-          vocabulary_id: vocabularyId
-        },
-        transaction: t
+    const record = async t => {
+      // Lock the parent row even if progress does not exist yet. All review writers
+      // acquire this lock first, preventing both lost updates and duplicate creation.
+      const user = await User.findByPk(userId, { transaction: t, lock: t.LOCK.UPDATE });
+      if (!user) throw new AppError('User not found.', 404);
+      const vocabulary = await Vocabulary.findByPk(vocabularyId, { transaction: t });
+      if (!vocabulary || (!vocabulary.is_approved && vocabulary.created_by !== userId)) {
+        throw new AppError('Vocabulary not found.', 404);
+      }
+      let progress = await UserVocabProgress.findOne({
+        where: { user_id: userId, vocabulary_id: vocabularyId }, transaction: t, lock: t.LOCK.UPDATE
       });
-
-      // Lên lịch ôn tập tiếp theo
-      await ReviewSchedule.create({
-        user_id: userId,
-        vocabulary_id: vocabularyId,
-        scheduled_at: sm2Result.next_review_at,
-        is_completed: false,
-        source: 'personal'
+      if (!progress) progress = await UserVocabProgress.create({
+        user_id: userId, vocabulary_id: vocabularyId, status: 'new',
+        correct_count: 0, incorrect_count: 0, ease_factor: 2.5,
+        interval_days: 0, repetition_count: 0
       }, { transaction: t });
-    });
-
-    return progress;
+      const sm2Result = this.calculateSM2(progress, quality);
+      const isCorrect = quality >= 3;
+      progress.correct_count = (progress.correct_count || 0) + (isCorrect ? 1 : 0);
+      progress.incorrect_count = (progress.incorrect_count || 0) + (isCorrect ? 0 : 1);
+      Object.assign(progress, sm2Result, { last_reviewed_at: new Date() });
+      await progress.save({ transaction: t });
+      await ReviewSchedule.destroy({ where: { user_id: userId, vocabulary_id: vocabularyId }, transaction: t });
+      await ReviewSchedule.create({ user_id: userId, vocabulary_id: vocabularyId,
+        scheduled_at: sm2Result.next_review_at, is_completed: false, source: 'personal'
+      }, { transaction: t });
+      await ReviewEvent.create({ user_id: userId, vocabulary_id: vocabularyId,
+        quality, reviewed_at: new Date()
+      }, { transaction: t });
+      return progress;
+    };
+    return options.transaction ? record(options.transaction) : sequelize.transaction(record);
   }
 
   /**

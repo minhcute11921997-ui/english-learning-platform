@@ -32,8 +32,8 @@ const answerReview = catchAsync(async (req, res) => {
   const vocabId = parseInt(req.params.vocabId);
   const { quality } = req.body;
 
-  const q = Number(quality);
-  if (isNaN(q) || q < 0 || q > 5) {
+  const q = quality;
+  if (!Number.isInteger(q) || q < 0 || q > 5) {
     throw new AppError('Điểm chất lượng (quality) phải là số từ 0 đến 5.', 400);
   }
 

@@ -23,7 +23,7 @@ class AuthService {
     return { accessToken, refreshToken };
   }
 
-  static async register({ username, email, password, full_name, role = 'learner' }) {
+  static async register({ username, email, password, full_name }) {
     const existingUser = await User.findOne({
       where: {
         [require('sequelize').Op.or]: [{ email }, { username }]
@@ -42,7 +42,7 @@ class AuthService {
       email,
       password_hash: password,
       full_name,
-      role
+      role: 'learner'
     });
 
     const tokens = this.generateTokens(user);

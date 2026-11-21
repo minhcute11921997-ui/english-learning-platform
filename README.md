@@ -1,5 +1,7 @@
 # 🎨 EngLearn v2.0 - Hệ Thống Học Từ Vựng Tiếng Anh Chuyên Ngành Mỹ Thuật & Mỹ Nghệ
 
+> Bản sửa trên commit 714ea28 ngày 17/11/2026. Xem [kiểm thử](tests/README.md) và [hành vi/API đã sửa](tests/CHANGES.md). Docker chỉ tạo bảng còn thiếu; nạp demo bằng `docker compose exec server node src/seeders/index.js` trong development.
+
 **EngLearn v2.0 (Fine Arts & Crafts Edition)** là nền tảng web học thuật ngữ tiếng Anh chuyên ngành **Hội họa** và **Ngành nghề Mỹ nghệ thủ công** qua hình ảnh minh họa trực quan, bối cảnh văn hóa – lịch sử và thuật toán ôn tập ngắt quãng **SuperMemo 2 (SM-2)**.
 
 ---

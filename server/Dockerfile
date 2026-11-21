@@ -19,4 +19,4 @@ USER node
 EXPOSE 3000
 
 # Tự động đồng bộ cấu trúc bảng và nạp dữ liệu mẫu nếu chưa có, sau đó khởi động server
-CMD ["sh", "-c", "node src/seeders/index.js && node src/app.js"]
+CMD ["sh", "-c", "node src/bootstrap.js && node src/app.js"]
