@@ -29,7 +29,46 @@ Thumbs.db
 coverage/
 server/coverage/
 *.lcov
+server/tests/
+ai-service/tests/
+ai-service/eval/
+tools/test-*.js
+
+# Agent configs
+.agents/
+
+# Report, Thesis & Diagram files
+docs/report/
+*.docx
+*.vpp
+*.vpp.bak_*
+*.drawio
+generate_docx.py
+open_visual_paradigm.bat
+TONG_HOP_CHUC_NANG.md
+doan.txt
+tools/export_thesis_docx.py
+tools/generate_drawio.py
+tools/generate_erd_vp.py
 
 # Temporary / Output
 tools/output/
+
+# AI Service local artifacts, venv, training & dataset scripts
+ai-service/.venv/
+ai-service/prototypes.npz
+ai-service/probe.npz
+ai-service/probe.candidate.npz
+ai-service/probe.npz.bak
+ai-service/vision_finetuned.pt
+ai-service/vision_finetuned.candidate.pt
+ai-service/finetune_siglip.py
+ai-service/retrain_probe.py
+ai-service/data/
+tools/training/
+ai-service/eval/
+server/uploads/.ai-cache.json
+__pycache__/
+*.pyc
+.pytest_cache/
 

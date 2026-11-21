@@ -1,4 +1,5 @@
 const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = rateLimit;
 
 const isInternalTest = (req) => {
   return req.headers['x-internal-test'] === 'englearn-test-key' || process.env.NODE_ENV === 'test';
@@ -50,8 +51,25 @@ const heavyLimiter = rateLimit({
   }
 });
 
+/**
+ * Giới hạn cho AI Vision Chatbox (bảo vệ GPU local khỏi spam)
+ */
+const aiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 phút
+  max: process.env.NODE_ENV === 'production' ? 15 : 120,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: isInternalTest,
+  keyGenerator: (req) => (req.user?.id ? `user:${req.user.id}` : ipKeyGenerator(req.ip || '')),
+  message: {
+    status: 'error',
+    message: 'Bạn đã gửi quá nhiều ảnh trong 1 phút. Vui lòng chờ một lát trước khi thử lại.'
+  }
+});
+
 module.exports = {
   apiLimiter,
   authLimiter,
-  heavyLimiter
+  heavyLimiter,
+  aiLimiter
 };

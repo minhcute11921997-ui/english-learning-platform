@@ -29,6 +29,7 @@ const UserVocabProgress = require('./UserVocabProgress')(sequelize);
 const ReviewSchedule = require('./ReviewSchedule')(sequelize);
 const UserVocabList = require('./UserVocabList')(sequelize);
 const UserVocabListItem = require('./UserVocabListItem')(sequelize);
+const AiFeedback = require('./AiFeedback')(sequelize);
 
 // ===== ASSOCIATIONS =====
 
@@ -36,6 +37,8 @@ const UserVocabListItem = require('./UserVocabListItem')(sequelize);
 User.hasMany(UserVocabProgress, { foreignKey: 'user_id', as: 'vocabProgress' });
 User.hasMany(ReviewSchedule, { foreignKey: 'user_id', as: 'reviewSchedules' });
 User.hasMany(UserVocabList, { foreignKey: 'user_id', as: 'vocabLists' });
+User.hasMany(AiFeedback, { foreignKey: 'user_id', as: 'aiFeedbacks' });
+AiFeedback.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 // Topic associations
 Topic.hasMany(Vocabulary, { foreignKey: 'topic_id', as: 'vocabularies' });
@@ -90,7 +93,8 @@ const db = {
   UserVocabProgress,
   ReviewSchedule,
   UserVocabList,
-  UserVocabListItem
+  UserVocabListItem,
+  AiFeedback
 };
 
 module.exports = db;

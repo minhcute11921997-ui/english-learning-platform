@@ -9,6 +9,7 @@ const { Op } = require('sequelize');
 const ApiResponse = require('../utils/apiResponse');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
+const visionService = require('../services/vision.service');
 
 // === QUẢN TRỊ NGƯỜI DÙNG ===
 
@@ -121,6 +122,9 @@ const createVocabulary = catchAsync(async (req, res) => {
     });
   }
 
+  visionService.invalidateVocabCache();
+  visionService.syncVocabLabel(vocab).catch(() => {});
+
   return ApiResponse.created(res, vocab, 'Tạo từ vựng mới thành công');
 });
 
@@ -130,6 +134,8 @@ const updateVocabulary = catchAsync(async (req, res) => {
   if (!vocab) throw new AppError('Không tìm thấy từ vựng.', 404);
 
   await vocab.update(req.body);
+  visionService.invalidateVocabCache();
+  visionService.syncVocabLabel(vocab).catch(() => {});
   return ApiResponse.success(res, vocab, 'Cập nhật từ vựng thành công');
 });
 
@@ -139,6 +145,7 @@ const deleteVocabulary = catchAsync(async (req, res) => {
   if (!vocab) throw new AppError('Không tìm thấy từ vựng.', 404);
 
   await vocab.destroy();
+  visionService.invalidateVocabCache();
   return ApiResponse.success(res, null, 'Xóa từ vựng thành công');
 });
 

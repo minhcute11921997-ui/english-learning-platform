@@ -51,6 +51,7 @@ export default function Header() {
               <NavLink to="/dashboard" className={navLinkClass}>Bảng điều khiển</NavLink>
               <NavLink to="/topics" className={navLinkClass}>Chủ đề Mỹ thuật</NavLink>
               <NavLink to="/review" className={navLinkClass}>Ôn tập</NavLink>
+              <NavLink to="/ai-chat" className={navLinkClass}>AI Nhận diện</NavLink>
               {user?.role === 'admin' && (
                 <NavLink
                   to="/admin"
@@ -126,6 +127,9 @@ export default function Header() {
               </NavLink>
               <NavLink to="/review" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>
                 Ôn tập
+              </NavLink>
+              <NavLink to="/ai-chat" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>
+                AI Nhận diện
               </NavLink>
               {user?.role === 'admin' && (
                 <NavLink to="/admin" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>

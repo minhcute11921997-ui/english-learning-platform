@@ -1,0 +1,545 @@
+{
+  "model_default": "google/siglip-so400m-patch14-384",
+  "labels": [
+    {
+      "word": "oil painting",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh sơn dầu",
+      "image_url": "/images/vocab/oil_painting.jpg",
+      "image_alt": "Bức tranh sơn dầu kinh điển trên toan với bảng màu và cọ vẽ",
+      "cultural_note": "Kỹ thuật sơn dầu phát triển bùng nổ từ thế kỷ 15 tại vùng Flanders (Bỉ/Hà Lan) với danh họa Jan van Eyck, mang lại độ sâu quang học và độ bền bỉ qua hàng thế kỷ."
+    },
+    {
+      "word": "watercolor",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh màu nước",
+      "image_url": "/images/vocab/watercolor.jpg",
+      "image_alt": "Bức tranh màu nước với các vệt màu loang trong trẻo",
+      "cultural_note": "Tranh màu nước có lịch sử lâu đời từ Ai Cập cổ đại và nở rộ tại Anh vào thế kỷ 18-19, đề cao tính ngẫu hứng, độ trong suốt và tương tác tinh tế giữa nước và giấy bông."
+    },
+    {
+      "word": "acrylic painting",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh màu acrylic",
+      "image_url": "/images/vocab/acrylic_painting.jpg",
+      "image_alt": "Tranh sơn acrylic hiện đại với sắc màu rực rỡ và khô nhanh",
+      "cultural_note": "Sơn acrylic ra đời vào giữa thế kỷ 20 từ chất kết dính polymer, nhanh khô và kháng nước, gắn liền với phong trào Nghệ thuật Pop Art và Biểu hiện trừu tượng."
+    },
+    {
+      "word": "fresco",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh bích họa trên vữa ướt",
+      "image_url": "/images/vocab/fresco.jpg",
+      "image_alt": "Bích họa cổ điển vẽ trực tiếp trên lớp vữa tường ẩm",
+      "cultural_note": "Bích họa vẽ trên lớp vữa vôi còn ướt (buon fresco). Sắc tố màu ngấm sâu vào vữa tạo độ bền vĩnh cửu, đỉnh cao là các kiệt tác tại Nhà nguyện Sistine ở Vatican."
+    },
+    {
+      "word": "portrait",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh chân dung",
+      "image_url": "/images/vocab/portrait.jpg",
+      "image_alt": "Tranh chân dung nghệ thuật miêu tả diện mạo và biểu cảm",
+      "cultural_note": "Thể loại tranh chân dung ghi lại diện mạo, khí chất và địa vị xã hội của nhân vật, từ chân dung hoàng gia châu Âu đến những khám phá nội tâm hiện đại."
+    },
+    {
+      "word": "landscape",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh phong cảnh",
+      "image_url": "/images/vocab/landscape.jpg",
+      "image_alt": "Tranh phong cảnh thiên nhiên bao la với núi rừng và bầu trời",
+      "cultural_note": "Tranh phong cảnh trở thành thể loại hội họa độc lập quan trọng từ thời Phục hưng và thăng hoa rực rỡ trong trường phái Lãng mạn cùng trường phái Ấn tượng ngoài trời."
+    },
+    {
+      "word": "still life",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh tĩnh vật",
+      "image_url": "/images/vocab/still_life.jpg",
+      "image_alt": "Tranh tĩnh vật sắp đặt bình gốm, hoa quả trên bàn",
+      "cultural_note": "Tranh tĩnh vật khắc họa những vật thể vô tri như hoa quả, hoa tươi, nhạc cụ, từng mang ý nghĩa triết học sâu sắc về sự ngắn ngủi của đời người (Vanitas Hà Lan)."
+    },
+    {
+      "word": "abstract art",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "nghệ thuật trừu tượng",
+      "image_url": "/images/vocab/abstract_art.jpg",
+      "image_alt": "Tác phẩm nghệ thuật trừu tượng với các mảng hình học và màu sắc",
+      "cultural_note": "Nghệ thuật trừu tượng từ bỏ việc mô phỏng thực tại hữu hình, sử dụng đường nét, màu sắc và hình khối thuần túy để đánh thức cảm xúc thị giác nguyên bản."
+    },
+    {
+      "word": "impressionism",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "trường phái ấn tượng",
+      "image_url": "/images/vocab/impressionism.jpg",
+      "image_alt": "Bức tranh trường phái Ấn tượng nắm bắt ánh sáng và sắc màu thoáng qua",
+      "cultural_note": "Trường phái Ấn tượng khởi xướng tại Paris thập niên 1870, chú trọng nắm bắt khoảnh khắc biến chuyển của ánh sáng tự nhiên với nét cọ ngắn và màu sắc tươi sáng."
+    },
+    {
+      "word": "surrealism",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "trường phái siêu thực",
+      "image_url": "/images/vocab/surrealism.jpg",
+      "image_alt": "Tác phẩm siêu thực với thế giới giấc mơ và biểu tượng bí ẩn",
+      "cultural_note": "Chủ nghĩa siêu thực khởi phát vào thập niên 1920 tại châu Âu, giải phóng tiềm thức, giấc mơ và những liên tưởng phi lý vượt ra ngoài logic lý tính."
+    },
+    {
+      "word": "cubism",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "trường phái lập thể",
+      "image_url": "/images/vocab/cubism.jpg",
+      "image_alt": "Tác phẩm Lập thể phân rã cấu trúc vật thể thành các mặt phẳng",
+      "cultural_note": "Chủ nghĩa Lập thể do Picasso và Braque sáng lập năm 1907, phân rã vật thể thành các đa giác hình khối và tái hiện chúng từ nhiều góc nhìn đồng thời."
+    },
+    {
+      "word": "canvas",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "vải vẽ tranh, toan vẽ",
+      "image_url": "/images/vocab/canvas.jpg",
+      "image_alt": "Tấm toan vẽ tranh căng đều trên khung gỗ mộc",
+      "cultural_note": "Toan vẽ (vải bố dệt từ sợi lanh hoặc sợi gai dầu căng trên khung gỗ) thay thế gỗ phiến từ thế kỷ 16 ở Venice nhờ trọng lượng nhẹ và khả năng chống ẩm cao."
+    },
+    {
+      "word": "easel",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "giá vẽ tranh",
+      "image_url": "/images/vocab/easel.jpg",
+      "image_alt": "Giá vẽ ba chân bằng gỗ dùng đỡ toan vẽ tranh",
+      "cultural_note": "Giá vẽ bằng gỗ xuất hiện từ thời cổ đại và là người bạn đồng hành không thể thiếu của người họa sĩ trong xưởng vẽ lẫn khi đi thực tế vẽ ngoại cảnh ngoài trời."
+    },
+    {
+      "word": "palette",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "bảng pha màu",
+      "image_url": "/images/vocab/palette.jpg",
+      "image_alt": "Bảng pha màu gỗ truyền thống chứa các vệt màu sơn dầu rực rỡ",
+      "cultural_note": "Bảng pha màu biểu trưng cho tư duy hòa sắc của họa sĩ, từ bảng gỗ hình hạt đậu thời Phục hưng đến bảng kính hoặc sứ phẳng hiện đại."
+    },
+    {
+      "word": "brushstroke",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "nét cọ, nét bút vẽ",
+      "image_url": "/images/vocab/brushstroke.jpg",
+      "image_alt": "Vệt cọ dứt khoát thể hiện chất liệu sơn và năng lượng người vẽ",
+      "cultural_note": "Nhát cọ là chữ ký cá nhân của người nghệ sĩ; từ nhát cọ mượt mà vô hình của trường phái Cổ điển đến nhát cọ dày dặn (impasto) đầy năng lượng của Van Gogh."
+    },
+    {
+      "word": "sketch",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "bản phác thảo, bản vẽ nháp",
+      "image_url": "/images/vocab/sketch.jpg",
+      "image_alt": "Bản vẽ phác thảo chì than phác họa đường nét và chuyển động",
+      "cultural_note": "Bản phác thảo là bước khởi đầu ghi lại ý niệm thị giác ban đầu; các bản phác thảo chì và mực của Leonardo da Vinci là di sản khảo cứu vô giá."
+    },
+    {
+      "word": "mural",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh tường",
+      "image_url": "/images/vocab/mural.jpg",
+      "image_alt": "Bức tranh tường khổ lớn trong không gian kiến trúc công cộng",
+      "cultural_note": "Tranh tường gắn liền với không gian công cộng, mang thông điệp xã hội và chính trị mạnh mẽ, tiêu biểu là phong trào tranh tường Mexico thập niên 1920-1930."
+    },
+    {
+      "word": "gouache",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh màu bột gouache",
+      "image_url": "/images/vocab/gouache.jpg",
+      "image_alt": "Tranh màu bột với các mảng màu đục phẳng mịn và độ phủ cao",
+      "cultural_note": "Màu bột (gouache) là màu nước đục có pha thêm chất độn như phấn trắng, tạo bề mặt màu lì, phẳng mịn, rất được ưa chuộng trong minh họa sách và thiết kế poster."
+    },
+    {
+      "word": "tempera",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh vẽ màu keo (lòng đỏ trứng)",
+      "image_url": "/images/vocab/tempera.jpg",
+      "image_alt": "Bức tranh vẽ bằng chất liệu màu trứng tempera cổ kính",
+      "cultural_note": "Chất liệu vẽ cổ xưa dùng lòng đỏ trứng gà làm chất kết dính hạt màu, thịnh hành suốt thời Trung cổ và tiền Phục hưng châu Âu trước khi sơn dầu ra đời."
+    },
+    {
+      "word": "minimalism",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "chủ nghĩa tối giản",
+      "image_url": "/images/vocab/minimalism.jpg",
+      "image_alt": "Tác phẩm hội họa tối giản với cấu trúc hình khối cô đọng",
+      "cultural_note": "Chủ nghĩa Tối giản ra đời tại New York thập niên 1960 với triết lý 'Ít hơn là nhiều hơn' (Less is more), tinh giản tuyệt đối yếu tố biểu cảm để tập trung vào bản chất vật liệu."
+    },
+    {
+      "word": "expressionism",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "trường phái biểu hiện",
+      "image_url": "/images/vocab/expressionism.jpg",
+      "image_alt": "Tác phẩm Biểu hiện với những đường nét uốn lượn và sắc màu kịch tính",
+      "cultural_note": "Trường phái Biểu hiện khởi phát từ Đức đầu thế kỷ 20, bóp méo hình dạng và dùng màu sắc tương phản mạnh mẽ để bộc lộ thế giới nội tâm đầy giông bão."
+    },
+    {
+      "word": "realism",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "chủ nghĩa hiện thực",
+      "image_url": "/images/vocab/realism.jpg",
+      "image_alt": "Bức tranh hiện thực miêu tả trung thực cuộc sống đời thường",
+      "cultural_note": "Chủ nghĩa Hiện thực xuất hiện tại Pháp giữa thế kỷ 19, từ chối sự lý tưởng hóa lãng mạn để khắc họa chân thực đời sống nhân dân lao động và hiện thực xã hội."
+    },
+    {
+      "word": "miniature",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh tiểu họa",
+      "image_url": "/images/vocab/miniature.jpg",
+      "image_alt": "Tác phẩm tranh tiểu họa tinh xảo vẽ chi tiết kích thước nhỏ",
+      "cultural_note": "Nghệ thuật tranh tiểu họa vẽ trên bề mặt nhỏ đòi hỏi sự tỉ mỉ phi thường bằng kính lúp và cọ lông mảnh, phát triển rực rỡ tại Ba Tư, Ấn Độ thời Mughal và châu Âu."
+    },
+    {
+      "word": "self-portrait",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh tự họa",
+      "image_url": "/images/vocab/self_portrait.jpg",
+      "image_alt": "Bức chân dung tự họa người nghệ sĩ tự khắc họa chính mình",
+      "cultural_note": "Chân dung tự họa là phương tiện tự vấn tâm thức và định vị bản ngã của người họa sĩ qua thời gian, nổi tiếng nhất là chuỗi chân dung tự họa của Rembrandt và Frida Kahlo."
+    },
+    {
+      "word": "seascape",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh phong cảnh biển",
+      "image_url": "/images/vocab/seascape.jpg",
+      "image_alt": "Bức tranh phong cảnh biển với những con sóng bạc đầu",
+      "cultural_note": "Tranh phong cảnh biển khắc họa sức mạnh huyền bí của đại dương, từ sóng gió gầm thét đến bờ cát tĩnh lặng, thịnh hành đặc biệt tại Hà Lan thế kỷ 17 và Anh thế kỷ 19."
+    },
+    {
+      "word": "cityscape",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh phong cảnh đô thị",
+      "image_url": "/images/vocab/cityscape.jpg",
+      "image_alt": "Bức tranh cảnh quan đô thị với các tòa nhà và đường phố",
+      "cultural_note": "Tranh phong cảnh đô thị phản ánh nhịp sống kiến trúc, đường phố và ánh sáng thị thành; phát triển từ tranh Veduta thành phố Venice thời Baroque đến các đô thị hiện đại."
+    },
+    {
+      "word": "chiaroscuro",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "kỹ thuật tương phản sáng tối",
+      "image_url": "/images/vocab/chiaroscuro.jpg",
+      "image_alt": "Kỹ thuật tương phản ánh sáng và bóng tối kịch tính",
+      "cultural_note": "Kỹ thuật sáng - tối tương phản gay gắt có nguồn gốc từ tiếng Ý (chiaro: sáng, scuro: tối), giúp tạo chiều sâu khối ba chiều và tính kịch tính điện ảnh cho tranh."
+    },
+    {
+      "word": "charcoal",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh vẽ chì than, than vẽ",
+      "image_url": "/images/vocab/charcoal.jpg",
+      "image_alt": "Bức vẽ bằng chì than với sắc đen mờ mịn và độ sâu ấn tượng",
+      "cultural_note": "Chì than là chất liệu vẽ lâu đời nhất của nhân loại từ những bức vẽ hang động thời tiền sử, cho phép tạo các sắc độ đen sâu thẳm và dải chuyển xám mềm mại."
+    },
+    {
+      "word": "pastel",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh phấn màu pastel",
+      "image_url": "/images/vocab/pastel.jpg",
+      "image_alt": "Tranh phấn tiên với lớp sắc tố mịn màng và độ sáng tươi trẻ",
+      "cultural_note": "Phấn tiên là thanh màu khô gồm sắc tố nguyên chất nén với lượng rất nhỏ chất kết dính, tạo hiệu ứng mờ mịn như phấn hoa, cực kỳ thịnh hành tại Pháp thế kỷ 18."
+    },
+    {
+      "word": "triptych",
+      "topic_id": 1,
+      "topic_name": "Types of Paintings",
+      "meaning_vi": "tranh bộ ba tấm ghép",
+      "image_url": "/images/vocab/triptych.jpg",
+      "image_alt": "Bộ tranh ba tấm triptych ghép liền theo phong cách án thờ cổ",
+      "cultural_note": "Tranh bộ ba gồm ba tấm ghép lại, thường dùng làm án thờ trong các thánh đường Thiên Chúa giáo thời Trung cổ và Phục hưng với tấm chính giữa và hai cánh mở."
+    },
+    {
+      "word": "ceramics",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghệ thuật gốm sứ",
+      "image_url": "/images/vocab/ceramics.jpg",
+      "image_alt": "Tác phẩm gốm sứ nghệ thuật với lớp men sáng bóng",
+      "cultural_note": "Nghệ thuật gốm sứ kết tinh từ đất sét, khoáng thạch và lửa nung nhiệt độ cao. Việt Nam có truyền thống gốm rực rỡ từ thời Lý - Trần với gốm hoa nâu, gốm Chu Đậu nổi danh."
+    },
+    {
+      "word": "pottery",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghề làm đồ gốm",
+      "image_url": "/images/vocab/pottery.jpg",
+      "image_alt": "Chiếc bình gốm đất nung mộc mạc trên bàn xoay gốm",
+      "cultural_note": "Nghệ thuật làm đồ gốm đất nung thủ công gắn liền với chiếc bàn xoay gốm truyền thống, tạo ra những vật dụng sinh hoạt mộc mạc và giàu tính thẩm mỹ bản địa."
+    },
+    {
+      "word": "lacquerware",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "đồ thủ công sơn mài",
+      "image_url": "/images/vocab/lacquerware.jpg",
+      "image_alt": "Sản phẩm sơn mài truyền thống thếp vàng lộng lẫy và bóng sâu",
+      "cultural_note": "Nghệ thuật sơn mài truyền thống Á Đông sử dụng nhựa cây sơn ta tự nhiên. Các họa sĩ Trường Mỹ thuật Đông Dương đã cách tân mài nước độc đáo, đưa sơn mài Việt Nam thành di sản hội họa thế giới."
+    },
+    {
+      "word": "embroidery",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghề thêu ren mỹ nghệ",
+      "image_url": "/images/vocab/embroidery.jpg",
+      "image_alt": "Tác phẩm tranh thêu tay tinh xảo bằng chỉ tơ lụa truyền thống",
+      "cultural_note": "Nghệ thuật thêu tay truyền thống sử dụng chỉ tơ tằm trên nền vải lụa, thể hiện độ tinh nhã của các nghệ nhân cung đình xưa và các làng nghề tranh thêu thủ công."
+    },
+    {
+      "word": "woodcarving",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghệ thuật điêu khắc gỗ",
+      "image_url": "/images/vocab/woodcarving.jpg",
+      "image_alt": "Họa tiết chạm khắc gỗ thủ công tinh xảo trên gỗ quý",
+      "cultural_note": "Nghệ thuật chạm khắc gỗ cổ truyền Việt Nam đạt đến đỉnh cao trên các bức cốn đình làng thế kỷ 16-18, tượng Phật chùa Tây Phương và đồ mỹ nghệ hoàng gia."
+    },
+    {
+      "word": "calligraphy",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghệ thuật thư pháp",
+      "image_url": "/images/vocab/calligraphy.jpg",
+      "image_alt": "Bức đại tự thư pháp mực tàu phóng khoáng trên giấy xuyến chỉ",
+      "cultural_note": "Thư pháp là nghệ thuật viết chữ đẹp biến các ký tự thành vũ điệu thị giác; tại phương Đông, thư pháp chữ Hán và thư pháp chữ Việt tôn vinh cốt cách 'Tâm - Đức - Tài'."
+    },
+    {
+      "word": "sculpture",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghệ thuật điêu khắc",
+      "image_url": "/images/vocab/sculpture.jpg",
+      "image_alt": "Bức tượng điêu khắc đá cẩm thạch ba chiều tuyệt mỹ",
+      "cultural_note": "Điêu khắc là nghệ thuật tạo hình ba chiều thông qua đục đẽo, nặn hoặc đúc kim loại, từ tượng điêu khắc Hy Lạp cổ đại đến các tác phẩm điêu khắc ngoài trời đương đại."
+    },
+    {
+      "word": "weaving",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghề dệt thủ công, dệt thổ cẩm",
+      "image_url": "/images/vocab/weaving.jpg",
+      "image_alt": "Tấm vải dệt thổ cẩm hoa văn truyền thống trên khung cửi",
+      "cultural_note": "Nghệ thuật dệt vải thủ công bằng khung cửi đan kết sợi dọc và sợi ngang, bảo tồn bản sắc văn hóa các dân tộc qua các tấm vải thổ cẩm và lụa tơ tằm danh tiếng."
+    },
+    {
+      "word": "glassblowing",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghề thổi thủy tinh mỹ nghệ",
+      "image_url": "/images/vocab/glassblowing.jpg",
+      "image_alt": "Nghệ nhân thổi ống thủy tinh nóng chảy định hình bình thủy tinh trong suốt",
+      "cultural_note": "Kỹ nghệ thổi thủy tinh thủ công nóng chảy phát triển từ thời La Mã cổ đại và đạt tới tầm đỉnh cao nghệ thuật tại đảo Murano thuộc Venice (Ý)."
+    },
+    {
+      "word": "silversmithing",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghề chế tác bạc mỹ nghệ",
+      "image_url": "/images/vocab/silversmithing.jpg",
+      "image_alt": "Sản phẩm chạm bạc thủ công với hoa văn cánh hoa tinh tế",
+      "cultural_note": "Nghệ thuật chế tác kim hoàn bạc với kỹ thuật đậu bạc (kéo sợi bạc mảnh như sợi chỉ rồi uốn hoa văn) và chạm khắc bạc tinh xảo lưu truyền qua nhiều thế kỷ."
+    },
+    {
+      "word": "jewelry design",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "thiết kế kim hoàn trang sức",
+      "image_url": "/images/vocab/jewelry_design.jpg",
+      "image_alt": "Trang sức vàng bạc đính ngọc quý được chế tác tinh mỹ",
+      "cultural_note": "Thiết kế trang sức mỹ nghệ kết hợp kiến thức đá quý, luyện kim và cảm quan thẩm mỹ để tạo ra những tác phẩm trang sức độc bản tôn vinh vẻ đẹp người đeo."
+    },
+    {
+      "word": "leathercraft",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghề làm đồ da thủ công",
+      "image_url": "/images/vocab/leathercraft.jpg",
+      "image_alt": "Sản phẩm đồ da thủ công với đường chỉ may yên ngựa tỉ mỉ",
+      "cultural_note": "Nghệ thuật chế tác đồ da thủ công từ cắt lạng da, dập vân hoa văn trang trí đến may chỉ yên ngựa (saddle stitch) bền bỉ theo năm tháng."
+    },
+    {
+      "word": "quilting",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghề chần ghép vải mỹ nghệ",
+      "image_url": "/images/vocab/quilting.jpg",
+      "image_alt": "Tấm vải chăn quilt ghép nhiều mẩu hoa văn hình học độc đáo",
+      "cultural_note": "Nghệ thuật may chần ghép vải (quilt) ghép các mảnh vải vụn thành tấm chăn hay tác phẩm nghệ thuật treo tường đa sắc, biểu tượng của văn hóa dân gian Bắc Mỹ."
+    },
+    {
+      "word": "printmaking",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghệ thuật in khắc đồ họa",
+      "image_url": "/images/vocab/printmaking.jpg",
+      "image_alt": "Bản in tranh khắc gỗ nghệ thuật với các lớp màu thủ công",
+      "cultural_note": "Nghệ thuật đồ họa in ấn gồm khắc gỗ, in lụa, in thạch bản; tại Việt Nam, tranh dân gian Đông Hồ và Hàng Trống là những di sản in tranh khắc gỗ quý báu."
+    },
+    {
+      "word": "engraving",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "kỹ thuật chạm khắc kim loại/đá",
+      "image_url": "/images/vocab/engraving.jpg",
+      "image_alt": "Bản chạm khắc kim loại chi tiết bằng dao trổ chuyên dụng",
+      "cultural_note": "Kỹ thuật chạm khắc kim loại bằng mũi dao trổ (burin) lên phiến đồng hoặc thép để tạo đường nét cực kỳ chuẩn xác, dùng in tiền giấy, con tem và tranh ấn họa cổ."
+    },
+    {
+      "word": "mosaic",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghệ thuật khảm ghép sành sứ/đá",
+      "image_url": "/images/vocab/mosaic.jpg",
+      "image_alt": "Bức tranh ghép đá mosaic muôn màu lấp lánh",
+      "cultural_note": "Nghệ thuật ghép mảnh (mosaic) dùng hàng ngàn viên đá màu, sành sứ hoặc thủy tinh màu ghép thành bức tranh lớn, rực rỡ tại các nhà thờ Byzantine và khảm sành sứ cung đình Huế."
+    },
+    {
+      "word": "basketry",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghề đan lát mây tre",
+      "image_url": "/images/vocab/basketry.jpg",
+      "image_alt": "Chiếc giỏ mây tre đan thủ công bằng nan tre uốn lượn",
+      "cultural_note": "Nghệ thuật đan lát mây tre đan cổ xưa tận dụng nguồn vật liệu thảo mộc tự nhiên của xứ sở nhiệt đới, tạo nên những sản phẩm vừa thanh thoát vừa dẻo dai."
+    },
+    {
+      "word": "tapestry",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghệ thuật dệt thảm trang trí",
+      "image_url": "/images/vocab/tapestry.jpg",
+      "image_alt": "Tấm thảm treo tường dệt tay dệt hình phong cảnh và hiệp sĩ",
+      "cultural_note": "Thảm thêu trang trí dệt tay khổ lớn bằng len và lụa từng là vật phẩm xa xỉ quý tộc tại các lâu đài châu Âu thời Trung cổ và Phục hưng vừa giữ ấm vừa thể hiện quyền uy."
+    },
+    {
+      "word": "gilding",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "kỹ thuật dát vàng lá mỹ nghệ",
+      "image_url": "/images/vocab/gilding.jpg",
+      "image_alt": "Tác phẩm dát vàng quỳ lấp lánh trên nền sơn son truyền thống",
+      "cultural_note": "Nghệ thuật dát vàng sử dụng những lá vàng quỳ được đập mỏng tang như cánh bướm dán lên tượng Phật, ngai vàng và hoành phi câu đối sơn son thếp vàng."
+    },
+    {
+      "word": "stonemasonry",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghề chạm khắc đá mỹ nghệ",
+      "image_url": "/images/vocab/stonemasonry.jpg",
+      "image_alt": "Khối đá cẩm thạch được thợ đá đẽo gọt điêu khắc công phu",
+      "cultural_note": "Kỹ nghệ đẽo gọt và điêu khắc đá tảng xây dựng nên những công trình kiến trúc kỳ vĩ như tháp Chăm, thành nhà Hồ và các lăng tẩm cung điện cổ truyền."
+    },
+    {
+      "word": "origami",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghệ thuật gấp giấy",
+      "image_url": "/images/vocab/origami.jpg",
+      "image_alt": "Con hạc giấy Origami gấp tinh tế từ một tờ giấy vuông",
+      "cultural_note": "Nghệ thuật gấp giấy truyền thống của Nhật Bản (Ori: gấp, Kami: giấy) biến một tờ giấy phẳng duy nhất thành hình các sinh vật sống động mà không cần cắt hay dán keo."
+    },
+    {
+      "word": "blacksmithing",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghề rèn sắt mỹ nghệ",
+      "image_url": "/images/vocab/blacksmithing.jpg",
+      "image_alt": "Nghệ nhân rèn kim loại đập búa trên đe lửa đỏ rực rỡ",
+      "cultural_note": "Nghệ thuật rèn sắt thủ công dùng đe, búa và lò lửa tôi rèn kim loại thành các chi tiết cổng hoa sắt mỹ thuật, vũ khí và công cụ sắc bén."
+    },
+    {
+      "word": "potter",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghệ nhân làm gốm",
+      "image_url": "/images/vocab/potter.jpg",
+      "image_alt": "Người thợ gốm đang miệt mài tạo hình chiếc bình đất trên bàn xoay",
+      "cultural_note": "Nghệ nhân gốm là người thổi hồn vào đất sét bằng đôi bàn tay tài hoa trên bàn xoay, kết hợp kỹ thuật pha chế nước men tro, men ngọc độc đáo."
+    },
+    {
+      "word": "sculptor",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nhà điêu khắc",
+      "image_url": "/images/vocab/sculptor.jpg",
+      "image_alt": "Nhà điêu khắc đang dùng đục và búa tạc tượng đá cẩm thạch",
+      "cultural_note": "Nhà điêu khắc là nghệ sĩ tư duy không gian ba chiều, giải phóng hình hài tiềm ẩn bên trong phiến đá vô tri hoặc khối đồng đúc."
+    },
+    {
+      "word": "artisan",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nghệ nhân thủ công lành nghề",
+      "image_url": "/images/vocab/artisan.jpg",
+      "image_alt": "Nghệ nhân bậc thầy đang tỉ mỉ hoàn thiện tác phẩm thủ công",
+      "cultural_note": "Nghệ nhân là người thợ bậc thầy đạt tới độ thấu hiểu sâu sắc chất liệu và kỹ thuật gia truyền, giữ gìn hồn cốt các di sản thủ công truyền thống."
+    },
+    {
+      "word": "craftsman",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "thợ thủ công",
+      "image_url": "/images/vocab/craftsman.jpg",
+      "image_alt": "Thợ thủ công cần mẫn bên bàn làm việc với các dụng cụ chế tác",
+      "cultural_note": "Thợ thủ công lành nghề là lực lượng sáng tạo bền bỉ biến vật liệu thô mộc thành các vật phẩm mỹ nghệ tinh xảo phục vụ đời sống và nghệ thuật."
+    },
+    {
+      "word": "weaver",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "thợ dệt vải/thảm",
+      "image_url": "/images/vocab/weaver.jpg",
+      "image_alt": "Người thợ dệt đang thoăn thoắt đưa con thoi trên khung cửi gỗ",
+      "cultural_note": "Nghệ nhân dệt vải ngồi bên khung cửi nhịp nhàng luồn thoi đưa sợi, dệt nên những dải lụa mượt mà hay tấm thổ cẩm rực rỡ hoa văn núi rừng."
+    },
+    {
+      "word": "metalsmith",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "thợ chế tác kim loại mỹ nghệ",
+      "image_url": "/images/vocab/metalsmith.jpg",
+      "image_alt": "Thợ kim khí đang thao tác với ngọn lửa nung chảy kim loại",
+      "cultural_note": "Thợ đúc rèn kim loại tinh chế đồng, đồng thau và sắt thép; tiêu biểu là nghề đúc trống đồng Đông Sơn huyền thoại của người Việt cổ."
+    },
+    {
+      "word": "calligrapher",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "nhà thư pháp",
+      "image_url": "/images/vocab/calligrapher.jpg",
+      "image_alt": "Nhà thư pháp đang cầm bút lông lướt những đường mực uyển chuyển",
+      "cultural_note": "Nhà thư pháp tĩnh tâm luyện bút lực, dùng ngọn bút lông chấm mực tàu truyền tải tinh hoa triết đạo và vẻ đẹp thi ca lên từng nét chữ."
+    },
+    {
+      "word": "restorer",
+      "topic_id": 2,
+      "topic_name": "Fine Arts & Crafts Professions",
+      "meaning_vi": "chuyên gia phục chế tác phẩm",
+      "image_url": "/images/vocab/restorer.jpg",
+      "image_alt": "Chuyên gia phục chế dùng kính lúp và hóa chất bảo tồn bức tranh cổ",
+      "cultural_note": "Chuyên gia phục chế tác phẩm nghệ thuật là bác sĩ của di sản, có kiến thức hóa học, lịch sử nghệ thuật sâu sắc để cứu vãn các kiệt tác tranh cổ và tượng khỏi sự hủy hoại của thời gian."
+    }
+  ]
+}

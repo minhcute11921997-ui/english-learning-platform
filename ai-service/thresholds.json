@@ -1,0 +1,11 @@
+{
+  "score": 3.449519230769231,
+  "T_LOW_SIM": 0.04,
+  "T_OOD_MARGIN": 0.01,
+  "T_HIGH_PROB": 0.7,
+  "PROB_MARGIN": 0.15,
+  "ood_rej_rate": 1.0,
+  "in_false_rej": 0.0,
+  "t1_coverage": 0.462,
+  "t1_precision": 0.812
+}

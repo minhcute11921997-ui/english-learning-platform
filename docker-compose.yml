@@ -41,6 +41,13 @@ services:
       JWT_SECRET: englearn_jwt_secret_key_production_2026_super_secure
       JWT_REFRESH_SECRET: englearn_jwt_refresh_secret_key_production_2026_super_secure
       CLIENT_URL: http://localhost:5173
+      AI_ENABLED: "true"
+      AI_SERVICE_URL: http://host.docker.internal:8001
+      AI_TIER2_MODE: "off"
+      OLLAMA_URL: http://host.docker.internal:11434
+      AI_VISION_MODEL: qwen2.5vl:7b
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       mysql:
         condition: service_healthy

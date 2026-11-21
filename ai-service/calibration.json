@@ -1,0 +1,42 @@
+{
+  "score": 2.845,
+  "C": 30.0,
+  "C_dino": 10.0,
+  "alpha_zs": 0.25,
+  "beta_probe": 1.5,
+  "beta_dino": 0.15,
+  "dino_gate_weight": 0.0,
+  "dino_intra_weight": 0.0,
+  "gamma_facet": 0.65,
+  "gamma_gbdt": 0.5,
+  "val_top1": 0.7569,
+  "val_top3": 0.8923,
+  "val_ood_rej": 1.0,
+  "val_false_rej": 0.0028,
+  "dino_enabled": true,
+  "gbdt_enabled": true,
+  "moe_facet_routing": true,
+  "cal_temp": 1.9,
+  "ood_calibration": {
+    "obj": 2.0,
+    "ood_prob_thresh": 0.35,
+    "ood_margin_thresh": -0.04,
+    "tpr": 1.0,
+    "fpr": 0.0
+  },
+  "conformal_q_90": 0.9652,
+  "confident_match_prob_thresh": 0.6,
+  "gate_prob_thresh": 0.5,
+  "gate_val_f1": 0.7775,
+  "facet_prob_min": 0.45,
+  "facet_logit_gap_max": 2.5,
+  "facets": [
+    "medium",
+    "subject",
+    "movement",
+    "tool",
+    "craft",
+    "artisan"
+  ],
+  "feedback_vectors_used": 0
+}

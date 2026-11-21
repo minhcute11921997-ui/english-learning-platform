@@ -61,3 +61,14 @@ export const vocabListApi = {
   removeWord: (listId, vocabId) => api.delete(`/vocab-lists/${listId}/words/${vocabId}`),
   getWordMembership: (params) => api.get('/vocab-lists/words/membership', { params })
 };
+
+export const aiApi = {
+  health: () => api.get('/ai/health', { timeout: 5000 }),
+  identify: (formData) =>
+    api.post('/ai/identify', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 30000
+    }),
+  refineStatus: (jobId) => api.get(`/ai/refine/${jobId}`, { timeout: 5000 }),
+  feedback: (data) => api.post('/ai/feedback', data)
+};

@@ -1,0 +1,48 @@
+{
+  "facets": {
+    "medium": {
+      "label_vi": "Chất liệu & Kỹ thuật",
+      "words": [
+        "oil painting", "watercolor", "acrylic painting", "gouache", "tempera",
+        "fresco", "charcoal", "pastel", "sketch", "mural", "miniature",
+        "chiaroscuro", "triptych"
+      ]
+    },
+    "subject": {
+      "label_vi": "Thể loại & Đề tài",
+      "words": [
+        "portrait", "self-portrait", "landscape", "seascape", "cityscape", "still life"
+      ]
+    },
+    "movement": {
+      "label_vi": "Trường phái",
+      "words": [
+        "impressionism", "cubism", "surrealism", "expressionism",
+        "realism", "abstract art", "minimalism"
+      ]
+    },
+    "tool": {
+      "label_vi": "Dụng cụ & Bề mặt",
+      "words": [
+        "canvas", "easel", "palette", "brushstroke"
+      ]
+    },
+    "craft": {
+      "label_vi": "Nghề & Sản phẩm mỹ nghệ",
+      "words": [
+        "ceramics", "pottery", "lacquerware", "embroidery", "woodcarving",
+        "calligraphy", "sculpture", "weaving", "glassblowing", "silversmithing",
+        "jewelry design", "leathercraft", "quilting", "printmaking", "engraving",
+        "mosaic", "basketry", "tapestry", "gilding", "stonemasonry",
+        "origami", "blacksmithing"
+      ]
+    },
+    "artisan": {
+      "label_vi": "Nghệ nhân & Tác giả",
+      "words": [
+        "potter", "sculptor", "artisan", "craftsman", "weaver",
+        "metalsmith", "calligrapher", "restorer"
+      ]
+    }
+  }
+}

@@ -60,6 +60,23 @@ npm run dev
 
 ---
 
+### Cách 3: Chạy cơ chế AI Nhận diện Ảnh Local (Tùy chọn cho `/ai-chat`)
+
+Hệ thống dùng **SigLIP (`google/siglip-so400m-patch14-384`) + Linear Probe đã hiệu chỉnh + Phân nhóm đa khía cạnh (Multi-Facet)** chạy local trên CUDA FP16 (~2.6GB VRAM), tốc độ ~80ms/ảnh (micro-batch ~22 req/s):
+
+```powershell
+# Cài & chạy Vision Classifier (cổng 8001)
+python -m venv ai-service\.venv
+.\ai-service\.venv\Scripts\pip.exe install -r ai-service\requirements.txt
+.\ai-service\.venv\Scripts\python.exe ai-service\build_prototypes.py
+# (Tùy chọn) .\ai-service\.venv\Scripts\python.exe ai-service\train_probe.py
+.\ai-service\.venv\Scripts\uvicorn.exe app:app --app-dir ai-service --host 0.0.0.0 --port 8001
+# Hoặc chạy nhanh: .\ai-service\start_ai.ps1
+# (Nếu muốn bật thêm VLM tinh chỉnh nền AI_TIER2_MODE=async/sync: .\ai-service\start_ai.ps1 -WithOllama)
+```
+
+---
+
 ## 🔑 Tài Khoản Demo Sẵn Có
 
 Hệ thống tự động nạp sẵn các tài khoản mẫu khi chạy `node server/src/seeders/index.js`:

@@ -19,6 +19,7 @@ const FlashcardPage = lazy(() => import('./pages/vocab/FlashcardPage'));
 const ExercisePage = lazy(() => import('./pages/vocab/ExercisePage'));
 const UserVocabListDetailPage = lazy(() => import('./pages/vocab/UserVocabListDetailPage'));
 const ReviewPage = lazy(() => import('./pages/review/ReviewPage'));
+const AiChatPage = lazy(() => import('./pages/ai/AiChatPage'));
 const AdminPage = lazy(() => import('./pages/admin/AdminPage'));
 
 function RootRedirect() {
@@ -57,6 +58,9 @@ const router = createBrowserRouter([
 
       // Spaced Repetition Review (SM-2)
       { path: '/review', element: <ReviewPage /> },
+
+      // Local AI Image Recognition Chatbox
+      { path: '/ai-chat', element: <AiChatPage /> },
 
       // Admin panel (role restricted)
       {
