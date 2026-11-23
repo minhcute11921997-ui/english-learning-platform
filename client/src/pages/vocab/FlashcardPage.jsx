@@ -182,15 +182,15 @@ export default function FlashcardPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6 pb-14">
       {/* Header */}
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <Link
           to={isCustomList ? `/vocab-lists/${id}` : `/topics/${id}`}
           className="btn btn-secondary text-xs gap-2 py-2 px-3.5 rounded-xl shrink-0"
         >
-          <HiArrowLeft /> Quay lại danh mục
+          <HiArrowLeft /> Quay lại
         </Link>
         {topic?.name_vi && (
-          <h1 className="hidden sm:block text-sm font-extrabold text-slate-700 truncate">
+          <h1 className="w-full sm:w-auto sm:order-none -order-1 text-sm font-bold text-slate-700">
             {topic.name_vi}
           </h1>
         )}
@@ -219,11 +219,10 @@ export default function FlashcardPage() {
       {/* 3D Flip Flashcard */}
       {current ? (
         <div
-          className="perspective-1000 min-h-[480px] cursor-pointer"
-          onClick={() => setIsFlipped(!isFlipped)}
+          className="study-card-wrap"
         >
           <div
-            className={`w-full min-h-[480px] rounded-3xl shadow-xl border p-6 sm:p-8 transition-all duration-300 flex flex-col justify-between select-none ${
+            className={`study-card-shell w-full min-h-[450px] flex flex-col justify-between ${
               isFlipped
                 ? 'bg-slate-50 border-blue-300 shadow-blue-500/10'
                 : 'bg-white border-slate-200/90 hover:border-blue-400 shadow-slate-900/5'
@@ -241,7 +240,7 @@ export default function FlashcardPage() {
             {!isFlipped ? (
               <div className="text-center py-4 flex flex-col items-center justify-center flex-1">
                 {/* Visual Image */}
-                <div className="w-full max-w-sm h-56 mx-auto mb-5 rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-slate-50">
+                <div className="study-card-image w-full max-w-lg mx-auto mb-5 overflow-hidden">
                   <VocabImage
                     src={current.image_url}
                     alt={current.image_alt || current.word}
@@ -250,7 +249,7 @@ export default function FlashcardPage() {
                   />
                 </div>
 
-                <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-950 mb-2 tracking-tight">
+                <h2 className="study-card-word text-slate-950 mb-2">
                   {current.word}
                 </h2>
                 <p className="text-sm font-mono text-slate-500 mb-5">{current.pronunciation}</p>
@@ -296,11 +295,14 @@ export default function FlashcardPage() {
             )}
 
             {/* Footer action */}
-            <div className="flex justify-between items-center pt-5 border-t border-slate-100 gap-3">
+            <div className="flex flex-wrap justify-between items-center pt-4 border-t border-slate-200 gap-3">
+              <button type="button" className="btn btn-secondary" onClick={() => setIsFlipped(open => !open)}>
+                {isFlipped ? 'Xem mặt trước' : 'Lật thẻ'}
+              </button>
               <div>
                 {current.user_progress && (
                   <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
-                    <HiCheck className="w-3.5 h-3.5" /> Đã lưu SM-2
+                    <HiCheck className="w-3.5 h-3.5" /> Đã thêm vào ôn tập
                   </span>
                 )}
               </div>

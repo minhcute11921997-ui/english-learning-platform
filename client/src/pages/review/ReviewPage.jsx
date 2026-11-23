@@ -317,7 +317,7 @@ export default function ReviewPage() {
   if (isLoading) {
     return (
       <div className="py-24 flex justify-center">
-        <LoadingSpinner size="lg" text="Đang đồng bộ thuật toán ôn tập ngắt quãng SM-2..." />
+        <LoadingSpinner size="lg" text="Đang tải lịch ôn tập…" />
       </div>
     );
   }
@@ -326,7 +326,7 @@ export default function ReviewPage() {
     <div className="space-y-7 max-w-4xl mx-auto pb-14">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h1 className="page-title">
           Ôn tập từ vựng
         </h1>
 
@@ -343,14 +343,14 @@ export default function ReviewPage() {
               className="appearance-none bg-white border border-slate-300 hover:border-blue-500 text-slate-800 text-xs sm:text-sm font-semibold py-2.5 pl-3.5 pr-8 rounded-xl shadow-xs focus:outline-hidden cursor-pointer"
             >
               <optgroup label="Hàng đợi hệ thống">
-                <option value="due_today">⚡ Cần ôn hôm nay ({dueWords.length} từ)</option>
-                <option value="all_learning">📚 Tất cả từ đang học ({learningWords.length} từ)</option>
+                <option value="due_today">Cần ôn hôm nay ({dueWords.length} từ)</option>
+                <option value="all_learning">Tất cả từ đang học ({learningWords.length} từ)</option>
               </optgroup>
               {myLists.length > 0 && (
                 <optgroup label="Sổ từ cá nhân">
                   {myLists.map((list) => (
                     <option key={list.id} value={`list_${list.id}`}>
-                      📁 {list.name} ({list.vocab_count || 0} từ)
+                      {list.name} ({list.vocab_count || 0} từ)
                     </option>
                   ))}
                 </optgroup>
@@ -363,53 +363,31 @@ export default function ReviewPage() {
         </div>
       </div>
 
-      {/* Stats Cards - Contemporary Gallery Metrics */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div
-          onClick={() => handleSourceChange('due_today')}
-          className={`card text-center p-5 cursor-pointer transition-all border rounded-2xl ${
-            selectedSource === 'due_today' && activeTab === 'queue'
-              ? 'ring-2 ring-blue-600 bg-blue-50/60 border-blue-300 shadow-sm'
-              : 'bg-white hover:bg-slate-50 border-slate-200/90'
-          }`}
-        >
-          <span className="font-mono text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Cần ôn hôm nay</span>
-          <p className="text-3xl font-extrabold text-blue-600 mt-1 tracking-tight">
-            {stats?.dueCount || 0}
-          </p>
+      <div className="studio-metrics" aria-label="Tiến độ ôn tập">
+        <button type="button" className="studio-metric"
+          aria-pressed={selectedSource === 'due_today' && activeTab === 'queue'}
+          onClick={() => handleSourceChange('due_today')}>
+          <span>Cần ôn hôm nay</span>
+          <strong>{stats?.dueCount ?? 0}</strong>
+        </button>
+        <button type="button" className="studio-metric"
+          aria-pressed={selectedSource === 'all_learning' && activeTab === 'queue'}
+          onClick={() => handleSourceChange('all_learning')}>
+          <span>Đang học</span>
+          <strong>{stats?.learningCount ?? 0}</strong>
+        </button>
+        <div className="studio-metric">
+          <span>Đã thuần thục</span>
+          <strong>{stats?.masteredCount ?? 0}</strong>
         </div>
-
-        <div
-          onClick={() => handleSourceChange('all_learning')}
-          className={`card text-center p-5 cursor-pointer transition-all border rounded-2xl ${
-            selectedSource === 'all_learning' && activeTab === 'queue'
-              ? 'ring-2 ring-blue-600 bg-blue-50/60 border-blue-300 shadow-sm'
-              : 'bg-white hover:bg-slate-50 border-slate-200/90'
-          }`}
-        >
-          <span className="font-mono text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Đang học</span>
-          <p className="text-3xl font-extrabold text-slate-900 mt-1 tracking-tight">
-            {stats?.learningCount || 0}
-          </p>
-        </div>
-
-        <div className="card text-center p-5 bg-white border border-slate-200/90 rounded-2xl shadow-xs">
-          <span className="font-mono text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Đã thuần thục</span>
-          <p className="text-3xl font-extrabold text-emerald-600 mt-1 tracking-tight">
-            {stats?.masteredCount || 0}
-          </p>
-        </div>
-
-        <div className="card text-center p-5 bg-white border border-slate-200/90 rounded-2xl shadow-xs">
-          <span className="font-mono text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Độ chính xác</span>
-          <p className="text-3xl font-extrabold text-slate-800 mt-1 tracking-tight">
-            {stats?.accuracyRate || 0}%
-          </p>
+        <div className="studio-metric">
+          <span>Độ chính xác</span>
+          <strong>{stats?.accuracyRate ?? 0}%</strong>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200 text-xs sm:text-sm font-bold gap-4">
+      <div className="studio-tabs text-sm font-bold">
         <button
           onClick={() => setActiveTab('queue')}
           className={`py-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2 ${
@@ -418,8 +396,8 @@ export default function ReviewPage() {
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <HiSparkles className="w-4 h-4 text-blue-600" />
-          <span>Thẻ Ôn Tập ({currentQueue.length})</span>
+          <HiSparkles className="w-4 h-4 text-blue-600" aria-hidden="true" />
+          <span>Thẻ ôn ({currentQueue.length})</span>
         </button>
 
         <button
@@ -431,7 +409,7 @@ export default function ReviewPage() {
           }`}
         >
           <HiBookOpen className="w-4 h-4" />
-          <span>Danh Sách Từ Đang Học ({learningWords.length})</span>
+          <span>Đang học ({learningWords.length})</span>
         </button>
 
         <button
@@ -443,7 +421,7 @@ export default function ReviewPage() {
           }`}
         >
           <HiCalendar className="w-4 h-4" />
-          <span>Lịch 7 Ngày Tới ({upcoming.length})</span>
+          <span>Lịch 7 ngày ({upcoming.length})</span>
         </button>
       </div>
 
@@ -456,7 +434,7 @@ export default function ReviewPage() {
               <span>Đang tải các từ trong sổ từ...</span>
             </div>
           ) : currentQueue.length > 0 && vocab ? (
-            <div className="bg-white rounded-3xl p-6 sm:p-9 border border-slate-200/90 shadow-md max-w-2xl mx-auto space-y-6">
+            <div className="practice-card study-card-shell max-w-2xl mx-auto space-y-6">
               {/* Badge & Mode Header */}
               <div className="flex justify-between items-center text-xs font-mono font-bold text-slate-400 pb-3.5 border-b border-slate-100 uppercase tracking-wider">
                 <span className="flex items-center gap-1.5 text-blue-700">

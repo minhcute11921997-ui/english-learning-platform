@@ -201,7 +201,7 @@ export default function UserVocabListDetailPage() {
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div className="space-y-1.5">
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight">
+                <h1 className="page-title">
                   {list.name}
                 </h1>
                 <span className="font-mono text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">
@@ -283,7 +283,7 @@ export default function UserVocabListDetailPage() {
                     <VocabImage
                       src={vocab.image_url}
                       alt={vocab.image_alt || vocab.word}
-                      fit="cover"
+                      fit="contain"
                       enableZoom={true}
                       className="w-full h-full"
                     />

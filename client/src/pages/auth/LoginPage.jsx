@@ -50,13 +50,14 @@ export default function LoginPage() {
 
   return (
     <div>
-      <h2 className="text-center mb-6 text-2xl font-extrabold text-slate-950 tracking-tight">Đăng Nhập</h2>
+      <h1 className="page-title">Đăng nhập</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label="Email"
           type="email"
           name="email"
+          autoComplete="email"
           placeholder="your@email.com"
           value={formData.email}
           onChange={handleChange}
@@ -67,6 +68,7 @@ export default function LoginPage() {
           label="Mật khẩu"
           type="password"
           name="password"
+          autoComplete="current-password"
           placeholder="••••••••"
           value={formData.password}
           onChange={handleChange}
@@ -78,7 +80,7 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-xs text-slate-600">
+      <p className="mt-6 text-sm text-slate-600">
         Chưa có tài khoản?{' '}
         <Link to="/register" className="text-blue-600 hover:underline font-bold">
           Đăng ký ngay

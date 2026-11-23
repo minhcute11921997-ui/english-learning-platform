@@ -83,7 +83,7 @@ export default function VocabImage({
       {/* Darkroom Exhibition Modal */}
       {isZoomed && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 illustration-dialog bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
           onClick={() => setIsZoomed(false)}
         >
           <div
@@ -103,7 +103,7 @@ export default function VocabImage({
             {alt && (
               <div className="mt-4 text-center">
                 <span className="inline-block px-2.5 py-0.5 rounded-md bg-blue-500/20 text-blue-400 font-mono text-[11px] uppercase tracking-wider mb-1">
-                  Exhibition Preview
+                  Xem tác phẩm
                 </span>
                 <p className="text-sm text-slate-200 font-medium">{alt}</p>
               </div>

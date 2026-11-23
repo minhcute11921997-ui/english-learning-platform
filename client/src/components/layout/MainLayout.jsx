@@ -1,14 +1,12 @@
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
 
-/**
- * Layout chính của ứng dụng với Header
- */
 export default function MainLayout() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-100 selection:text-blue-900">
+    <div className="studio-shell">
+      <a href="#studio-content" className="studio-skip-link">Chuyển đến nội dung</a>
       <Header />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main id="studio-content" className="studio-main" tabIndex={-1}>
         <Outlet />
       </main>
     </div>

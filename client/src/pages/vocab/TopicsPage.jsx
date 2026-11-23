@@ -2,33 +2,15 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { topicApi, vocabListApi } from '../../api/services';
+import TopicCard from '../../components/vocab/TopicCard';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import {
   HiOutlineBookOpen,
-  HiOutlineUser,
-  HiOutlineUserGroup,
-  HiOutlineAcademicCap,
-  HiOutlineSparkles,
-  HiOutlineHeart,
-  HiOutlineGlobeAmericas,
-  HiOutlineClock,
   HiOutlineArrowRight,
   HiOutlineFolder,
   HiOutlinePlus,
-  HiOutlineFolderPlus,
-  HiOutlinePaintBrush
+  HiOutlineFolderPlus
 } from 'react-icons/hi2';
-
-const iconMap = {
-  HiPaintBrush: HiOutlinePaintBrush,
-  HiSparkles: HiOutlineSparkles,
-  HiUser: HiOutlineUser,
-  HiUserGroup: HiOutlineUserGroup,
-  HiAcademicCap: HiOutlineAcademicCap,
-  HiHeart: HiOutlineHeart,
-  HiGlobe: HiOutlineGlobeAmericas,
-  HiClock: HiOutlineClock
-};
 
 export default function TopicsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -111,102 +93,26 @@ export default function TopicsPage() {
 
   return (
     <div className="space-y-7 pb-14">
-      {/* Header & Contemporary Tab Switcher */}
-      <div className="border-b border-slate-200 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Chuyên đề Mỹ thuật
-        </h1>
-
-        {/* Tab Switcher */}
-        <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-2xl self-start sm:self-auto border border-slate-200/80">
-          <button
-            type="button"
-            onClick={() => handleTabChange('topics')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'topics'
-                ? 'bg-white text-blue-600 shadow-sm shadow-slate-900/5'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Chủ đề Hệ thống
+      <div className="page-heading flex flex-wrap items-end justify-between gap-4">
+        <h1 className="page-title">Chủ đề mỹ thuật</h1>
+        <div className="studio-tabs" aria-label="Danh mục học">
+          <button type="button" aria-pressed={activeTab === 'topics'} onClick={() => handleTabChange('topics')}
+            className={activeTab === 'topics' ? 'font-bold text-blue-700 border-b-2 border-blue-700' : 'text-slate-600'}>
+            Chủ đề
           </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange('my-lists')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'my-lists'
-                ? 'bg-white text-blue-600 shadow-sm shadow-slate-900/5'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Sổ từ Cá nhân ({myLists.length})
+          <button type="button" aria-pressed={activeTab === 'my-lists'} onClick={() => handleTabChange('my-lists')}
+            className={activeTab === 'my-lists' ? 'font-bold text-blue-700 border-b-2 border-blue-700' : 'text-slate-600'}>
+            Sổ từ ({myLists.length})
           </button>
         </div>
       </div>
 
-      {/* TAB 1: CHỦ ĐỀ HỆ THỐNG */}
       {activeTab === 'topics' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {topics.map((t) => {
-            const IconComponent = iconMap[t.icon] || HiOutlineBookOpen;
-            return (
-              <div
-                key={t.id}
-                className="card card-hover p-6 border-slate-200/90 rounded-3xl flex flex-col justify-between group bg-white shadow-sm"
-              >
-                <div>
-                  {/* Header thẻ: Icon & Số lượng từ */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-105 transition-transform border border-blue-100 shadow-xs">
-                      <IconComponent className="w-6 h-6" />
-                    </div>
-                    <span className="font-mono text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">
-                      {t.vocab_count} từ
-                    </span>
-                  </div>
-
-                  {/* Tên chủ đề */}
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug tracking-tight">
-                    {t.name_vi}
-                  </h2>
-
-                  {/* Thanh tiến độ học */}
-                  <div className="mt-5 pt-4 border-t border-slate-100">
-                    <div className="flex justify-between text-xs font-bold text-slate-600 mb-2">
-                      <span>{t.learned_count} / {t.vocab_count} từ</span>
-                      <span className="font-mono text-blue-600">{t.progress_percent}%</span>
-                    </div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-blue-600 rounded-full transition-all duration-500 shadow-xs"
-                        style={{ width: `${t.progress_percent}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Nút hành động */}
-                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
-                  <Link
-                    to={`/topics/${t.id}/flashcards`}
-                    className="text-xs font-bold text-slate-700 hover:text-blue-600 hover:underline flex items-center gap-1.5"
-                  >
-                    <HiOutlineSparkles className="w-4 h-4 text-blue-600" />
-                    Thẻ Flashcard 3D
-                  </Link>
-
-                  <Link
-                    to={`/topics/${t.id}`}
-                    className="btn btn-primary py-2 px-4 text-xs gap-1.5 flex items-center rounded-xl shadow-xs"
-                  >
-                    <span>Vào phòng triển lãm</span>
-                    <HiOutlineArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        topics.length ? (
+          <div className="studio-topic-grid">
+            {topics.map(topic => <TopicCard key={topic.id} topic={topic} showFlashcards heading="h2" />)}
+          </div>
+        ) : <p className="studio-muted">Chưa có chủ đề để hiển thị.</p>
       )}
 
       {/* TAB 2: SỔ TỪ CỦA TÔI (BỘ TỪ TỰ TẠO) */}

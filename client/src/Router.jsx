@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate, Link } from 'react-router-dom';
 import useAuthStore from './stores/authStore';
 import MainLayout from './components/layout/MainLayout';
 import AuthLayout from './components/layout/AuthLayout';
@@ -81,18 +81,14 @@ const router = createBrowserRouter([
   {
     path: '*',
     element: (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 bg-modern-grid p-4">
-        <div className="text-center card max-w-md p-9 shadow-lg rounded-3xl border-slate-200">
-          <h1 className="text-7xl font-black text-blue-600 tracking-tight">404</h1>
-          <p className="text-lg font-bold text-slate-900 mt-4">Không tìm thấy trang</p>
-          <p className="text-xs text-slate-500 mt-2 mb-6">
-            Đường dẫn bạn yêu cầu không tồn tại hoặc đã được tinh giản trong phiên bản chuyên ngành Mỹ thuật.
-          </p>
-          <a href="/dashboard" className="btn btn-primary rounded-xl text-xs py-2.5 px-5">
-            Quay về bảng điều khiển
-          </a>
+      <main className="grid min-h-screen place-items-center p-6">
+        <div className="w-full max-w-md border-t-4 border-blue-600 pt-6">
+          <p className="font-display text-5xl text-slate-500">404</p>
+          <h1 className="page-title mt-2">Không tìm thấy trang</h1>
+          <p className="page-description">Đường dẫn có thể đã đổi hoặc không còn tồn tại.</p>
+          <Link to="/" className="btn btn-primary mt-6">Về trang chủ</Link>
         </div>
-      </div>
+      </main>
     )
   }
 ]);

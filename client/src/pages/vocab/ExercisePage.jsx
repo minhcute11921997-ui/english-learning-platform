@@ -185,7 +185,7 @@ export default function ExercisePage() {
           <div className="inline-flex p-4 rounded-2xl bg-blue-50 text-blue-600 mb-4 border border-blue-200">
             <HiLightningBolt className="w-10 h-10" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold mb-2 text-slate-950 tracking-tight">
+          <h1 className="page-title mb-2">
             Hoàn Thành Bài Luyện Tập Mỹ Thuật!
           </h1>
           <p className="text-slate-500 mb-6 text-sm">Chủ đề: {topic?.name_vi} ({topic?.name})</p>
@@ -305,21 +305,14 @@ export default function ExercisePage() {
           <HiArrowLeft /> Thoát bài tập
         </Link>
         <div className="flex items-center gap-2">
-          <span
-            role="button"
-            tabIndex={0}
+          <button
+            type="button"
             onClick={handleResetQuiz}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handleResetQuiz();
-              }
-            }}
             title="Hủy bài đang làm và tạo đề mới"
             className="inline-flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-blue-600 bg-white hover:bg-slate-50 px-3 py-1 rounded-xl border border-slate-200 cursor-pointer transition-colors"
           >
-            <HiRefresh className="w-3.5 h-3.5" /> Làm lại đề mới
-          </span>
+            <HiRefresh className="w-3.5 h-3.5" aria-hidden="true" /> Đề mới
+          </button>
           <span className="font-mono text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-xl border border-slate-200">
             Câu {currentIndex + 1} / {exercises.length}
           </span>
@@ -340,17 +333,12 @@ export default function ExercisePage() {
           const isCurrent = idx === currentIndex;
           const isAnswered = answers[idx] !== undefined;
           return (
-            <span
+            <button
               key={idx}
-              role="button"
-              tabIndex={0}
+              type="button"
+              aria-label={"Câu " + (idx + 1)}
+              aria-current={isCurrent ? "step" : undefined}
               onClick={() => setCurrentIndex(idx)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setCurrentIndex(idx);
-                }
-              }}
               className={`w-8 h-8 rounded-xl font-mono text-xs font-bold flex items-center justify-center border cursor-pointer transition-all select-none ${
                 isCurrent
                   ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
@@ -360,25 +348,25 @@ export default function ExercisePage() {
               }`}
             >
               {idx + 1}
-            </span>
+            </button>
           );
         })}
       </div>
 
       {/* Question Card */}
       {currentQ && (
-        <div className="card p-6 sm:p-8 space-y-6 rounded-3xl border border-slate-200/90 shadow-md bg-white">
+        <div className="practice-card card p-5 sm:p-8 space-y-6">
           <div>
             <span className="badge bg-blue-50 text-blue-700 border border-blue-200 font-mono text-[10px] uppercase font-bold mb-3 inline-block">
               {currentQ.type === 'image_to_word'
-                ? '🖼️ Nhìn tranh đoán thuật ngữ'
+                ? 'Nhận biết qua tranh'
                 : currentQ.type === 'en_to_vi'
                 ? 'Tiếng Anh sang Tiếng Việt'
                 : currentQ.type === 'vi_to_en'
                 ? 'Tiếng Việt sang Tiếng Anh'
                 : 'Điền từ vào ngữ cảnh'}
             </span>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-950 mt-1 whitespace-pre-line tracking-tight">
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-950 mt-1 whitespace-pre-line">
               {currentQ.question}
             </h2>
             {currentQ.translation && (
@@ -388,7 +376,7 @@ export default function ExercisePage() {
 
           {/* Visual Artwork Box for image questions or questions with an image */}
           {currentQ.image_url && (
-            <div className="w-72 h-52 sm:w-80 sm:h-56 mx-auto rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-sm">
+            <div className="w-full max-w-xs h-52 sm:h-56 mx-auto rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-sm">
               <VocabImage
                 src={currentQ.image_url}
                 alt="Minh họa câu hỏi"

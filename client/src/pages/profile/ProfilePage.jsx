@@ -92,34 +92,30 @@ export default function ProfilePage() {
   return (
     <div className="max-w-4xl mx-auto space-y-7 pb-14">
       <div>
-        <span className="font-mono text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
-          Profile &amp; Learning Goals
-        </span>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Hồ Sơ Học Viên &amp; Thiết Lập Mục Tiêu
+        <h1 className="page-title">
+          Hồ sơ học tập
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Quản lý tài khoản, tiến độ ghi nhớ thuật ngữ và chu kỳ ôn tập ngắt quãng SM-2
+          Cập nhật tài khoản và mục tiêu học của bạn.
         </p>
       </div>
 
-      {/* Stats Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="card text-center p-5 bg-white border border-slate-200/90 rounded-2xl shadow-xs">
-          <p className="font-mono text-[11px] text-slate-500 uppercase font-bold">Thuật ngữ đã học</p>
-          <p className="text-3xl font-extrabold text-slate-900 mt-1 tracking-tight">{stats?.learnedCount || 0}</p>
+      <div className="studio-metrics" aria-label="Tiến độ học tập">
+        <div className="studio-metric">
+          <span>Thuật ngữ đã học</span>
+          <strong>{stats?.learnedCount || 0}</strong>
         </div>
-        <div className="card text-center p-5 bg-white border border-slate-200/90 rounded-2xl shadow-xs">
-          <p className="font-mono text-[11px] text-emerald-600 uppercase font-bold">Đã thuần thục</p>
-          <p className="text-3xl font-extrabold text-emerald-600 mt-1 tracking-tight">{stats?.masteredCount || 0}</p>
+        <div className="studio-metric">
+          <span>Đã thuần thục</span>
+          <strong>{stats?.masteredCount || 0}</strong>
         </div>
-        <div className="card text-center p-5 bg-white border border-blue-200/80 bg-blue-50/20 rounded-2xl shadow-xs">
-          <p className="font-mono text-[11px] text-blue-700 uppercase font-bold">Cần ôn hôm nay</p>
-          <p className="text-3xl font-extrabold text-blue-700 mt-1 tracking-tight">{stats?.dueTodayCount || 0}</p>
+        <div className="studio-metric">
+          <span>Cần ôn hôm nay</span>
+          <strong>{stats?.dueTodayCount || 0}</strong>
         </div>
-        <div className="card text-center p-5 bg-white border border-slate-200/90 rounded-2xl shadow-xs">
-          <p className="font-mono text-[11px] text-slate-500 uppercase font-bold">Độ chính xác SM-2</p>
-          <p className="text-3xl font-extrabold text-slate-900 mt-1 tracking-tight">{stats?.accuracyRate || 0}%</p>
+        <div className="studio-metric">
+          <span>Độ chính xác SM-2</span>
+          <strong>{stats?.accuracyRate || 0}%</strong>
         </div>
       </div>
 

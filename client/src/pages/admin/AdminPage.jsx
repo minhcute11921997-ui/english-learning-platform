@@ -265,23 +265,20 @@ export default function AdminPage() {
   return (
     <div className="space-y-7 max-w-5xl mx-auto pb-14">
       <div>
-        <span className="font-mono text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
-          System Administration
-        </span>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Bảng Điều Khiển Quản Trị Hệ Thống
+        <h1 className="page-title">
+          Quản trị EngLearn
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Quản lý người dùng, kho thuật ngữ Mỹ thuật &amp; giám sát thống kê toàn sàn
+          Quản lý tài khoản, từ vựng và số liệu của hệ thống.
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200 text-xs sm:text-sm font-bold gap-3 overflow-x-auto">
+      <div className="studio-tabs text-xs sm:text-sm font-bold">
         <button
           type="button"
           onClick={() => handleTabSelect('users')}
-          className={`py-3 px-4 border-b-2 transition-colors cursor-pointer flex items-center gap-2 shrink-0 ${
+          className={`py-2 px-1 sm:px-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'users' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -290,7 +287,7 @@ export default function AdminPage() {
         <button
           type="button"
           onClick={() => handleTabSelect('stats')}
-          className={`py-3 px-4 border-b-2 transition-colors cursor-pointer flex items-center gap-2 shrink-0 ${
+          className={`py-2 px-1 sm:px-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'stats' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -299,7 +296,7 @@ export default function AdminPage() {
         <button
           type="button"
           onClick={() => handleTabSelect('vocabularies')}
-          className={`py-3 px-4 border-b-2 transition-colors cursor-pointer flex items-center gap-2 shrink-0 ${
+          className={`py-2 px-1 sm:px-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'vocabularies' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >

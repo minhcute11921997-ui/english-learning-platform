@@ -2,11 +2,11 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { aiApi, vocabApi } from '../../api/services';
+import useAuthStore from '../../stores/authStore';
 import VocabImage from '../../components/vocab/VocabImage';
 import AddToListModal from '../../components/vocab/AddToListModal';
 import {
   HiOutlinePhoto,
-  HiOutlineSparkles,
   HiOutlineArrowUpTray,
   HiOutlineTrash,
   HiOutlineBookmark,
@@ -15,17 +15,17 @@ import {
   HiOutlineLightBulb,
   HiOutlineArrowTopRightOnSquare,
   HiOutlineExclamationTriangle,
-  HiOutlineCpuChip,
   HiOutlineHandThumbUp,
   HiOutlineHandThumbDown,
   HiOutlineTag
 } from 'react-icons/hi2';
 import { HiVolumeUp } from 'react-icons/hi';
 
-const STORAGE_KEY = 'englearn_ai_vision_history_v2';
+const STORAGE_KEY = 'englearn_ai_vision_history_v3';
 const MAX_HISTORY_ITEMS = 12;
 
 const SAMPLE_ARTWORKS = [
+  { label: 'Tranh khắc gỗ', url: '/images/vocab/printmaking.jpg' },
   { label: 'Sơn dầu', url: '/images/vocab/oil_painting.jpg' },
   { label: 'Màu nước', url: '/images/vocab/watercolor.jpg' },
   { label: 'Gốm sứ', url: '/images/vocab/ceramics.jpg' },
@@ -33,9 +33,9 @@ const SAMPLE_ARTWORKS = [
   { label: 'Origami', url: '/images/vocab/origami.jpg' }
 ];
 
-function loadSavedHistory() {
+function loadSavedHistory(historyKey) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(historyKey);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -95,30 +95,36 @@ function getStatusBadge(result) {
   }
   if (result.preliminary) {
     return {
-      text: 'Kết quả nhanh (đang tinh chỉnh...)',
+      text: 'Gợi ý ban đầu',
       cls: 'bg-indigo-50 text-indigo-700 border-indigo-200'
     };
   }
   if (result.status === 'uncertain') {
     return {
-      text: result.fallback ? 'Gợi ý nhanh (AI bận)' : 'Nhiều khả năng (xem gợi ý)',
+      text: 'Chưa chắc chắn',
       cls: 'bg-indigo-50 text-indigo-700 border-indigo-200'
     };
   }
   if (result.cached) {
     return {
-      text: result.cacheType === 'phash' ? 'Khớp gần giống (Cache)' : 'Khớp tức thì (Cache)',
+      text: 'Ảnh đã được nhận diện trước đó',
       cls: 'bg-emerald-50 text-emerald-700 border-emerald-200'
     };
   }
   return {
-    text: result.mode === 'probe_blend' ? 'SigLIP + Probe (Local)' : 'SigLIP (Local)',
+    text: 'Gợi ý từ vựng',
     cls: 'bg-blue-50 text-blue-700 border-blue-200'
   };
 }
 
 export default function AiChatPage() {
-  const [messages, setMessages] = useState(loadSavedHistory);
+  const userId = useAuthStore(state => state.user?.id);
+  if (userId == null) return null;
+  return <ImageLookup key={userId} historyKey={`${STORAGE_KEY}:${userId}`} />;
+}
+
+function ImageLookup({ historyKey }) {
+  const [messages, setMessages] = useState(() => loadSavedHistory(historyKey));
   const [aiHealth, setAiHealth] = useState(null);
   const [allVocabWords, setAllVocabWords] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -132,7 +138,9 @@ export default function AiChatPage() {
   const [correctionWord, setCorrectionWord] = useState('');
 
   const fileInputRef = useRef(null);
-  const threadEndRef = useRef(null);
+  const latestResultRef = useRef(null);
+  const scrollOnResult = useRef(false);
+  const busy = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -161,14 +169,16 @@ export default function AiChatPage() {
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-MAX_HISTORY_ITEMS)));
+      localStorage.setItem(historyKey, JSON.stringify(messages.slice(-MAX_HISTORY_ITEMS)));
     } catch {
       // Ignore quota errors
     }
-  }, [messages]);
+  }, [messages, historyKey]);
 
   useEffect(() => {
-    threadEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (isSubmitting || !scrollOnResult.current) return;
+    scrollOnResult.current = false;
+    latestResultRef.current?.scrollIntoView({ block: 'nearest' });
   }, [messages, isSubmitting]);
 
   const handleSpeak = (word) => {
@@ -205,7 +215,7 @@ export default function AiChatPage() {
   }, []);
 
   const submitImageFile = useCallback(async (file, labelHint = '') => {
-    if (!file) return;
+    if (!file || busy.current) return;
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (file.type && !validTypes.includes(file.type)) {
       toast.error('Chỉ hỗ trợ ảnh JPG, PNG hoặc WEBP.');
@@ -216,6 +226,8 @@ export default function AiChatPage() {
       return;
     }
 
+    busy.current = true;
+    scrollOnResult.current = true;
     setIsSubmitting(true);
     const { previewUrl, uploadBlob } = await processClientImage(file);
     const userMsgId = `u-${Date.now()}`;
@@ -272,6 +284,7 @@ export default function AiChatPage() {
         }
       ]);
     } finally {
+      busy.current = false;
       setIsSubmitting(false);
     }
   }, [pollRefineJob]);
@@ -298,6 +311,7 @@ export default function AiChatPage() {
     if (isSubmitting) return;
     try {
       const resp = await fetch(sample.url);
+      if (!resp.ok) throw new Error('Không thể tải ảnh mẫu');
       const blob = await resp.blob();
       const file = new File([blob], `${sample.label}.jpg`, { type: blob.type || 'image/jpeg' });
       await submitImageFile(file, `Mẫu: ${sample.label}`);
@@ -349,91 +363,97 @@ export default function AiChatPage() {
 
   const handleClearHistory = () => {
     setMessages([]);
-    localStorage.removeItem(STORAGE_KEY);
+    try { localStorage.removeItem(historyKey); } catch { /* Storage is optional. */ }
     toast.success('Đã xóa lịch sử nhận diện');
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-5">
-      {/* Studio Header & Local AI Health */}
-      <div className="card p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-start gap-3.5">
-          <div className="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-blue-500/30">
-            <HiOutlineSparkles className="w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-              AI Nhận diện Mỹ thuật &amp; Mỹ nghệ
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Tải ảnh tác phẩm hội họa hoặc nghề thủ công — AI local nhận diện đa khía cạnh (thể loại, chất liệu, nghề) và trả từ vựng tiếng Anh chuẩn giáo trình.
-            </p>
-          </div>
+    <div className="image-lab">
+      <header className="image-lab-header page-heading">
+        <div>
+          <h1 className="page-title">Tra từ qua ảnh</h1>
+          <p className="page-description">Gửi ảnh tác phẩm hoặc đồ thủ công để nhận gợi ý từ tiếng Anh liên quan.</p>
         </div>
-
-        <div className="flex items-center gap-2.5 self-start sm:self-center shrink-0">
-          <div
-            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border ${
-              aiHealth?.ready
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                : 'bg-amber-50 text-amber-700 border-amber-200'
-            }`}
-            title="Trạng thái mô hình chạy local"
-          >
-            <HiOutlineCpuChip className="w-4 h-4" />
-            <span>{aiHealth?.ready ? 'Local AI sẵn sàng' : 'AI đang khởi động / offline'}</span>
-            {aiHealth?.metrics?.p50Ms > 0 && (
-              <span className="font-mono text-[11px] opacity-80">• {aiHealth.metrics.p50Ms}ms</span>
-            )}
-            {aiHealth?.tier1?.queueSize > 0 && (
-              <span className="font-mono text-[11px] opacity-80">• Q:{aiHealth.tier1.queueSize}</span>
-            )}
-          </div>
-
+        <div className="image-lab-actions">
+          <span className={aiHealth?.ready ? 'image-lab-status is-ready' : 'image-lab-status'}>
+            {aiHealth == null ? 'Đang kiểm tra dịch vụ' : aiHealth.ready ? 'Sẵn sàng nhận diện' : 'Nhận diện chưa sẵn sàng'}
+          </span>
           {messages.length > 0 && (
-            <button
-              type="button"
-              onClick={handleClearHistory}
-              className="btn btn-secondary px-3 py-1.5 text-xs gap-1.5"
-              title="Xóa lịch sử chat"
-            >
-              <HiOutlineTrash className="w-4 h-4" />
-              <span className="hidden sm:inline">Xóa</span>
+            <button type="button" className="btn btn-secondary gap-1.5" disabled={isSubmitting} onClick={handleClearHistory}>
+              <HiOutlineTrash className="w-4 h-4" aria-hidden="true" />
+              Xóa lịch sử
             </button>
           )}
         </div>
-      </div>
+      </header>
 
-      {/* Chat Conversation Area */}
-      <div className="card p-4 sm:p-6 min-h-[380px] max-h-[60vh] overflow-y-auto space-y-5 bg-slate-50/50">
-        {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center text-center py-10 px-4">
-            <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3 border border-blue-100">
-              <HiOutlinePhoto className="w-7 h-7" />
-            </div>
-            <h2 className="text-base font-bold text-slate-900">
-              Bắt đầu bằng cách gửi một bức ảnh
-            </h2>
-            <p className="text-xs text-slate-500 max-w-md mt-1.5 leading-relaxed">
-              Hỗ trợ 60 thuật ngữ chuyên ngành thuộc 2 chủ đề: <strong>Các loại tranh</strong> và <strong>Ngành nghề mỹ nghệ</strong>. Ảnh được thu gọn ngay trên trình duyệt trước khi gửi.
-            </p>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-              <span className="text-xs font-semibold text-slate-400 mr-1">Thử nhanh:</span>
-              {SAMPLE_ARTWORKS.map((s) => (
-                <button
-                  key={s.label}
-                  type="button"
-                  disabled={isSubmitting}
-                  onClick={() => handleSampleClick(s)}
-                  className="px-3 py-1.5 rounded-full text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:border-blue-400 hover:text-blue-600 transition-colors cursor-pointer disabled:opacity-50"
-                >
-                  {s.label}
-                </button>
-              ))}
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          setIsDragging(true);
+        }}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setIsDragging(false);
+          const dropped = e.dataTransfer?.files?.[0];
+          if (dropped) submitImageFile(dropped);
+        }}
+        className={isDragging ? 'image-lab-drop is-dragging' : 'image-lab-drop'}
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={(e) => {
+            const picked = e.target.files?.[0];
+            if (picked) submitImageFile(picked);
+            e.target.value = '';
+          }}
+        />
+
+        <div>
+          <div className="flex items-start gap-3">
+            <HiOutlineArrowUpTray className="h-5 w-5 mt-0.5 text-blue-700 shrink-0" aria-hidden="true" />
+            <div>
+              <strong>Kéo thả hoặc dán ảnh vào đây</strong>
+              <p>JPG, PNG hoặc WebP · Tối đa 5 MB</p>
             </div>
           </div>
-        ) : (
-          messages.map((msg) => {
+
+          <button
+            type="button"
+            disabled={isSubmitting}
+            onClick={() => fileInputRef.current?.click()}
+            className="btn btn-primary shrink-0 gap-2 w-full sm:w-auto"
+          >
+            <HiOutlinePhoto className="w-4 h-4" />
+            {isSubmitting ? 'Đang nhận diện…' : 'Chọn ảnh'}
+          </button>
+        </div>
+
+      </div>
+
+      <section className="image-lab-samples" aria-labelledby="sample-heading">
+        <h2 id="sample-heading">Thử với ảnh mẫu</h2>
+        <div className="image-lab-samples-grid">
+          {SAMPLE_ARTWORKS.map(sample => (
+            <button key={sample.label} type="button" className="image-lab-sample" disabled={isSubmitting}
+              onClick={() => handleSampleClick(sample)}>
+              <img src={sample.url} alt="" />
+              <span>{sample.label}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {(messages.length > 0 || isSubmitting) && (
+        <section className="image-lab-thread" aria-labelledby="result-heading" aria-busy={isSubmitting}>
+          <h2 id="result-heading">Kết quả nhận diện</h2>
+          <div className="image-lab-thread-items">
+            {messages.map((msg, index) => {
+
             if (msg.role === 'user') {
               return (
                 <div key={msg.id} className="flex justify-end">
@@ -455,7 +475,7 @@ export default function AiChatPage() {
 
             if (msg.error) {
               return (
-                <div key={msg.id} className="flex justify-start">
+                <div key={msg.id} className="flex justify-start" ref={index === messages.length - 1 ? latestResultRef : null}>
                   <div className="max-w-lg bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl rounded-tl-sm px-4 py-3 text-sm flex items-start gap-2.5">
                     <HiOutlineExclamationTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
                     <span>{msg.error}</span>
@@ -481,8 +501,8 @@ export default function AiChatPage() {
             const fbState = feedbackByMsg[msg.id];
 
             return (
-              <div key={msg.id} className="flex justify-start">
-                <div className="w-full max-w-2xl bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-4 sm:p-5 shadow-xs space-y-4">
+              <div key={msg.id} className="flex justify-start" ref={index === messages.length - 1 ? latestResultRef : null}>
+                <div className="image-lab-result w-full max-w-2xl bg-white border border-slate-200 p-4 sm:p-5 space-y-4">
                   {/* Metadata row */}
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${badge.cls}`}>
@@ -540,7 +560,7 @@ export default function AiChatPage() {
                           src={vocab.image_url}
                           alt={vocab.image_alt || vocab.word}
                           className="w-full sm:w-36 h-32 rounded-xl bg-slate-100 border border-slate-200 shrink-0"
-                          fit="cover"
+                          fit="contain"
                           enableZoom
                         />
 
@@ -760,94 +780,19 @@ export default function AiChatPage() {
                 </div>
               </div>
             );
-          })
-        )}
+            })}
 
         {isSubmitting && (
           <div className="flex justify-start">
             <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-4 py-3 text-xs font-semibold text-slate-500 flex items-center gap-2.5 shadow-xs">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping" />
-              Đang phân tích hình ảnh qua AI local...
+              Đang phân tích ảnh…
             </div>
           </div>
         )}
-        <div ref={threadEndRef} />
-      </div>
-
-      {/* Structured Image Input Dropzone */}
-      <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setIsDragging(true);
-        }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setIsDragging(false);
-          const dropped = e.dataTransfer?.files?.[0];
-          if (dropped) submitImageFile(dropped);
-        }}
-        className={`card p-4 sm:p-5 border-2 border-dashed transition-all ${
-          isDragging
-            ? 'border-blue-500 bg-blue-50/60'
-            : 'border-slate-300 hover:border-blue-400 bg-white'
-        }`}
-      >
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          className="hidden"
-          onChange={(e) => {
-            const picked = e.target.files?.[0];
-            if (picked) submitImageFile(picked);
-            e.target.value = '';
-          }}
-        />
-
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3 text-center sm:text-left">
-            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
-              <HiOutlineArrowUpTray className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-slate-800">
-                Kéo thả ảnh vào đây, dán ảnh (<kbd className="px-1.5 py-0.5 text-[11px] bg-slate-100 rounded border border-slate-300">Ctrl+V</kbd>), hoặc chọn tệp
-              </p>
-              <p className="text-xs text-slate-500">
-                Định dạng JPG, PNG, WEBP tối đa 5MB • Tự động thu gọn ảnh trên trình duyệt trước khi gửi
-              </p>
-            </div>
           </div>
-
-          <button
-            type="button"
-            disabled={isSubmitting}
-            onClick={() => fileInputRef.current?.click()}
-            className="btn btn-primary shrink-0 gap-2 w-full sm:w-auto"
-          >
-            <HiOutlinePhoto className="w-4 h-4" />
-            {isSubmitting ? 'Đang nhận diện...' : 'Chọn ảnh nhận diện'}
-          </button>
-        </div>
-
-        {messages.length > 0 && (
-          <div className="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2">
-            <span className="text-[11px] font-semibold text-slate-400">Ảnh mẫu:</span>
-            {SAMPLE_ARTWORKS.map((s) => (
-              <button
-                key={s.label}
-                type="button"
-                disabled={isSubmitting}
-                onClick={() => handleSampleClick(s)}
-                className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-50 border border-slate-200 text-slate-600 hover:border-blue-400 hover:text-blue-600 transition-colors cursor-pointer disabled:opacity-50"
-              >
-                {s.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+        </section>
+      )}
 
       <AddToListModal
         isOpen={Boolean(selectedVocabForList)}

@@ -52,21 +52,21 @@ export default function RegisterPage() {
 
   return (
     <div>
-      <h2 className="text-center mb-6 text-2xl font-extrabold text-slate-950 tracking-tight">Tạo Tài Khoản Mỹ Thuật</h2>
+      <h1 className="page-title">Tạo tài khoản</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <Input label="Họ và tên" name="full_name" placeholder="Nguyễn Văn A" value={formData.full_name} onChange={handleChange} error={errors.full_name} />
-        <Input label="Username" name="username" placeholder="nguyenvana" value={formData.username} onChange={handleChange} error={errors.username} />
-        <Input label="Email" type="email" name="email" placeholder="your@email.com" value={formData.email} onChange={handleChange} error={errors.email} />
-        <Input label="Mật khẩu" type="password" name="password" placeholder="Tối thiểu 6 ký tự" value={formData.password} onChange={handleChange} error={errors.password} />
-        <Input label="Xác nhận mật khẩu" type="password" name="confirmPassword" placeholder="Nhập lại mật khẩu" value={formData.confirmPassword} onChange={handleChange} error={errors.confirmPassword} />
+        <Input label="Họ và tên" name="full_name" autoComplete="name" placeholder="Nguyễn Văn A" value={formData.full_name} onChange={handleChange} error={errors.full_name} />
+        <Input label="Tên đăng nhập" name="username" autoComplete="username" placeholder="nguyenvana" value={formData.username} onChange={handleChange} error={errors.username} />
+        <Input label="Email" type="email" name="email" autoComplete="email" placeholder="your@email.com" value={formData.email} onChange={handleChange} error={errors.email} />
+        <Input label="Mật khẩu" type="password" name="password" autoComplete="new-password" placeholder="Tối thiểu 6 ký tự" value={formData.password} onChange={handleChange} error={errors.password} />
+        <Input label="Xác nhận mật khẩu" type="password" name="confirmPassword" autoComplete="new-password" placeholder="Nhập lại mật khẩu" value={formData.confirmPassword} onChange={handleChange} error={errors.confirmPassword} />
 
         <Button type="submit" className="w-full rounded-xl btn-primary py-2.5" isLoading={isLoading}>
-          Đăng ký &amp; Khám phá
+          Tạo tài khoản
         </Button>
       </form>
 
-      <p className="text-center text-xs text-slate-600 mt-6">
+      <p className="text-sm text-slate-600 mt-6">
         Đã có tài khoản?{' '}
         <Link to="/login" className="text-blue-600 font-bold hover:underline">
           Đăng nhập
