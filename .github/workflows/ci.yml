@@ -15,18 +15,18 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: Install server dependencies
         working-directory: server
-        run: npm ci
+        run: npm ci || npm install --no-audit --no-fund
 
       - name: Install client dependencies
         working-directory: client
-        run: npm ci
+        run: npm ci || npm install --no-audit --no-fund
 
       - name: Run Regression, SM-2 & Frontend tests
         run: npm test
@@ -61,18 +61,19 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: Install server dependencies
         working-directory: server
-        run: npm ci
+        run: npm ci || npm install --no-audit --no-fund
 
       - name: Run MySQL Integration Tests
         env:
           NODE_ENV: test
+          RUN_MYSQL_TESTS: "1"
           DB_HOST: 127.0.0.1
           DB_PORT: "3306"
           DB_USER: root
