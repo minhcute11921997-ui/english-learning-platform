@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { topicApi, vocabApi } from '../../api/services';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
@@ -21,13 +21,21 @@ import AddToListModal from '../../components/vocab/AddToListModal';
 
 export default function TopicDetailPage() {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const urlSearch = searchParams.get('search') || '';
   const [topic, setTopic] = useState(null);
   const [vocabularies, setVocabularies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(urlSearch);
+  const [prevUrlSearch, setPrevUrlSearch] = useState(urlSearch);
   const [difficulty, setDifficulty] = useState('');
   const [selectedVocabForModal, setSelectedVocabForModal] = useState(null);
   const [expandedInfoIds, setExpandedInfoIds] = useState({});
+
+  if (urlSearch !== prevUrlSearch) {
+    setPrevUrlSearch(urlSearch);
+    setSearch(urlSearch);
+  }
 
   useEffect(() => {
     let active = true;

@@ -6,7 +6,7 @@ const { BoundedAsyncQueue, QueueFullError, QueueTimeoutError } = require('../uti
 const { PersistentVisionCache, rawPixelsToDHash, findInFlightByDHash } = require('../utils/persistentCache');
 
 const OFF_TOPIC_MESSAGE =
-  'Ảnh này không thuộc các loại hình hội họa hoặc ngành nghề mỹ nghệ trong EngLearn. Vui lòng thử ảnh tranh vẽ, tác phẩm điêu khắc hoặc nghề thủ công mỹ nghệ.';
+  'Ảnh này không thuộc các loại tranh hoặc tác phẩm mỹ nghệ trong EngLearn. Vui lòng thử ảnh tranh vẽ, tác phẩm điêu khắc hoặc đồ thủ công mỹ nghệ.';
 
 const VALID_ACTIONS = new Set(['identify']);
 

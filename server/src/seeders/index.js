@@ -63,10 +63,23 @@ async function seed() {
 
   // 1. Seed Topics (2 Fine Arts topics)
   console.log('📌 Seeding 2 Fine Arts & Crafts Topics...');
+  const legacyTopicNames = {
+    'Fine Crafts & Handicrafts': ['Fine Arts & Crafts Professions']
+  };
   const topicIds = new Map();
   for (const topic of topicsData) {
     const { id, ...values } = topic;
-    const [savedTopic] = await Topic.findOrCreate({ where: { name: topic.name }, defaults: values });
+    const candidateNames = [topic.name, ...(legacyTopicNames[topic.name] || [])];
+    let savedTopic = await Topic.findOne({ where: { name: candidateNames } });
+    if (!savedTopic) {
+      savedTopic = await Topic.create(values);
+    } else {
+      const updates = { name: values.name, name_vi: values.name_vi };
+      if (values.icon !== undefined) updates.icon = values.icon;
+      if (values.display_order !== undefined) updates.display_order = values.display_order;
+      if (values.description !== undefined) updates.description = values.description;
+      await savedTopic.update(updates);
+    }
     topicIds.set(String(id), savedTopic.id);
   }
 
@@ -81,12 +94,15 @@ async function seed() {
   }
 
   // 3. Seed Vocabularies with rich cultural notes, artists, images & references
-  console.log('📚 Seeding 60 Fine Arts Vocabularies with images & cultural side-notes...');
+  const totalDefined = Object.values(vocabByTopic).reduce((sum, list) => sum + list.length, 0);
+  console.log(`📚 Seeding ${totalDefined} Fine Arts Vocabularies with images & cultural side-notes...`);
+  const activeWords = new Set();
   let vocabCount = 0;
   for (const [topicId, words] of Object.entries(vocabByTopic)) {
     const savedTopicId = topicIds.get(topicId);
     if (!savedTopicId) throw new Error(`Seed topic ${topicId} is missing`);
     for (const item of words) {
+      activeWords.add(String(item.word).toLowerCase());
       const [vocab, created] = await Vocabulary.findOrCreate({
         where: { word: item.word, topic_id: savedTopicId },
         defaults: {
@@ -122,14 +138,15 @@ async function seed() {
           cultural_note: item.cultural_note,
           related_artist: item.related_artist,
           source_ref: item.source_ref,
-          difficulty: item.difficulty
+          difficulty: item.difficulty,
+          is_approved: true
         });
       }
 
       if (!created && (vocab.source_type !== 'system' || vocab.created_by)) continue;
 
       if (item.example_sentence) {
-        await VocabExample.findOrCreate({
+        const [example, exCreated] = await VocabExample.findOrCreate({
           where: { vocabulary_id: vocab.id, sentence: item.example_sentence },
           defaults: {
             vocabulary_id: vocab.id,
@@ -137,8 +154,22 @@ async function seed() {
             translation: item.example_translation
           }
         });
+        if (!exCreated && item.example_translation && example.translation !== item.example_translation) {
+          await example.update({ translation: item.example_translation });
+        }
       }
       vocabCount++;
+    }
+  }
+
+  if (activeWords.size > 0) {
+    const systemVocabs = await Vocabulary.findAll({
+      where: { source_type: 'system', is_approved: true }
+    });
+    for (const sv of systemVocabs) {
+      if (!sv.created_by && !activeWords.has(String(sv.word || '').toLowerCase())) {
+        await sv.update({ is_approved: false });
+      }
     }
   }
   console.log(`✅ Seeded/Updated ${vocabCount} vocabularies with cultural notes & artwork visuals`);

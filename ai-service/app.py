@@ -39,6 +39,7 @@ PROTOTYPES_PATH = Path(os.environ.get("PROTOTYPES_PATH", str(BASE_DIR / "prototy
 PROBE_PATH = Path(os.environ.get("PROBE_PATH", str(BASE_DIR / "probe.npz")))
 VISION_CKPT_PATH = Path(os.environ.get("VISION_CKPT_PATH", str(BASE_DIR / "vision_finetuned.pt")))
 FACETS_PATH = Path(os.environ.get("FACETS_PATH", str(BASE_DIR / "facets.json")))
+LABELS_PATH = Path(os.environ.get("LABELS_PATH", str(BASE_DIR / "labels.json")))
 FEEDBACK_VECTORS_PATH = Path(os.environ.get("FEEDBACK_VECTORS_PATH", str(BASE_DIR / "data" / "feedback_vectors.npz")))
 
 MAX_BATCH_SIZE = int(os.environ.get("AI_MAX_BATCH_SIZE", "16"))
@@ -140,6 +141,7 @@ class SiglipEngine:
         self.facet_logit_gap_max = 2.5
 
         # Facet lookup structures
+        self.allowed_words: Optional[set[str]] = None
         self.facets_meta: dict[str, dict] = {}
         self.word_to_facet: dict[str, str] = {}
         self.facet_indices: dict[str, List[int]] = {}
@@ -155,6 +157,14 @@ class SiglipEngine:
         self.total_requests = 0
         self.total_batches = 0
 
+    def _load_allowed_words(self):
+        if not LABELS_PATH.exists():
+            self.allowed_words = None
+            return
+        raw = json.loads(LABELS_PATH.read_text(encoding="utf-8")).get("labels", [])
+        words = {str(item["word"]).strip().lower() for item in raw if item.get("word")}
+        self.allowed_words = words if words else None
+
     def _load_facets(self):
         if not FACETS_PATH.exists():
             return
@@ -166,6 +176,8 @@ class SiglipEngine:
         for fname, fobj in raw.items():
             idxs = []
             for w in fobj.get("words", []):
+                if self.allowed_words is not None and w.lower() not in self.allowed_words:
+                    continue
                 self.word_to_facet[w] = fname
                 if w in word_to_idx:
                     idxs.append(word_to_idx[w])
@@ -254,6 +266,7 @@ class SiglipEngine:
         self.combined_embs = torch.from_numpy(proto["combined_embs"]).to(self.device, dtype=torch.float32)
         self.ood_embs = torch.from_numpy(proto["ood_embs"]).to(self.device, dtype=torch.float32)
 
+        self._load_allowed_words()
         self._load_facets()
         self._load_probe()
         self._ensure_dino_loaded()
@@ -267,6 +280,7 @@ class SiglipEngine:
         if self.model is not None:
             self.adapter = apply_vision_checkpoint(self.model, VISION_CKPT_PATH, self.device)
             self.vision_finetuned = bool(self.adapter is not None or VISION_CKPT_PATH.exists())
+        self._load_allowed_words()
         self._load_facets()
         self._load_probe()
         self._ensure_dino_loaded()
@@ -325,6 +339,8 @@ class SiglipEngine:
             self.combined_embs = torch.cat([self.combined_embs, t_feat], dim=0)
 
         facet = req.facet if req.facet in self.facets_meta else "craft"
+        if self.allowed_words is not None:
+            self.allowed_words.add(word.lower())
         self.word_to_facet[word] = facet
         if facet in self.facet_indices and idx not in self.facet_indices[facet]:
             self.facet_indices[facet].append(idx)
@@ -459,6 +475,11 @@ class SiglipEngine:
             if num_classes > n_shared:
                 art_logits_np[:, n_shared:] = sim_t_np[:, n_shared:] * self.zs_temp
 
+            if self.allowed_words is not None:
+                disallowed_mask = np.array([w.lower() not in self.allowed_words for w in self.words], dtype=bool)
+                if np.any(disallowed_mask):
+                    art_logits_np[:, disallowed_mask] = -1e9
+
             ood_logit_np = blended_shared[:, n_shared : n_shared + 1]
             logits_all_np = np.concatenate([art_logits_np, ood_logit_np], axis=1)
             probs_all_np = softmax(logits_all_np / max(0.25, self.cal_temp), axis=1)
@@ -483,6 +504,10 @@ class SiglipEngine:
                 )
         else:
             art_logits_np = sim_c_np * TEMPERATURE
+            if self.allowed_words is not None:
+                disallowed_mask = np.array([w.lower() not in self.allowed_words for w in self.words], dtype=bool)
+                if np.any(disallowed_mask):
+                    art_logits_np[:, disallowed_mask] = -1e9
             art_probs_np = softmax(art_logits_np, axis=1)
             probs_all_np = None
 
@@ -490,6 +515,11 @@ class SiglipEngine:
 
         results = []
         conformal_cutoff = max(0.05, 1.0 - self.conformal_q)
+        allowed_mask = (
+            np.array([w.lower() in self.allowed_words for w in self.words], dtype=bool)
+            if self.allowed_words is not None
+            else None
+        )
 
         for i in range(batch_size):
             emb_id = self._store_embedding(img_feat_np[i])
@@ -507,7 +537,10 @@ class SiglipEngine:
             ]
             ood_idx = int(np.argmax(sim_o_np[i]))
             ood_max_sim = float(sim_o_np[i, ood_idx])
-            top1_text_sim = float(np.max(sim_t_np[i]))
+            if allowed_mask is not None and np.any(allowed_mask):
+                top1_text_sim = float(np.max(sim_t_np[i, allowed_mask]))
+            else:
+                top1_text_sim = float(np.max(sim_t_np[i]))
             ood_margin = top1_text_sim - ood_max_sim
 
             if probs_all_np is not None:
@@ -697,7 +730,7 @@ def health() -> dict[str, Any]:
         "dino_enabled": bool(engine.dino_model is not None),
         "gbdt_router": bool(engine.gamma_gbdt > 0 and engine.gbdt_trees is not None),
         "gpu_mem_allocated_mib": round(float(torch.cuda.max_memory_allocated() / (1024 * 1024)), 1) if torch.cuda.is_available() else 0.0,
-        "num_classes": len(engine.words),
+        "num_classes": len(engine.allowed_words) if engine.allowed_words is not None else len(engine.words),
         "num_facets": len(engine.facet_indices),
         "queue_size": engine.queue.qsize() if engine.queue else 0,
         "max_queue_size": MAX_QUEUE_SIZE,

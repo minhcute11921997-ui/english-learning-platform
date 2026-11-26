@@ -3,6 +3,7 @@ import { HiOutlineArrowUpRight } from 'react-icons/hi2';
 
 const covers = {
   'Types of Paintings': { src: '/images/vocab/impressionism.jpg', position: 'center 54%' },
+  'Fine Crafts & Handicrafts': { src: '/images/vocab/ceramics.jpg', position: 'center 47%' },
   'Fine Arts & Crafts Professions': { src: '/images/vocab/ceramics.jpg', position: 'center 47%' }
 };
 
@@ -10,7 +11,7 @@ function getCover(topic) {
   const cover = covers[topic.name];
   if (cover) return cover;
   if (topic.icon === 'HiPaintBrush') return covers['Types of Paintings'];
-  if (topic.icon === 'HiSparkles') return covers['Fine Arts & Crafts Professions'];
+  if (topic.icon === 'HiSparkles') return covers['Fine Crafts & Handicrafts'];
   return null;
 }
 

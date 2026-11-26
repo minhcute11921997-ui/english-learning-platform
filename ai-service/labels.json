@@ -101,42 +101,6 @@
       "cultural_note": "Chủ nghĩa Lập thể do Picasso và Braque sáng lập năm 1907, phân rã vật thể thành các đa giác hình khối và tái hiện chúng từ nhiều góc nhìn đồng thời."
     },
     {
-      "word": "canvas",
-      "topic_id": 1,
-      "topic_name": "Types of Paintings",
-      "meaning_vi": "vải vẽ tranh, toan vẽ",
-      "image_url": "/images/vocab/canvas.jpg",
-      "image_alt": "Tấm toan vẽ tranh căng đều trên khung gỗ mộc",
-      "cultural_note": "Toan vẽ (vải bố dệt từ sợi lanh hoặc sợi gai dầu căng trên khung gỗ) thay thế gỗ phiến từ thế kỷ 16 ở Venice nhờ trọng lượng nhẹ và khả năng chống ẩm cao."
-    },
-    {
-      "word": "easel",
-      "topic_id": 1,
-      "topic_name": "Types of Paintings",
-      "meaning_vi": "giá vẽ tranh",
-      "image_url": "/images/vocab/easel.jpg",
-      "image_alt": "Giá vẽ ba chân bằng gỗ dùng đỡ toan vẽ tranh",
-      "cultural_note": "Giá vẽ bằng gỗ xuất hiện từ thời cổ đại và là người bạn đồng hành không thể thiếu của người họa sĩ trong xưởng vẽ lẫn khi đi thực tế vẽ ngoại cảnh ngoài trời."
-    },
-    {
-      "word": "palette",
-      "topic_id": 1,
-      "topic_name": "Types of Paintings",
-      "meaning_vi": "bảng pha màu",
-      "image_url": "/images/vocab/palette.jpg",
-      "image_alt": "Bảng pha màu gỗ truyền thống chứa các vệt màu sơn dầu rực rỡ",
-      "cultural_note": "Bảng pha màu biểu trưng cho tư duy hòa sắc của họa sĩ, từ bảng gỗ hình hạt đậu thời Phục hưng đến bảng kính hoặc sứ phẳng hiện đại."
-    },
-    {
-      "word": "brushstroke",
-      "topic_id": 1,
-      "topic_name": "Types of Paintings",
-      "meaning_vi": "nét cọ, nét bút vẽ",
-      "image_url": "/images/vocab/brushstroke.jpg",
-      "image_alt": "Vệt cọ dứt khoát thể hiện chất liệu sơn và năng lượng người vẽ",
-      "cultural_note": "Nhát cọ là chữ ký cá nhân của người nghệ sĩ; từ nhát cọ mượt mà vô hình của trường phái Cổ điển đến nhát cọ dày dặn (impasto) đầy năng lượng của Van Gogh."
-    },
-    {
       "word": "sketch",
       "topic_id": 1,
       "topic_name": "Types of Paintings",
@@ -236,15 +200,6 @@
       "cultural_note": "Tranh phong cảnh đô thị phản ánh nhịp sống kiến trúc, đường phố và ánh sáng thị thành; phát triển từ tranh Veduta thành phố Venice thời Baroque đến các đô thị hiện đại."
     },
     {
-      "word": "chiaroscuro",
-      "topic_id": 1,
-      "topic_name": "Types of Paintings",
-      "meaning_vi": "kỹ thuật tương phản sáng tối",
-      "image_url": "/images/vocab/chiaroscuro.jpg",
-      "image_alt": "Kỹ thuật tương phản ánh sáng và bóng tối kịch tính",
-      "cultural_note": "Kỹ thuật sáng - tối tương phản gay gắt có nguồn gốc từ tiếng Ý (chiaro: sáng, scuro: tối), giúp tạo chiều sâu khối ba chiều và tính kịch tính điện ảnh cho tranh."
-    },
-    {
       "word": "charcoal",
       "topic_id": 1,
       "topic_name": "Types of Paintings",
@@ -274,7 +229,7 @@
     {
       "word": "ceramics",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
+      "topic_name": "Fine Crafts & Handicrafts",
       "meaning_vi": "nghệ thuật gốm sứ",
       "image_url": "/images/vocab/ceramics.jpg",
       "image_alt": "Tác phẩm gốm sứ nghệ thuật với lớp men sáng bóng",
@@ -283,8 +238,8 @@
     {
       "word": "pottery",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghề làm đồ gốm",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "đồ gốm đất nung",
       "image_url": "/images/vocab/pottery.jpg",
       "image_alt": "Chiếc bình gốm đất nung mộc mạc trên bàn xoay gốm",
       "cultural_note": "Nghệ thuật làm đồ gốm đất nung thủ công gắn liền với chiếc bàn xoay gốm truyền thống, tạo ra những vật dụng sinh hoạt mộc mạc và giàu tính thẩm mỹ bản địa."
@@ -292,17 +247,17 @@
     {
       "word": "lacquerware",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "đồ thủ công sơn mài",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "đồ sơn mài mỹ nghệ",
       "image_url": "/images/vocab/lacquerware.jpg",
-      "image_alt": "Sản phẩm sơn mài truyền thống thếp vàng lộng lẫy và bóng sâu",
+      "image_alt": "Sản phẩm sơn mài mỹ nghệ truyền thống thếp vàng lộng lẫy và bóng sâu",
       "cultural_note": "Nghệ thuật sơn mài truyền thống Á Đông sử dụng nhựa cây sơn ta tự nhiên. Các họa sĩ Trường Mỹ thuật Đông Dương đã cách tân mài nước độc đáo, đưa sơn mài Việt Nam thành di sản hội họa thế giới."
     },
     {
       "word": "embroidery",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghề thêu ren mỹ nghệ",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "tranh thêu, đồ thêu mỹ nghệ",
       "image_url": "/images/vocab/embroidery.jpg",
       "image_alt": "Tác phẩm tranh thêu tay tinh xảo bằng chỉ tơ lụa truyền thống",
       "cultural_note": "Nghệ thuật thêu tay truyền thống sử dụng chỉ tơ tằm trên nền vải lụa, thể hiện độ tinh nhã của các nghệ nhân cung đình xưa và các làng nghề tranh thêu thủ công."
@@ -310,7 +265,7 @@
     {
       "word": "woodcarving",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
+      "topic_name": "Fine Crafts & Handicrafts",
       "meaning_vi": "nghệ thuật điêu khắc gỗ",
       "image_url": "/images/vocab/woodcarving.jpg",
       "image_alt": "Họa tiết chạm khắc gỗ thủ công tinh xảo trên gỗ quý",
@@ -319,7 +274,7 @@
     {
       "word": "calligraphy",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
+      "topic_name": "Fine Crafts & Handicrafts",
       "meaning_vi": "nghệ thuật thư pháp",
       "image_url": "/images/vocab/calligraphy.jpg",
       "image_alt": "Bức đại tự thư pháp mực tàu phóng khoáng trên giấy xuyến chỉ",
@@ -328,7 +283,7 @@
     {
       "word": "sculpture",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
+      "topic_name": "Fine Crafts & Handicrafts",
       "meaning_vi": "nghệ thuật điêu khắc",
       "image_url": "/images/vocab/sculpture.jpg",
       "image_alt": "Bức tượng điêu khắc đá cẩm thạch ba chiều tuyệt mỹ",
@@ -337,8 +292,8 @@
     {
       "word": "weaving",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghề dệt thủ công, dệt thổ cẩm",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "thổ cẩm, đồ dệt thủ công",
       "image_url": "/images/vocab/weaving.jpg",
       "image_alt": "Tấm vải dệt thổ cẩm hoa văn truyền thống trên khung cửi",
       "cultural_note": "Nghệ thuật dệt vải thủ công bằng khung cửi đan kết sợi dọc và sợi ngang, bảo tồn bản sắc văn hóa các dân tộc qua các tấm vải thổ cẩm và lụa tơ tằm danh tiếng."
@@ -346,52 +301,52 @@
     {
       "word": "glassblowing",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghề thổi thủy tinh mỹ nghệ",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "thủy tinh thổi mỹ nghệ",
       "image_url": "/images/vocab/glassblowing.jpg",
-      "image_alt": "Nghệ nhân thổi ống thủy tinh nóng chảy định hình bình thủy tinh trong suốt",
+      "image_alt": "Tác phẩm thủy tinh thổi mỹ nghệ được tạo hình từ thủy tinh nóng chảy",
       "cultural_note": "Kỹ nghệ thổi thủy tinh thủ công nóng chảy phát triển từ thời La Mã cổ đại và đạt tới tầm đỉnh cao nghệ thuật tại đảo Murano thuộc Venice (Ý)."
     },
     {
       "word": "silversmithing",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghề chế tác bạc mỹ nghệ",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "đồ bạc mỹ nghệ, chạm bạc",
       "image_url": "/images/vocab/silversmithing.jpg",
-      "image_alt": "Sản phẩm chạm bạc thủ công với hoa văn cánh hoa tinh tế",
+      "image_alt": "Sản phẩm đồ bạc mỹ nghệ chạm hoa văn cánh hoa tinh tế",
       "cultural_note": "Nghệ thuật chế tác kim hoàn bạc với kỹ thuật đậu bạc (kéo sợi bạc mảnh như sợi chỉ rồi uốn hoa văn) và chạm khắc bạc tinh xảo lưu truyền qua nhiều thế kỷ."
     },
     {
       "word": "jewelry design",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "thiết kế kim hoàn trang sức",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "trang sức kim hoàn mỹ nghệ",
       "image_url": "/images/vocab/jewelry_design.jpg",
-      "image_alt": "Trang sức vàng bạc đính ngọc quý được chế tác tinh mỹ",
+      "image_alt": "Trang sức kim hoàn mỹ nghệ vàng bạc đính ngọc quý tinh xảo",
       "cultural_note": "Thiết kế trang sức mỹ nghệ kết hợp kiến thức đá quý, luyện kim và cảm quan thẩm mỹ để tạo ra những tác phẩm trang sức độc bản tôn vinh vẻ đẹp người đeo."
     },
     {
       "word": "leathercraft",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghề làm đồ da thủ công",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "đồ da mỹ nghệ thủ công",
       "image_url": "/images/vocab/leathercraft.jpg",
-      "image_alt": "Sản phẩm đồ da thủ công với đường chỉ may yên ngựa tỉ mỉ",
+      "image_alt": "Sản phẩm đồ da mỹ nghệ thủ công với đường chỉ may yên ngựa tỉ mỉ",
       "cultural_note": "Nghệ thuật chế tác đồ da thủ công từ cắt lạng da, dập vân hoa văn trang trí đến may chỉ yên ngựa (saddle stitch) bền bỉ theo năm tháng."
     },
     {
       "word": "quilting",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghề chần ghép vải mỹ nghệ",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "tranh vải ghép, đồ chần ghép vải",
       "image_url": "/images/vocab/quilting.jpg",
-      "image_alt": "Tấm vải chăn quilt ghép nhiều mẩu hoa văn hình học độc đáo",
+      "image_alt": "Tấm vải quilt chần ghép nhiều mẩu hoa văn hình học độc đáo",
       "cultural_note": "Nghệ thuật may chần ghép vải (quilt) ghép các mảnh vải vụn thành tấm chăn hay tác phẩm nghệ thuật treo tường đa sắc, biểu tượng của văn hóa dân gian Bắc Mỹ."
     },
     {
       "word": "printmaking",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
+      "topic_name": "Fine Crafts & Handicrafts",
       "meaning_vi": "nghệ thuật in khắc đồ họa",
       "image_url": "/images/vocab/printmaking.jpg",
       "image_alt": "Bản in tranh khắc gỗ nghệ thuật với các lớp màu thủ công",
@@ -400,16 +355,16 @@
     {
       "word": "engraving",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "kỹ thuật chạm khắc kim loại/đá",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "tranh khắc, đồ chạm khắc kim loại",
       "image_url": "/images/vocab/engraving.jpg",
-      "image_alt": "Bản chạm khắc kim loại chi tiết bằng dao trổ chuyên dụng",
+      "image_alt": "Bản tranh khắc, chạm khắc kim loại chi tiết sắc nét",
       "cultural_note": "Kỹ thuật chạm khắc kim loại bằng mũi dao trổ (burin) lên phiến đồng hoặc thép để tạo đường nét cực kỳ chuẩn xác, dùng in tiền giấy, con tem và tranh ấn họa cổ."
     },
     {
       "word": "mosaic",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
+      "topic_name": "Fine Crafts & Handicrafts",
       "meaning_vi": "nghệ thuật khảm ghép sành sứ/đá",
       "image_url": "/images/vocab/mosaic.jpg",
       "image_alt": "Bức tranh ghép đá mosaic muôn màu lấp lánh",
@@ -418,43 +373,43 @@
     {
       "word": "basketry",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghề đan lát mây tre",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "đồ mây tre đan mỹ nghệ",
       "image_url": "/images/vocab/basketry.jpg",
-      "image_alt": "Chiếc giỏ mây tre đan thủ công bằng nan tre uốn lượn",
+      "image_alt": "Chiếc giỏ mây tre đan mỹ nghệ bằng nan tre uốn lượn",
       "cultural_note": "Nghệ thuật đan lát mây tre đan cổ xưa tận dụng nguồn vật liệu thảo mộc tự nhiên của xứ sở nhiệt đới, tạo nên những sản phẩm vừa thanh thoát vừa dẻo dai."
     },
     {
       "word": "tapestry",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghệ thuật dệt thảm trang trí",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "thảm dệt trang trí mỹ nghệ",
       "image_url": "/images/vocab/tapestry.jpg",
-      "image_alt": "Tấm thảm treo tường dệt tay dệt hình phong cảnh và hiệp sĩ",
+      "image_alt": "Tấm thảm dệt trang trí mỹ nghệ treo tường với họa tiết phong cảnh",
       "cultural_note": "Thảm thêu trang trí dệt tay khổ lớn bằng len và lụa từng là vật phẩm xa xỉ quý tộc tại các lâu đài châu Âu thời Trung cổ và Phục hưng vừa giữ ấm vừa thể hiện quyền uy."
     },
     {
       "word": "gilding",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "kỹ thuật dát vàng lá mỹ nghệ",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "đồ sơn son thếp vàng, dát vàng mỹ nghệ",
       "image_url": "/images/vocab/gilding.jpg",
-      "image_alt": "Tác phẩm dát vàng quỳ lấp lánh trên nền sơn son truyền thống",
+      "image_alt": "Tác phẩm sơn son thếp vàng, dát vàng lá mỹ nghệ lấp lánh",
       "cultural_note": "Nghệ thuật dát vàng sử dụng những lá vàng quỳ được đập mỏng tang như cánh bướm dán lên tượng Phật, ngai vàng và hoành phi câu đối sơn son thếp vàng."
     },
     {
       "word": "stonemasonry",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghề chạm khắc đá mỹ nghệ",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "đồ đá mỹ nghệ, điêu khắc đá",
       "image_url": "/images/vocab/stonemasonry.jpg",
-      "image_alt": "Khối đá cẩm thạch được thợ đá đẽo gọt điêu khắc công phu",
+      "image_alt": "Tác phẩm đồ đá mỹ nghệ cẩm thạch được chạm khắc công phu",
       "cultural_note": "Kỹ nghệ đẽo gọt và điêu khắc đá tảng xây dựng nên những công trình kiến trúc kỳ vĩ như tháp Chăm, thành nhà Hồ và các lăng tẩm cung điện cổ truyền."
     },
     {
       "word": "origami",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
+      "topic_name": "Fine Crafts & Handicrafts",
       "meaning_vi": "nghệ thuật gấp giấy",
       "image_url": "/images/vocab/origami.jpg",
       "image_alt": "Con hạc giấy Origami gấp tinh tế từ một tờ giấy vuông",
@@ -463,83 +418,11 @@
     {
       "word": "blacksmithing",
       "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghề rèn sắt mỹ nghệ",
+      "topic_name": "Fine Crafts & Handicrafts",
+      "meaning_vi": "sắt mỹ nghệ, đồ rèn thủ công",
       "image_url": "/images/vocab/blacksmithing.jpg",
-      "image_alt": "Nghệ nhân rèn kim loại đập búa trên đe lửa đỏ rực rỡ",
+      "image_alt": "Tác phẩm sắt mỹ nghệ, đồ rèn thủ công tinh xảo trên đe lửa",
       "cultural_note": "Nghệ thuật rèn sắt thủ công dùng đe, búa và lò lửa tôi rèn kim loại thành các chi tiết cổng hoa sắt mỹ thuật, vũ khí và công cụ sắc bén."
-    },
-    {
-      "word": "potter",
-      "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghệ nhân làm gốm",
-      "image_url": "/images/vocab/potter.jpg",
-      "image_alt": "Người thợ gốm đang miệt mài tạo hình chiếc bình đất trên bàn xoay",
-      "cultural_note": "Nghệ nhân gốm là người thổi hồn vào đất sét bằng đôi bàn tay tài hoa trên bàn xoay, kết hợp kỹ thuật pha chế nước men tro, men ngọc độc đáo."
-    },
-    {
-      "word": "sculptor",
-      "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nhà điêu khắc",
-      "image_url": "/images/vocab/sculptor.jpg",
-      "image_alt": "Nhà điêu khắc đang dùng đục và búa tạc tượng đá cẩm thạch",
-      "cultural_note": "Nhà điêu khắc là nghệ sĩ tư duy không gian ba chiều, giải phóng hình hài tiềm ẩn bên trong phiến đá vô tri hoặc khối đồng đúc."
-    },
-    {
-      "word": "artisan",
-      "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nghệ nhân thủ công lành nghề",
-      "image_url": "/images/vocab/artisan.jpg",
-      "image_alt": "Nghệ nhân bậc thầy đang tỉ mỉ hoàn thiện tác phẩm thủ công",
-      "cultural_note": "Nghệ nhân là người thợ bậc thầy đạt tới độ thấu hiểu sâu sắc chất liệu và kỹ thuật gia truyền, giữ gìn hồn cốt các di sản thủ công truyền thống."
-    },
-    {
-      "word": "craftsman",
-      "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "thợ thủ công",
-      "image_url": "/images/vocab/craftsman.jpg",
-      "image_alt": "Thợ thủ công cần mẫn bên bàn làm việc với các dụng cụ chế tác",
-      "cultural_note": "Thợ thủ công lành nghề là lực lượng sáng tạo bền bỉ biến vật liệu thô mộc thành các vật phẩm mỹ nghệ tinh xảo phục vụ đời sống và nghệ thuật."
-    },
-    {
-      "word": "weaver",
-      "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "thợ dệt vải/thảm",
-      "image_url": "/images/vocab/weaver.jpg",
-      "image_alt": "Người thợ dệt đang thoăn thoắt đưa con thoi trên khung cửi gỗ",
-      "cultural_note": "Nghệ nhân dệt vải ngồi bên khung cửi nhịp nhàng luồn thoi đưa sợi, dệt nên những dải lụa mượt mà hay tấm thổ cẩm rực rỡ hoa văn núi rừng."
-    },
-    {
-      "word": "metalsmith",
-      "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "thợ chế tác kim loại mỹ nghệ",
-      "image_url": "/images/vocab/metalsmith.jpg",
-      "image_alt": "Thợ kim khí đang thao tác với ngọn lửa nung chảy kim loại",
-      "cultural_note": "Thợ đúc rèn kim loại tinh chế đồng, đồng thau và sắt thép; tiêu biểu là nghề đúc trống đồng Đông Sơn huyền thoại của người Việt cổ."
-    },
-    {
-      "word": "calligrapher",
-      "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "nhà thư pháp",
-      "image_url": "/images/vocab/calligrapher.jpg",
-      "image_alt": "Nhà thư pháp đang cầm bút lông lướt những đường mực uyển chuyển",
-      "cultural_note": "Nhà thư pháp tĩnh tâm luyện bút lực, dùng ngọn bút lông chấm mực tàu truyền tải tinh hoa triết đạo và vẻ đẹp thi ca lên từng nét chữ."
-    },
-    {
-      "word": "restorer",
-      "topic_id": 2,
-      "topic_name": "Fine Arts & Crafts Professions",
-      "meaning_vi": "chuyên gia phục chế tác phẩm",
-      "image_url": "/images/vocab/restorer.jpg",
-      "image_alt": "Chuyên gia phục chế dùng kính lúp và hóa chất bảo tồn bức tranh cổ",
-      "cultural_note": "Chuyên gia phục chế tác phẩm nghệ thuật là bác sĩ của di sản, có kiến thức hóa học, lịch sử nghệ thuật sâu sắc để cứu vãn các kiệt tác tranh cổ và tượng khỏi sự hủy hoại của thời gian."
     }
   ]
 }

@@ -404,9 +404,15 @@ function ImageLookup({ historyKey }) {
             const primaryMatch = result?.matches?.[0];
             const vocab = primaryMatch?.vocabulary;
             const topic = vocab?.topic;
+            const topicId = topic?.id || vocab?.topic_id;
             const topicLabel =
               topic?.name_vi ||
-              (Number(vocab?.topic_id) === 2 ? 'Ngành nghề mỹ nghệ' : 'Các loại tranh');
+              (Number(vocab?.topic_id) === 2 ? 'Mỹ nghệ' : 'Các loại tranh');
+            const topicUrl = topicId ? `/topics/${topicId}` : null;
+            const topicItemUrl =
+              topicId && vocab?.word
+                ? `/topics/${topicId}?search=${encodeURIComponent(vocab.word)}`
+                : null;
 
             return (
               <div key={msg.id} className="flex justify-start" ref={index === messages.length - 1 ? latestResultRef : null}>
@@ -421,14 +427,13 @@ function ImageLookup({ historyKey }) {
                       <div className="space-y-2">
                         <div className="text-xs font-semibold text-blue-700">
                           Chủ đề:{' '}
-                          {topic?.id ? (
+                          {topicUrl ? (
                             <Link
-                              to={`/topics/${topic.id}`}
+                              to={topicUrl}
                               className="hover:underline inline-flex items-center gap-1"
                             >
                               {topicLabel}
-                              {topic.name ? ` (${topic.name})` : ''}
-                              <HiOutlineArrowTopRightOnSquare className="w-3.5 h-3.5" />
+                              {topic?.name ? ` (${topic.name})` : ''}
                             </Link>
                           ) : (
                             <span>{topicLabel}</span>
@@ -436,9 +441,18 @@ function ImageLookup({ historyKey }) {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-xl font-extrabold text-slate-900">
-                            {vocab.word}
-                          </h3>
+                          {topicItemUrl ? (
+                            <Link
+                              to={topicItemUrl}
+                              className="text-xl font-extrabold text-slate-900 hover:text-blue-700 transition-colors"
+                            >
+                              <h3 className="inline">{vocab.word}</h3>
+                            </Link>
+                          ) : (
+                            <h3 className="text-xl font-extrabold text-slate-900">
+                              {vocab.word}
+                            </h3>
+                          )}
                           <button
                             type="button"
                             onClick={() => handleSpeak(vocab.word)}
@@ -466,6 +480,16 @@ function ImageLookup({ historyKey }) {
                       </div>
 
                       <div className="flex flex-wrap gap-2 pt-1">
+                        {topicItemUrl && (
+                          <Link
+                            to={topicItemUrl}
+                            className="px-3 py-1.5 rounded-xl text-xs font-semibold border bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 inline-flex items-center gap-1.5"
+                          >
+                            Xem đầu mục trong chủ đề
+                            <HiOutlineArrowTopRightOnSquare className="w-3.5 h-3.5" />
+                          </Link>
+                        )}
+
                         <button
                           type="button"
                           onClick={() => setSelectedVocabForList(vocab)}
