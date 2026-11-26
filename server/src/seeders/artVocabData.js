@@ -1,21 +1,21 @@
 /**
  * Bộ từ vựng chuẩn Mỹ thuật & Thủ công nghệ thuật (Fine Arts & Crafts)
- * Bổ sung đầy đủ bối cảnh văn hóa - lịch sử, nghệ sĩ tiêu biểu và hình ảnh minh họa thực tế
+ * Đã đồng bộ 36 đầu mục (14 chất liệu & kỹ thuật vẽ + 22 thủ công mỹ nghệ)
  */
 
 const topicsData = [
   {
     "id": 1,
     "name": "Types of Paintings",
-    "name_vi": "Các loại tranh",
+    "name_vi": "Chất liệu & Kỹ thuật vẽ",
     "icon": "HiPaintBrush",
     "display_order": 1,
-    "description": "Từ vựng và bài đọc về các thể loại tranh vẽ, chất liệu và trường phái hội họa kinh điển."
+    "description": "Từ vựng về các chất liệu, kỹ thuật hội họa truyền thống và nghệ thuật kỹ thuật số."
   },
   {
     "id": 2,
     "name": "Fine Crafts & Handicrafts",
-    "name_vi": "Mỹ nghệ",
+    "name_vi": "Thủ công mỹ nghệ",
     "icon": "HiSparkles",
     "display_order": 2,
     "description": "Từ vựng về các loại hình và tác phẩm thủ công mỹ nghệ truyền thống lẫn hiện đại."
@@ -85,111 +85,6 @@ const vocabByTopic = {
       "image_credit": "Wikimedia Commons — Michelangelo (Public domain)"
     },
     {
-      "word": "portrait",
-      "pronunciation": "/ˈpɔːtrɪt/",
-      "part_of_speech": "noun",
-      "meaning_vi": "tranh chân dung",
-      "example_sentence": "The Mona Lisa is perhaps the most celebrated portrait in the world.",
-      "example_translation": "Mona Lisa có lẽ là bức tranh chân dung nổi tiếng nhất thế giới.",
-      "difficulty": "easy",
-      "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/portrait.jpg",
-      "cultural_note": "Thể loại tranh chân dung ghi lại diện mạo, khí chất và địa vị xã hội của nhân vật, từ chân dung hoàng gia châu Âu đến những khám phá nội tâm hiện đại.",
-      "related_artist": "Leonardo da Vinci (Mona Lisa), Johannes Vermeer, Diego Velázquez",
-      "image_alt": "Tranh chân dung nghệ thuật miêu tả diện mạo và biểu cảm",
-      "image_credit": "Wikimedia Commons — Johannes Vermeer (Public domain)"
-    },
-    {
-      "word": "landscape",
-      "pronunciation": "/ˈlændskeɪp/",
-      "part_of_speech": "noun",
-      "meaning_vi": "tranh phong cảnh",
-      "example_sentence": "He captured the golden sunset in a peaceful countryside landscape.",
-      "example_translation": "Ông đã bắt trọn hoàng hôn rực vàng trong một bức tranh phong cảnh đồng quê thanh bình.",
-      "difficulty": "easy",
-      "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/landscape.jpg",
-      "cultural_note": "Tranh phong cảnh trở thành thể loại hội họa độc lập quan trọng từ thời Phục hưng và thăng hoa rực rỡ trong trường phái Lãng mạn cùng trường phái Ấn tượng ngoài trời.",
-      "related_artist": "Claude Monet, Caspar David Friedrich, Vincent van Gogh",
-      "image_alt": "Tranh phong cảnh thiên nhiên bao la với núi rừng và bầu trời",
-      "image_credit": "Wikimedia Commons — Caspar David Friedrich (Public domain)"
-    },
-    {
-      "word": "still life",
-      "pronunciation": "/stɪl laɪf/",
-      "part_of_speech": "noun",
-      "meaning_vi": "tranh tĩnh vật",
-      "example_sentence": "Dutch painters were masters of detailed still life compositions.",
-      "example_translation": "Các danh họa Hà Lan là bậc thầy về những bố cục tranh tĩnh vật chi tiết.",
-      "difficulty": "easy",
-      "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/still_life.jpg",
-      "cultural_note": "Tranh tĩnh vật khắc họa những vật thể vô tri như hoa quả, hoa tươi, nhạc cụ, từng mang ý nghĩa triết học sâu sắc về sự ngắn ngủi của đời người (Vanitas Hà Lan).",
-      "related_artist": "Paul Cézanne, Caravaggio, Jean-Baptiste-Siméon Chardin",
-      "image_alt": "Tranh tĩnh vật sắp đặt bình gốm, hoa quả trên bàn",
-      "image_credit": "Wikimedia Commons — Paul Cézanne (Public domain)"
-    },
-    {
-      "word": "abstract art",
-      "pronunciation": "/ˈæbstrækt ɑːt/",
-      "part_of_speech": "noun",
-      "meaning_vi": "nghệ thuật trừu tượng",
-      "example_sentence": "Abstract art focuses on shapes, colors, and emotions rather than realistic figures.",
-      "example_translation": "Nghệ thuật trừu tượng chú trọng vào hình khối, màu sắc và cảm xúc thay vì hình tượng hiện thực.",
-      "difficulty": "medium",
-      "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/abstract_art.jpg",
-      "cultural_note": "Nghệ thuật trừu tượng từ bỏ việc mô phỏng thực tại hữu hình, sử dụng đường nét, màu sắc và hình khối thuần túy để đánh thức cảm xúc thị giác nguyên bản.",
-      "related_artist": "Wassily Kandinsky, Piet Mondrian, Kazimir Malevich",
-      "image_alt": "Tác phẩm nghệ thuật trừu tượng với các mảng hình học và màu sắc",
-      "image_credit": "Wikimedia Commons — Wassily Kandinsky (Public domain)"
-    },
-    {
-      "word": "impressionism",
-      "pronunciation": "/ɪmˈpreʃənɪzəm/",
-      "part_of_speech": "noun",
-      "meaning_vi": "trường phái ấn tượng",
-      "example_sentence": "Impressionism emerged in France with Claude Monet as a key figure.",
-      "example_translation": "Trường phái ấn tượng khởi phát tại Pháp với Claude Monet là một nhân vật then chốt.",
-      "difficulty": "medium",
-      "source_ref": "Encyclopædia Britannica",
-      "image_url": "/images/vocab/impressionism.jpg",
-      "cultural_note": "Trường phái Ấn tượng khởi xướng tại Paris thập niên 1870, chú trọng nắm bắt khoảnh khắc biến chuyển của ánh sáng tự nhiên với nét cọ ngắn và màu sắc tươi sáng.",
-      "related_artist": "Claude Monet, Pierre-Auguste Renoir, Edgar Degas",
-      "image_alt": "Bức tranh trường phái Ấn tượng nắm bắt ánh sáng và sắc màu thoáng qua",
-      "image_credit": "Wikimedia Commons — Claude Monet (Public domain)"
-    },
-    {
-      "word": "surrealism",
-      "pronunciation": "/səˈrɪəlɪzəm/",
-      "part_of_speech": "noun",
-      "meaning_vi": "trường phái siêu thực",
-      "example_sentence": "Surrealism explores dreamlike imagery and the subconscious mind.",
-      "example_translation": "Trường phái siêu thực khám phá những hình ảnh tựa giấc mơ và tiềm thức con người.",
-      "difficulty": "hard",
-      "source_ref": "MoMA Art Terms",
-      "image_url": "/images/vocab/surrealism.jpg",
-      "cultural_note": "Chủ nghĩa siêu thực khởi phát vào thập niên 1920 tại châu Âu, giải phóng tiềm thức, giấc mơ và những liên tưởng phi lý vượt ra ngoài logic lý tính.",
-      "related_artist": "Salvador Dalí, René Magritte, Max Ernst",
-      "image_alt": "Tác phẩm siêu thực với thế giới giấc mơ và biểu tượng bí ẩn",
-      "image_credit": "Wikimedia Commons — Odilon Redon (Public domain)"
-    },
-    {
-      "word": "cubism",
-      "pronunciation": "/ˈkjuːbɪzəm/",
-      "part_of_speech": "noun",
-      "meaning_vi": "trường phái lập thể",
-      "example_sentence": "Picasso pioneered cubism by breaking subjects into geometric facets.",
-      "example_translation": "Picasso mở đường cho trường phái lập thể bằng cách phân tích đối tượng thành các diện kỷ hà hình học.",
-      "difficulty": "hard",
-      "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/cubism.jpg",
-      "cultural_note": "Chủ nghĩa Lập thể do Picasso và Braque sáng lập năm 1907, phân rã vật thể thành các đa giác hình khối và tái hiện chúng từ nhiều góc nhìn đồng thời.",
-      "related_artist": "Pablo Picasso, Georges Braque, Juan Gris",
-      "image_alt": "Tác phẩm Lập thể phân rã cấu trúc vật thể thành các mặt phẳng",
-      "image_credit": "Wikimedia Commons — Juan Gris (Public domain)"
-    },
-    {
       "word": "sketch",
       "pronunciation": "/sketʃ/",
       "part_of_speech": "noun",
@@ -250,51 +145,6 @@ const vocabByTopic = {
       "image_credit": "Wikimedia Commons — Sandro Botticelli (Public domain)"
     },
     {
-      "word": "minimalism",
-      "pronunciation": "/ˈmɪnɪməlɪzəm/",
-      "part_of_speech": "noun",
-      "meaning_vi": "chủ nghĩa tối giản",
-      "example_sentence": "Minimalism emphasizes simple geometrical forms and monochromatic tones.",
-      "example_translation": "Chủ nghĩa tối giản đề cao các hình thức hình học đơn giản và sắc thái đơn sắc.",
-      "difficulty": "medium",
-      "source_ref": "MoMA Art Terms",
-      "image_url": "/images/vocab/minimalism.jpg",
-      "cultural_note": "Chủ nghĩa Tối giản ra đời tại New York thập niên 1960 với triết lý 'Ít hơn là nhiều hơn' (Less is more), tinh giản tuyệt đối yếu tố biểu cảm để tập trung vào bản chất vật liệu.",
-      "related_artist": "Donald Judd, Frank Stella, Agnes Martin",
-      "image_alt": "Tác phẩm hội họa tối giản với cấu trúc hình khối cô đọng",
-      "image_credit": "Wikimedia Commons — Piet Mondrian (Public domain)"
-    },
-    {
-      "word": "expressionism",
-      "pronunciation": "/ɪkˈspreʃənɪzəm/",
-      "part_of_speech": "noun",
-      "meaning_vi": "trường phái biểu hiện",
-      "example_sentence": "German expressionism aimed to portray subjective emotional responses.",
-      "example_translation": "Trường phái biểu hiện Đức hướng đến diễn tả phản ứng cảm xúc chủ quan sâu sắc.",
-      "difficulty": "hard",
-      "source_ref": "Encyclopædia Britannica",
-      "image_url": "/images/vocab/expressionism.jpg",
-      "cultural_note": "Trường phái Biểu hiện khởi phát từ Đức đầu thế kỷ 20, bóp méo hình dạng và dùng màu sắc tương phản mạnh mẽ để bộc lộ thế giới nội tâm đầy giông bão.",
-      "related_artist": "Edvard Munch (Tiếng thét), Egon Schiele, Wassily Kandinsky",
-      "image_alt": "Tác phẩm Biểu hiện với những đường nét uốn lượn và sắc màu kịch tính",
-      "image_credit": "Wikimedia Commons — Edvard Munch (Public domain)"
-    },
-    {
-      "word": "realism",
-      "pronunciation": "/ˈrɪəlɪzəm/",
-      "part_of_speech": "noun",
-      "meaning_vi": "chủ nghĩa hiện thực",
-      "example_sentence": "Realism sought to portray everyday life without idealization.",
-      "example_translation": "Chủ nghĩa hiện thực tìm cách miêu tả đời sống thường nhật một cách chân thực không lý tưởng hóa.",
-      "difficulty": "medium",
-      "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/realism.jpg",
-      "cultural_note": "Chủ nghĩa Hiện thực xuất hiện tại Pháp giữa thế kỷ 19, từ chối sự lý tưởng hóa lãng mạn để khắc họa chân thực đời sống nhân dân lao động và hiện thực xã hội.",
-      "related_artist": "Gustave Courbet, Jean-François Millet, Édouard Manet",
-      "image_alt": "Bức tranh hiện thực miêu tả trung thực cuộc sống đời thường",
-      "image_credit": "Wikimedia Commons — Jean-François Millet (Public domain)"
-    },
-    {
       "word": "miniature",
       "pronunciation": "/ˈmɪnətʃər/",
       "part_of_speech": "noun",
@@ -308,51 +158,6 @@ const vocabByTopic = {
       "related_artist": "Nicholas Hilliard, Kamāl ud-Dīn Behzād",
       "image_alt": "Tác phẩm tranh tiểu họa tinh xảo vẽ chi tiết kích thước nhỏ",
       "image_credit": "Wikimedia Commons — Possibly Sultan Muhammad (Public domain)"
-    },
-    {
-      "word": "self-portrait",
-      "pronunciation": "/ˌself ˈpɔːtrɪt/",
-      "part_of_speech": "noun",
-      "meaning_vi": "tranh tự họa",
-      "example_sentence": "Rembrandt completed dozens of self-portraits chronicling his lifetime.",
-      "example_translation": "Rembrandt đã vẽ hàng chục bức tranh tự họa ghi lại từng chặng đường cuộc đời mình.",
-      "difficulty": "easy",
-      "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/self_portrait.jpg",
-      "cultural_note": "Chân dung tự họa là phương tiện tự vấn tâm thức và định vị bản ngã của người họa sĩ qua thời gian, nổi tiếng nhất là chuỗi chân dung tự họa của Rembrandt và Frida Kahlo.",
-      "related_artist": "Rembrandt van Rijn, Frida Kahlo, Vincent van Gogh",
-      "image_alt": "Bức chân dung tự họa người nghệ sĩ tự khắc họa chính mình",
-      "image_credit": "Wikimedia Commons — Vincent van Gogh (Public domain)"
-    },
-    {
-      "word": "seascape",
-      "pronunciation": "/ˈsiːskeɪp/",
-      "part_of_speech": "noun",
-      "meaning_vi": "tranh phong cảnh biển",
-      "example_sentence": "Turner created turbulent seascapes showing stormy waves and majestic ships.",
-      "example_translation": "Turner tạo nên những bức tranh cảnh biển dữ dội thể hiện sóng bão và tàu bè uy nghi.",
-      "difficulty": "easy",
-      "source_ref": "Oxford Art Dictionary",
-      "image_url": "/images/vocab/seascape.jpg",
-      "cultural_note": "Tranh phong cảnh biển khắc họa sức mạnh huyền bí của đại dương, từ sóng gió gầm thét đến bờ cát tĩnh lặng, thịnh hành đặc biệt tại Hà Lan thế kỷ 17 và Anh thế kỷ 19.",
-      "related_artist": "J. M. W. Turner, Ivan Aivazovsky, Katsushika Hokusai",
-      "image_alt": "Bức tranh phong cảnh biển với những con sóng bạc đầu",
-      "image_credit": "Wikimedia Commons — Ivan Aivazovsky (Public domain)"
-    },
-    {
-      "word": "cityscape",
-      "pronunciation": "/ˈsɪtiskeɪp/",
-      "part_of_speech": "noun",
-      "meaning_vi": "tranh phong cảnh đô thị",
-      "example_sentence": "The modern cityscape highlights illuminated skyscrapers at twilight.",
-      "example_translation": "Bức tranh phong cảnh đô thị hiện đại nổi bật với những tòa nhà chọc trời rực sáng lúc chạng vạng.",
-      "difficulty": "easy",
-      "source_ref": "Tate Art Glossary",
-      "image_url": "/images/vocab/cityscape.jpg",
-      "cultural_note": "Tranh phong cảnh đô thị phản ánh nhịp sống kiến trúc, đường phố và ánh sáng thị thành; phát triển từ tranh Veduta thành phố Venice thời Baroque đến các đô thị hiện đại.",
-      "related_artist": "Canaletto, Camille Pissarro, Edward Hopper",
-      "image_alt": "Bức tranh cảnh quan đô thị với các tòa nhà và đường phố",
-      "image_credit": "Wikimedia Commons — Camille Pissarro (Public domain)"
     },
     {
       "word": "charcoal",
@@ -398,6 +203,36 @@ const vocabByTopic = {
       "related_artist": "Hieronymus Bosch (Khu vườn hoan lạc), Francis Bacon",
       "image_alt": "Bộ tranh ba tấm triptych ghép liền theo phong cách án thờ cổ",
       "image_credit": "Wikimedia Commons — Peter Paul Rubens (Public domain)"
+    },
+    {
+      "word": "digital art",
+      "pronunciation": "/ˈdɪdʒɪtl ɑːt/",
+      "part_of_speech": "noun",
+      "meaning_vi": "nghệ thuật kỹ thuật số",
+      "example_sentence": "She creates vibrant digital art illustrations using a stylus and drawing tablet.",
+      "example_translation": "Cô ấy sáng tác những bức minh họa nghệ thuật kỹ thuật số sống động bằng bút cảm ứng và bảng vẽ.",
+      "difficulty": "easy",
+      "source_ref": "Tate Art Glossary",
+      "image_url": "/images/vocab/digital_art.jpg",
+      "cultural_note": "Nghệ thuật kỹ thuật số (Digital Art) ứng dụng phần mềm đồ họa, bảng vẽ điện tử và công nghệ số để sáng tạo hội họa, minh họa và nghệ thuật thị giác đương đại.",
+      "related_artist": "Beeple, Loish, Ross Tran",
+      "image_alt": "Tác phẩm nghệ thuật kỹ thuật số sáng tạo bằng bảng vẽ điện tử và đồ họa số",
+      "image_credit": "Wikimedia Commons (CC BY-SA)"
+    },
+    {
+      "word": "chiaroscuro",
+      "pronunciation": "/kiˌɑːrəˈskʊərəʊ/",
+      "part_of_speech": "noun",
+      "meaning_vi": "kỹ thuật tương phản sáng tối",
+      "example_sentence": "Caravaggio mastered chiaroscuro to create dramatic spotlights in dark scenes.",
+      "example_translation": "Caravaggio bậc thầy về kỹ thuật tương phản sáng tối để tạo ánh sáng kịch tính trong khung cảnh tối.",
+      "difficulty": "hard",
+      "source_ref": "Oxford Art Dictionary",
+      "image_url": "/images/vocab/chiaroscuro.jpg",
+      "cultural_note": "Từ tiếng Ý nghĩa là 'sáng-tối', kỹ thuật dùng độ tương phản mạnh giữa vùng sáng rực và bóng tối sâu để tạo khối 3D và chiều sâu tâm lý thời Phục hưng & Baroque.",
+      "related_artist": "Caravaggio, Rembrandt van Rijn, Georges de La Tour",
+      "image_alt": "Tranh Baroque sử dụng kỹ thuật tương phản sáng tối chiaroscuro kịch tính",
+      "image_credit": "Wikimedia Commons — Caravaggio (Public domain)"
     }
   ],
   "2": [

@@ -267,6 +267,7 @@ class SiglipEngine:
         self.ood_embs = torch.from_numpy(proto["ood_embs"]).to(self.device, dtype=torch.float32)
 
         self._load_allowed_words()
+        self._sync_missing_labels()
         self._load_facets()
         self._load_probe()
         self._ensure_dino_loaded()
@@ -281,6 +282,7 @@ class SiglipEngine:
             self.adapter = apply_vision_checkpoint(self.model, VISION_CKPT_PATH, self.device)
             self.vision_finetuned = bool(self.adapter is not None or VISION_CKPT_PATH.exists())
         self._load_allowed_words()
+        self._sync_missing_labels()
         self._load_facets()
         self._load_probe()
         self._ensure_dino_loaded()
@@ -299,8 +301,30 @@ class SiglipEngine:
             v = self.emb_ring.get(emb_id)
             return v.astype(np.float32) if v is not None else None
 
-    def upsert_label(self, req: UpsertLabelRequest) -> dict[str, Any]:
-        if not self.ready or self.model is None or self.processor is None:
+    def _sync_missing_labels(self):
+        if not LABELS_PATH.exists() or self.model is None or self.processor is None:
+            return
+        raw = json.loads(LABELS_PATH.read_text(encoding="utf-8")).get("labels", [])
+        existing = {w.lower() for w in self.words}
+        for item in raw:
+            word = str(item.get("word") or "").strip()
+            if not word or word.lower() in existing:
+                continue
+            topic_id = int(item.get("topic_id", 1))
+            self._upsert_label_internal(
+                UpsertLabelRequest(
+                    word=word,
+                    topic_id=topic_id,
+                    topic_name=item.get("topic_name", ""),
+                    meaning_vi=item.get("meaning_vi", ""),
+                    image_alt=item.get("image_alt", ""),
+                    facet="craft" if topic_id == 2 else "medium",
+                )
+            )
+            existing.add(word.lower())
+
+    def _upsert_label_internal(self, req: UpsertLabelRequest) -> dict[str, Any]:
+        if self.model is None or self.processor is None:
             raise HTTPException(status_code=503, detail="AI engine not ready")
 
         word = req.word.strip()
@@ -346,6 +370,11 @@ class SiglipEngine:
             self.facet_indices[facet].append(idx)
 
         return {"status": "ok", "word": word, "index": idx, "num_classes": len(self.words)}
+
+    def upsert_label(self, req: UpsertLabelRequest) -> dict[str, Any]:
+        if not self.ready or self.model is None or self.processor is None:
+            raise HTTPException(status_code=503, detail="AI engine not ready")
+        return self._upsert_label_internal(req)
 
     def _extract_dino_features(self, images_sub: List[Image.Image], use_two_view: bool) -> np.ndarray:
         sub_n = len(images_sub)

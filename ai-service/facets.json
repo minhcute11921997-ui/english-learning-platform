@@ -3,22 +3,9 @@
     "medium": {
       "label_vi": "Chất liệu & Kỹ thuật",
       "words": [
-        "oil painting", "watercolor", "acrylic painting", "gouache", "tempera",
-        "fresco", "charcoal", "pastel", "sketch", "mural", "miniature",
-        "triptych"
-      ]
-    },
-    "subject": {
-      "label_vi": "Thể loại & Đề tài",
-      "words": [
-        "portrait", "self-portrait", "landscape", "seascape", "cityscape", "still life"
-      ]
-    },
-    "movement": {
-      "label_vi": "Trường phái",
-      "words": [
-        "impressionism", "cubism", "surrealism", "expressionism",
-        "realism", "abstract art", "minimalism"
+        "oil painting", "watercolor", "acrylic painting", "fresco",
+        "sketch", "mural", "gouache", "tempera", "miniature",
+        "chiaroscuro", "charcoal", "pastel", "triptych", "digital art"
       ]
     },
     "craft": {
