@@ -64,9 +64,16 @@ ai-service/vision_finetuned.pt
 ai-service/vision_finetuned.candidate.pt
 ai-service/finetune_siglip.py
 ai-service/retrain_probe.py
+ai-service/auto_improve.py
+ai-service/colab_*
+ai-service/.best_backup/
 ai-service/data/
 tools/training/
 ai-service/eval/
+*.ipynb
+colab_bundle.zip
+ai-service.zip
+ai-service-output-*.zip
 server/uploads/.ai-cache.json
 __pycache__/
 *.pyc

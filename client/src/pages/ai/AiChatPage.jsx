@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { aiApi, vocabApi } from '../../api/services';
 import useAuthStore from '../../stores/authStore';
-import VocabImage from '../../components/vocab/VocabImage';
 import AddToListModal from '../../components/vocab/AddToListModal';
 import {
   HiOutlinePhoto,
@@ -11,13 +10,8 @@ import {
   HiOutlineTrash,
   HiOutlineBookmark,
   HiOutlineCheckCircle,
-  HiOutlineBookOpen,
-  HiOutlineLightBulb,
   HiOutlineArrowTopRightOnSquare,
-  HiOutlineExclamationTriangle,
-  HiOutlineHandThumbUp,
-  HiOutlineHandThumbDown,
-  HiOutlineTag
+  HiOutlineExclamationTriangle
 } from 'react-icons/hi2';
 import { HiVolumeUp } from 'react-icons/hi';
 
@@ -86,37 +80,6 @@ async function processClientImage(fileOrBlob) {
   });
 }
 
-function getStatusBadge(result) {
-  if (result.status === 'out_of_scope') {
-    return {
-      text: 'Ngoài phạm vi mỹ thuật',
-      cls: 'bg-amber-50 text-amber-700 border-amber-200'
-    };
-  }
-  if (result.preliminary) {
-    return {
-      text: 'Gợi ý ban đầu',
-      cls: 'bg-indigo-50 text-indigo-700 border-indigo-200'
-    };
-  }
-  if (result.status === 'uncertain') {
-    return {
-      text: 'Chưa chắc chắn',
-      cls: 'bg-indigo-50 text-indigo-700 border-indigo-200'
-    };
-  }
-  if (result.cached) {
-    return {
-      text: 'Ảnh đã được nhận diện trước đó',
-      cls: 'bg-emerald-50 text-emerald-700 border-emerald-200'
-    };
-  }
-  return {
-    text: 'Gợi ý từ vựng',
-    cls: 'bg-blue-50 text-blue-700 border-blue-200'
-  };
-}
-
 export default function AiChatPage() {
   const userId = useAuthStore(state => state.user?.id);
   if (userId == null) return null;
@@ -126,16 +89,10 @@ export default function AiChatPage() {
 function ImageLookup({ historyKey }) {
   const [messages, setMessages] = useState(() => loadSavedHistory(historyKey));
   const [aiHealth, setAiHealth] = useState(null);
-  const [allVocabWords, setAllVocabWords] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedVocabForList, setSelectedVocabForList] = useState(null);
-  const [expandedPanels, setExpandedPanels] = useState({});
   const [learnedIds, setLearnedIds] = useState({});
-  const [selectedVocabByMsg, setSelectedVocabByMsg] = useState({});
-  const [feedbackByMsg, setFeedbackByMsg] = useState({});
-  const [correctionOpenMsg, setCorrectionOpenMsg] = useState(null);
-  const [correctionWord, setCorrectionWord] = useState('');
 
   const fileInputRef = useRef(null);
   const latestResultRef = useRef(null);
@@ -144,24 +101,14 @@ function ImageLookup({ historyKey }) {
 
   useEffect(() => {
     let active = true;
-    const init = async () => {
-      try {
-        const [hRes, t1, t2] = await Promise.all([
-          aiApi.health().catch(() => ({ data: { ready: false } })),
-          vocabApi.getByTopic(1, { limit: 100 }).catch(() => ({ data: [] })),
-          vocabApi.getByTopic(2, { limit: 100 }).catch(() => ({ data: [] }))
-        ]);
-        if (!active) return;
-        setAiHealth(hRes.data || { ready: false });
-        const merged = [...(t1.data || []), ...(t2.data || [])]
-          .map((v) => ({ word: v.word, meaning_vi: v.meaning_vi }))
-          .sort((a, b) => a.word.localeCompare(b.word));
-        setAllVocabWords(merged);
-      } catch {
+    aiApi
+      .health()
+      .then((hRes) => {
+        if (active) setAiHealth(hRes.data || { ready: false });
+      })
+      .catch(() => {
         if (active) setAiHealth({ ready: false });
-      }
-    };
-    init();
+      });
     return () => {
       active = false;
     };
@@ -330,37 +277,6 @@ function ImageLookup({ historyKey }) {
     }
   };
 
-  const handleFeedback = async (msgId, result, vocab, isCorrect, corrected = null) => {
-    if (!result?.imageHash) return;
-    try {
-      await aiApi.feedback({
-        imageHash: result.imageHash,
-        embId: result.embId || null,
-        predictedWord: vocab?.word || null,
-        correctedWord: isCorrect ? vocab?.word : corrected,
-        isCorrect,
-        tier: result.tier,
-        confidence: result.matches?.[0]?.confidence ?? null
-      });
-      setFeedbackByMsg((prev) => ({
-        ...prev,
-        [msgId]: isCorrect ? 'correct' : `corrected:${corrected}`
-      }));
-      setCorrectionOpenMsg(null);
-      setCorrectionWord('');
-      toast.success('Đã ghi nhận phản hồi của bạn!');
-    } catch (err) {
-      toast.error(err.response?.data?.message || err.message || 'Không thể gửi phản hồi');
-    }
-  };
-
-  const togglePanel = (msgId, panel) => {
-    setExpandedPanels((prev) => ({
-      ...prev,
-      [msgId]: prev[msgId] === panel ? null : panel
-    }));
-  };
-
   const handleClearHistory = () => {
     setMessages([]);
     try { localStorage.removeItem(historyKey); } catch { /* Storage is optional. */ }
@@ -485,36 +401,19 @@ function ImageLookup({ historyKey }) {
             }
 
             const result = msg.result;
-            const badge = getStatusBadge(result);
-            const matches = result.matches || [];
-            const facets = result.facets || [];
-
-            // Resolve active displayed vocabulary (from facet pill, match chip, or default top-1)
-            const chosenWord = selectedVocabByMsg[msg.id];
-            const chosenEntry =
-              matches.find((m) => m.word === chosenWord) ||
-              facets.find((f) => f.word === chosenWord) ||
-              matches[0];
-            const vocab = chosenEntry?.vocabulary;
-            const confidence = chosenEntry?.confidence ?? matches[0]?.confidence ?? 0;
-            const activePanel = expandedPanels[msg.id];
-            const fbState = feedbackByMsg[msg.id];
+            const primaryMatch = result?.matches?.[0];
+            const vocab = primaryMatch?.vocabulary;
+            const primaryFacet =
+              result?.facets?.find((f) => f.word === primaryMatch?.word) ||
+              result?.facets?.[0];
+            const categoryLabel =
+              primaryFacet?.facetLabelVi ||
+              vocab?.topic?.name_vi ||
+              'Thể loại mỹ thuật';
 
             return (
               <div key={msg.id} className="flex justify-start" ref={index === messages.length - 1 ? latestResultRef : null}>
-                <div className="image-lab-result w-full max-w-2xl bg-white border border-slate-200 p-4 sm:p-5 space-y-4">
-                  {/* Metadata row */}
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${badge.cls}`}>
-                      {badge.text}
-                    </span>
-                    {typeof result.latencyMs === 'number' && (
-                      <span className="text-[11px] font-mono text-slate-400">
-                        {result.latencyMs}ms
-                      </span>
-                    )}
-                  </div>
-
+                <div className="image-lab-result w-full max-w-xl bg-white border border-slate-200 p-4 sm:p-5 space-y-3">
                   {result.status === 'out_of_scope' || !vocab ? (
                     <div className="flex items-start gap-2.5 text-sm text-slate-700 bg-amber-50/70 border border-amber-200/80 rounded-xl p-3.5">
                       <HiOutlineExclamationTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
@@ -522,128 +421,55 @@ function ImageLookup({ historyKey }) {
                     </div>
                   ) : (
                     <>
-                      {/* Multi-facet pills (e.g. Thể loại: portrait + Chất liệu: oil painting) */}
-                      {facets.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="text-xs font-semibold text-blue-700">
+                          {categoryLabel}
+                        </div>
+
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400">
-                            <HiOutlineTag className="w-3.5 h-3.5" />
-                            Nhóm nhận diện:
-                          </span>
-                          {facets.map((f) => {
-                            const active = vocab.word === f.word;
-                            return (
-                              <button
-                                key={`${f.facet}-${f.word}`}
-                                type="button"
-                                onClick={() =>
-                                  setSelectedVocabByMsg((prev) => ({ ...prev, [msg.id]: f.word }))
-                                }
-                                className={`px-2.5 py-1 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${
-                                  active
-                                    ? 'bg-blue-600 text-white border-blue-600'
-                                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-blue-300'
-                                }`}
-                              >
-                                <span className={active ? 'text-blue-100' : 'text-slate-400'}>
-                                  {f.facetLabelVi}:{' '}
-                                </span>
-                                {f.word}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-
-                      {/* Primary Vocabulary Card */}
-                      <div className="flex flex-col sm:flex-row gap-4 items-start">
-                        <VocabImage
-                          src={vocab.image_url}
-                          alt={vocab.image_alt || vocab.word}
-                          className="w-full sm:w-36 h-32 rounded-xl bg-slate-100 border border-slate-200 shrink-0"
-                          fit="contain"
-                          enableZoom
-                        />
-
-                        <div className="flex-1 min-w-0 space-y-2">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="text-xl font-extrabold text-slate-900">
-                              {vocab.word}
-                            </h3>
-                            <button
-                              type="button"
-                              onClick={() => handleSpeak(vocab.word)}
-                              className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors cursor-pointer"
-                              title="Nghe phát âm"
-                            >
-                              <HiVolumeUp className="w-4 h-4" />
-                            </button>
-                            {vocab.part_of_speech && (
-                              <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
-                                {vocab.part_of_speech}
-                              </span>
-                            )}
-                            <span className="text-xs font-mono font-bold text-blue-600 ml-auto">
-                              {Math.round(confidence * 100)}% khớp
+                          <h3 className="text-xl font-extrabold text-slate-900">
+                            {vocab.word}
+                          </h3>
+                          <button
+                            type="button"
+                            onClick={() => handleSpeak(vocab.word)}
+                            className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors cursor-pointer"
+                            title="Nghe phát âm"
+                          >
+                            <HiVolumeUp className="w-4 h-4" />
+                          </button>
+                          {vocab.part_of_speech && (
+                            <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
+                              {vocab.part_of_speech}
                             </span>
-                          </div>
-
-                          {vocab.pronunciation && (
-                            <div className="text-xs font-mono text-slate-500">
-                              {vocab.pronunciation}
-                            </div>
-                          )}
-
-                          <div className="text-base font-bold text-blue-700">
-                            {vocab.meaning_vi}
-                          </div>
-
-                          {vocab.topic && (
-                            <div className="text-xs text-slate-500">
-                              Chủ đề:{' '}
-                              <Link
-                                to={`/topics/${vocab.topic.id}`}
-                                className="font-semibold text-slate-700 hover:text-blue-600 inline-flex items-center gap-1"
-                              >
-                                {vocab.topic.name_vi}
-                                <HiOutlineArrowTopRightOnSquare className="w-3.5 h-3.5" />
-                              </Link>
-                            </div>
                           )}
                         </div>
+
+                        {vocab.pronunciation && (
+                          <div className="text-xs font-mono text-slate-500">
+                            {vocab.pronunciation}
+                          </div>
+                        )}
+
+                        <div className="text-base font-bold text-blue-700">
+                          {vocab.meaning_vi}
+                        </div>
+
+                        {vocab.topic && (
+                          <div className="text-xs text-slate-500">
+                            Chủ đề:{' '}
+                            <Link
+                              to={`/topics/${vocab.topic.id}`}
+                              className="font-semibold text-slate-700 hover:text-blue-600 inline-flex items-center gap-1"
+                            >
+                              {vocab.topic.name_vi}
+                              <HiOutlineArrowTopRightOnSquare className="w-3.5 h-3.5" />
+                            </Link>
+                          </div>
+                        )}
                       </div>
 
-                      {/* Structured Quick-Action Chips */}
                       <div className="flex flex-wrap gap-2 pt-1">
-                        {vocab.example_sentence && (
-                          <button
-                            type="button"
-                            onClick={() => togglePanel(msg.id, 'example')}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors inline-flex items-center gap-1.5 cursor-pointer ${
-                              activePanel === 'example'
-                                ? 'bg-blue-600 text-white border-blue-600'
-                                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                            }`}
-                          >
-                            <HiOutlineBookOpen className="w-4 h-4" />
-                            Xem ví dụ
-                          </button>
-                        )}
-
-                        {vocab.cultural_note && (
-                          <button
-                            type="button"
-                            onClick={() => togglePanel(msg.id, 'culture')}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors inline-flex items-center gap-1.5 cursor-pointer ${
-                              activePanel === 'culture'
-                                ? 'bg-blue-600 text-white border-blue-600'
-                                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                            }`}
-                          >
-                            <HiOutlineLightBulb className="w-4 h-4" />
-                            Ghi chú văn hóa
-                          </button>
-                        )}
-
                         <button
                           type="button"
                           onClick={() => setSelectedVocabForList(vocab)}
@@ -667,114 +493,6 @@ function ImageLookup({ historyKey }) {
                           {learnedIds[vocab.id] ? 'Đã đánh dấu học' : 'Đánh dấu đã học'}
                         </button>
                       </div>
-
-                      {activePanel === 'example' && vocab.example_sentence && (
-                        <div className="bg-slate-50 border border-slate-200/90 rounded-xl p-3.5 text-xs space-y-1">
-                          <p className="font-semibold text-slate-800">&ldquo;{vocab.example_sentence}&rdquo;</p>
-                          {vocab.example_translation && (
-                            <p className="text-slate-500">{vocab.example_translation}</p>
-                          )}
-                        </div>
-                      )}
-
-                      {activePanel === 'culture' && vocab.cultural_note && (
-                        <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-3.5 text-xs space-y-1.5 text-slate-700">
-                          <p className="leading-relaxed">{vocab.cultural_note}</p>
-                          {vocab.related_artist && (
-                            <p className="text-slate-500">
-                              <strong>Tiêu biểu:</strong> {vocab.related_artist}
-                            </p>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Alternative matches */}
-                      {matches.length > 1 && (
-                        <div className="border-t border-slate-100 pt-3 flex flex-wrap items-center gap-2">
-                          <span className="text-[11px] font-semibold text-slate-400">
-                            Top gợi ý:
-                          </span>
-                          {matches.map((m) => (
-                            <button
-                              key={m.word}
-                              type="button"
-                              onClick={() =>
-                                setSelectedVocabByMsg((prev) => ({ ...prev, [msg.id]: m.word }))
-                              }
-                              className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
-                                vocab.word === m.word
-                                  ? 'bg-blue-50 text-blue-700 border-blue-300'
-                                  : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
-                              }`}
-                            >
-                              {m.vocabulary.word} ({Math.round((m.confidence || 0) * 100)}%)
-                            </button>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* User Feedback Loop (Đúng / Sai - chọn nhãn đúng) */}
-                      {result.imageHash && (
-                        <div className="border-t border-slate-100 pt-3 space-y-2">
-                          {fbState ? (
-                            <div className="text-xs font-semibold text-emerald-700">
-                              {fbState === 'correct'
-                                ? '✓ Đã xác nhận kết quả chính xác.'
-                                : `✓ Đã ghi nhận nhãn đúng: "${fbState.replace('corrected:', '')}".`}
-                            </div>
-                          ) : (
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className="text-[11px] text-slate-400">Nhận diện này đúng không?</span>
-                              <button
-                                type="button"
-                                onClick={() => handleFeedback(msg.id, result, vocab, true)}
-                                className="px-2.5 py-1 rounded-lg text-xs font-semibold border border-slate-200 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 inline-flex items-center gap-1 cursor-pointer"
-                              >
-                                <HiOutlineHandThumbUp className="w-3.5 h-3.5" />
-                                Đúng
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setCorrectionOpenMsg(correctionOpenMsg === msg.id ? null : msg.id);
-                                  setCorrectionWord('');
-                                }}
-                                className="px-2.5 py-1 rounded-lg text-xs font-semibold border border-slate-200 text-slate-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200 inline-flex items-center gap-1 cursor-pointer"
-                              >
-                                <HiOutlineHandThumbDown className="w-3.5 h-3.5" />
-                                Sai – chọn từ đúng
-                              </button>
-                            </div>
-                          )}
-
-                          {correctionOpenMsg === msg.id && !fbState && (
-                            <div className="flex flex-wrap items-center gap-2 pt-1">
-                              <select
-                                value={correctionWord}
-                                onChange={(e) => setCorrectionWord(e.target.value)}
-                                className="input py-1.5 px-3 text-xs w-auto min-w-[220px]"
-                              >
-                                <option value="">-- Chọn thuật ngữ đúng --</option>
-                                {allVocabWords.map((v) => (
-                                  <option key={v.word} value={v.word}>
-                                    {v.word} ({v.meaning_vi})
-                                  </option>
-                                ))}
-                              </select>
-                              <button
-                                type="button"
-                                disabled={!correctionWord}
-                                onClick={() =>
-                                  handleFeedback(msg.id, result, vocab, false, correctionWord)
-                                }
-                                className="btn btn-primary py-1.5 px-3 text-xs"
-                              >
-                                Gửi chỉnh sửa
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      )}
                     </>
                   )}
                 </div>

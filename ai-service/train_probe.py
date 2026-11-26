@@ -402,8 +402,20 @@ def fit_facet_gates_and_heads(
                     best_sub_acc = acc
                     best_sub_clf = sub_clf
             for r_idx, cls_id in enumerate(best_sub_clf.classes_):
-                facet_coef[int(cls_id)] = best_sub_clf.coef_[r_idx]
-                facet_intercept[int(cls_id)] = best_sub_clf.intercept_[r_idx]
+                facet_coef[int(cls_id)] = (
+                    -best_sub_clf.coef_[0]
+                    if best_sub_clf.coef_.shape[0] == 1 and r_idx == 0
+                    else best_sub_clf.coef_[0]
+                    if best_sub_clf.coef_.shape[0] == 1
+                    else best_sub_clf.coef_[r_idx]
+                )
+                facet_intercept[int(cls_id)] = (
+                    -best_sub_clf.intercept_[0]
+                    if best_sub_clf.intercept_.shape[0] == 1 and r_idx == 0
+                    else best_sub_clf.intercept_[0]
+                    if best_sub_clf.intercept_.shape[0] == 1
+                    else best_sub_clf.intercept_[r_idx]
+                )
 
     return gate_coef, gate_intercept, facet_coef, facet_intercept
 
