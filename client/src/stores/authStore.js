@@ -38,11 +38,26 @@ const useAuthStore = create((set, get) => ({
   },
 
   /**
+   * Đăng nhập / Xác minh nhanh bằng Google
+   */
+  loginWithGoogle: async (credential) => {
+    const response = await authApi.googleLogin(credential);
+    const { user, accessToken, refreshToken } = response.data;
+
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+
+    set({ user, isAuthenticated: true, isLoading: false });
+    return response;
+  },
+
+  /**
    * Đăng xuất
    */
   logout: async () => {
     try {
-      await authApi.logout();
+      const refreshToken = localStorage.getItem('refreshToken');
+      await authApi.logout(refreshToken);
     } catch {
       // Ignore logout errors
     }

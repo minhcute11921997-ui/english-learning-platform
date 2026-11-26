@@ -1,0 +1,17 @@
+{
+  "name": "EngLearn.art — Học tiếng Anh qua mỹ thuật",
+  "short_name": "EngLearn.art",
+  "description": "Nền tảng học tiếng Anh chuyên ngành Mỹ thuật & Mỹ nghệ với SM-2 và AI Vision.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffcf6",
+  "theme_color": "#195646",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

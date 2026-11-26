@@ -6,17 +6,17 @@ services:
     container_name: englearn_mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: english_learning
-      MYSQL_USER: englearn_user
-      MYSQL_PASSWORD: englearn_pass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-englearn_root_dev}
+      MYSQL_DATABASE: ${DB_NAME:-english_learning}
+      MYSQL_USER: ${DB_USER:-englearn_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-englearn_pass_dev}
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
     ports:
-      - "3307:3306"
+      - "127.0.0.1:${DB_EXTERNAL_PORT:-3307}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -prootpassword || exit 1"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 12
@@ -38,26 +38,39 @@ services:
       PORT: 3000
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_NAME: english_learning
-      DB_USER: englearn_user
-      DB_PASSWORD: englearn_pass
+      DB_NAME: ${DB_NAME:-english_learning}
+      DB_USER: ${DB_USER:-englearn_user}
+      DB_PASSWORD: ${DB_PASSWORD:-englearn_pass_dev}
       JWT_SECRET: ${JWT_SECRET:-}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-}
-      CLIENT_URL: http://localhost:5173
-      AI_ENABLED: "true"
-      AI_SERVICE_URL: http://host.docker.internal:8001
-      AI_TIER2_MODE: "off"
-      OLLAMA_URL: http://host.docker.internal:11434
-      AI_VISION_MODEL: qwen2.5vl:7b
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:5173}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      EMAIL_FROM: ${EMAIL_FROM:-noreply@englearn.art}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      AI_ENABLED: ${AI_ENABLED:-true}
+      AI_SERVICE_URL: ${AI_SERVICE_URL:-http://host.docker.internal:8001}
+      AI_TIER2_MODE: ${AI_TIER2_MODE:-off}
+      OLLAMA_URL: ${OLLAMA_URL:-http://host.docker.internal:11434}
+      AI_VISION_MODEL: ${AI_VISION_MODEL:-qwen2.5vl:7b}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
       mysql:
         condition: service_healthy
     ports:
-      - "3000:3000"
+      - "${SERVER_PORT:-3000}:3000"
     volumes:
       - server_uploads:/app/uploads
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     networks:
       - englearn_net
 
@@ -70,10 +83,37 @@ services:
     container_name: englearn_client
     restart: always
     depends_on:
-      - server
+      server:
+        condition: service_healthy
     ports:
-      - "5173:80"
+      - "${CLIENT_HTTP_PORT:-5173}:80"
       - "8080:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ > /dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - englearn_net
+
+  # 4. AI Vision Microservice (SigLIP FastAPI — bật bằng: docker compose --profile ai up -d)
+  ai-service:
+    profiles: ["ai"]
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: englearn_ai
+    restart: unless-stopped
+    environment:
+      PORT: 8001
+    ports:
+      - "127.0.0.1:8001:8001"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health')\" || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 45s
     networks:
       - englearn_net
 

@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+data/
+eval/
+tests/
+.best_backup/
+*.bak
+*.ipynb
+colab_*
+auto_improve.py
+finetune_siglip.py
+retrain_probe.py
+build_prototypes.py

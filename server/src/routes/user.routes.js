@@ -31,6 +31,18 @@ router.put(
   userController.setLearningGoal
 );
 
-router.post('/avatar', upload.single('avatar'), userController.uploadAvatar);
+router.post(
+  '/avatar',
+  upload.single('avatar'),
+  upload.validateImageSignature,
+  userController.uploadAvatar
+);
+
+router.get('/export-data', userController.exportMyData);
+router.delete(
+  '/account',
+  [body('password').notEmpty().withMessage('Vui lòng nhập mật khẩu để xác nhận xóa tài khoản'), validate],
+  userController.deleteMyAccount
+);
 
 module.exports = router;

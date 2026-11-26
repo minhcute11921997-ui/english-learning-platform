@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import useAuthStore from '../../stores/authStore';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import GoogleSignInButton from '../../components/common/GoogleSignInButton';
 
 /**
  * Trang đăng ký tài khoản
@@ -66,11 +67,20 @@ export default function RegisterPage() {
         </Button>
       </form>
 
+      <GoogleSignInButton redirectTo="/dashboard" />
+
       <p className="text-sm text-slate-600 mt-6">
         Đã có tài khoản?{' '}
         <Link to="/login" className="text-blue-600 font-bold hover:underline">
           Đăng nhập
         </Link>
+      </p>
+
+      <p className="mt-4 text-xs text-slate-500">
+        Bằng việc đăng ký, bạn đồng ý với{' '}
+        <Link to="/terms" className="underline hover:text-slate-700">Điều khoản sử dụng</Link>
+        {' '}và{' '}
+        <Link to="/privacy" className="underline hover:text-slate-700">Chính sách bảo mật</Link>.
       </p>
     </div>
   );

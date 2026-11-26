@@ -191,3 +191,83 @@ test('R27 removing every list membership does not auto-enroll a word',async()=>{
  await c.addWordToLists({user:{id:1},body:{vocabulary_id:1,list_ids:[],auto_learn:true}},response());
  assert.equal(db.rows('UserVocabProgress').length,0);assert.equal(db.rows('ReviewSchedule').length,0);
 });
+test('R28 five consecutive failed logins temporarily lock the account and reset on valid login',async()=>{
+ const db=database();
+ db.rows('User').push({id:2,username:'learner',email:'lock@test.local',role:'learner',is_active:true,failed_login_attempts:0,locked_until:null});
+ const origFindOne=db.models.User.findOne;
+ db.models.User.findOne=async(opts)=>{const u=await origFindOne(opts);if(u)Object.defineProperty(u,'comparePassword',{value:async(pw)=>pw==='Correct123!',enumerable:false});return u;};
+ const auth=load('server/src/services/auth.service.js',{...baseMocks,'../models':db.models,'jsonwebtoken':{sign:p=>JSON.stringify(p)},'../config/app':{jwt:{},security:{maxLoginAttempts:5,lockoutDurationMinutes:15}}});
+ for(let i=0;i<4;i++) await assert.rejects(auth.login({email:'lock@test.local',password:'wrong'}),e=>e.statusCode===401);
+ await assert.rejects(auth.login({email:'lock@test.local',password:'wrong'}),e=>e.statusCode===423);
+ await assert.rejects(auth.login({email:'lock@test.local',password:'Correct123!'}),e=>e.statusCode===423);
+ db.rows('User')[1].locked_until=new Date(Date.now()-1000);
+ const ok=await auth.login({email:'lock@test.local',password:'Correct123!'});
+ assert.ok(ok.accessToken);assert.equal(db.rows('User')[1].failed_login_attempts,0);assert.equal(db.rows('User')[1].locked_until,null);
+});
+test('R29 forgot password issues a one-time reset token that updates password and revokes refresh tokens',async()=>{
+ const db=database();
+ db.rows('User').push({id:2,username:'resetter',email:'reset@test.local',role:'learner',is_active:true,password_hash:'OldPass123'});
+ db.rows('RefreshToken').push({id:1,user_id:2,token_hash:'oldhash',expires_at:new Date(Date.now()+864e5),revoked_at:null});
+ const auth=load('server/src/services/auth.service.js',{...baseMocks,'../models':db.models,'jsonwebtoken':{sign:p=>JSON.stringify(p)},'../config/app':{env:'test',jwt:{},security:{passwordResetTtlMinutes:15}}});
+ const forgot=await auth.forgotPassword('reset@test.local');
+ assert.ok(forgot.resetToken);
+ await auth.resetPassword({token:forgot.resetToken,newPassword:'NewPass123!'});
+ assert.equal(db.rows('User')[1].password_hash,'NewPass123!');
+ assert.ok(db.rows('RefreshToken')[0].revoked_at);
+ await assert.rejects(auth.resetPassword({token:forgot.resetToken,newPassword:'Again123!'}),e=>e.statusCode===400);
+});
+test('R30 logged out refresh token cannot be reused to mint a new access token',async()=>{
+ const db=database();
+ const origFindOne=db.models.User.findOne;
+ db.models.User.findOne=async(opts)=>{const u=await origFindOne(opts);if(u)Object.defineProperty(u,'comparePassword',{value:async()=>true,enumerable:false});return u;};
+ const jwt=require('../server/node_modules/jsonwebtoken');
+ const cfg={jwt:{secret:'a'.repeat(40),refreshSecret:'b'.repeat(40),expiresIn:'15m',refreshExpiresIn:'7d'},security:{maxLoginAttempts:5,lockoutDurationMinutes:15}};
+ const auth=load('server/src/services/auth.service.js',{...baseMocks,'../models':db.models,jsonwebtoken:jwt,'../config/app':cfg});
+ const session=await auth.login({email:'admin@test.local',password:'any'});
+ await auth.logout(session.refreshToken);
+ await assert.rejects(auth.refreshToken(session.refreshToken),e=>e.statusCode===401);
+});
+test('R31 admin mutations record audit log entries retrievable via getAuditLogs',async()=>{
+ const db=database();db.rows('User').push({id:2,username:'u2',email:'u2@test.local',role:'learner',is_active:true});
+ const c=controller('admin.controller.js',db);
+ await c.updateUserRole({user:{id:1},params:{id:2},body:{role:'admin'},ip:'127.0.0.1'},response());
+ await c.createVocabulary({user:{id:1},body:{topic_id:1,word:'gouache',meaning_vi:'màu bột'},ip:'127.0.0.1'},response());
+ const r=response();await c.getAuditLogs({user:{id:1},query:{page:1,limit:10}},r);
+ assert.equal(r.body.data.length,2);
+ assert.deepEqual(r.body.data.map(l=>l.action),['UPDATE_USER_ROLE','CREATE_VOCABULARY']);
+});
+test('R32 user can export personal data and delete own account except last active admin',async()=>{
+ const db=database();
+ db.rows('User').push({id:2,username:'u2',email:'u2@test.local',role:'learner',is_active:true});
+ db.rows('UserVocabProgress').push({id:1,user_id:2,vocabulary_id:1,status:'learning'});
+ const origFindByPk=db.models.User.findByPk;
+ db.models.User.findByPk=async(id,opts)=>{const u=await origFindByPk(id,opts);if(u)u.comparePassword=async(pw)=>pw==='Secret123!';return u;};
+ const c=controller('user.controller.js',db);
+ const expRes=response();await c.exportMyData({user:{id:2}},expRes);
+ assert.equal(expRes.body.data.user.id,2);assert.equal(expRes.body.data.vocab_progress.length,1);
+ await assert.rejects(c.deleteMyAccount({user:{id:1},body:{password:'Secret123!'}},response()),e=>e.statusCode===409);
+ const delRes=response();await c.deleteMyAccount({user:{id:2},body:{password:'Secret123!'}},delRes);
+ assert.equal(delRes.statusCode,200);assert.equal(db.rows('User').some(u=>u.id===2),false);
+});
+test('R33 Google sign-in creates verified learner or upgrades existing user email_verified status',async()=>{
+ const db=database();
+ db.rows('User').push({id:2,username:'existinguser',email:'old@gmail.com',role:'learner',is_active:true,email_verified:false});
+ db.rows('User').push({id:3,username:'banned',email:'banned@gmail.com',role:'learner',is_active:false,email_verified:false});
+ const auth=load('server/src/services/auth.service.js',{...baseMocks,'../models':db.models,'jsonwebtoken':{sign:p=>JSON.stringify(p)},'../config/app':{jwt:{},google:{clientId:'test-client-id'}}});
+ const created=await auth.loginWithGoogle({
+  credential:'tok-new',
+  verifier:async()=>({sub:'sub-1',email:'hoang.art+test@gmail.com',name:'Hoang Artist',picture:'https://lh3.googleusercontent.com/a.jpg',email_verified:true})
+ });
+ assert.equal(created.user.role,'learner');assert.equal(created.user.email_verified,true);assert.equal(created.user.google_id,'sub-1');
+ assert.match(created.user.username,/^[a-zA-Z0-9]{3,50}$/);
+ const upgraded=await auth.loginWithGoogle({
+  credential:'tok-old',
+  verifier:async()=>({sub:'sub-2',email:'old@gmail.com',name:'Existing',picture:null,email_verified:true})
+ });
+ assert.equal(upgraded.user.id,2);assert.equal(upgraded.user.email_verified,true);assert.equal(upgraded.user.google_id,'sub-2');
+ await assert.rejects(auth.loginWithGoogle({
+  credential:'tok-ban',
+  verifier:async()=>({sub:'sub-3',email:'banned@gmail.com',name:'Banned',email_verified:true})
+ }),e=>e.statusCode===403);
+ await assert.rejects(auth.verifyGoogleCredential('bad-aud',async()=>({ok:true,json:async()=>({aud:'other-client',email:'x@gmail.com',email_verified:'true'})})),e=>e.statusCode===401);
+});

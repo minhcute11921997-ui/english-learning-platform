@@ -17,4 +17,7 @@ router.post('/vocabularies', adminController.createVocabulary);
 router.put('/vocabularies/:id', adminController.updateVocabulary);
 router.delete('/vocabularies/:id', adminController.deleteVocabulary);
 
+// Nhật ký thao tác quản trị (Audit Logs)
+router.get('/audit-logs', adminController.getAuditLogs);
+
 module.exports = router;

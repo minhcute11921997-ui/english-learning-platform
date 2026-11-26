@@ -36,6 +36,29 @@ module.exports = {
     maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 5 * 1024 * 1024 // 5MB
   },
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
+  security: {
+    maxLoginAttempts: parseInt(process.env.MAX_LOGIN_ATTEMPTS, 10) || 5,
+    lockoutDurationMinutes: parseInt(process.env.LOCKOUT_DURATION_MINUTES, 10) || 15,
+    passwordResetTtlMinutes: parseInt(process.env.PASSWORD_RESET_TTL_MINUTES, 10) || 15,
+    emailVerifyTtlHours: parseInt(process.env.EMAIL_VERIFY_TTL_HOURS, 10) || 24
+  },
+  cookie: {
+    httpOnly: true,
+    secure: production,
+    sameSite: 'lax',
+    maxAgeMs: 30 * 24 * 60 * 60 * 1000
+  },
+  smtp: {
+    host: process.env.SMTP_HOST || '',
+    port: parseInt(process.env.SMTP_PORT, 10) || 587,
+    secure: process.env.SMTP_SECURE === 'true',
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || '',
+    from: process.env.EMAIL_FROM || 'EngLearn <noreply@englearn.art>'
+  },
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID || ''
+  },
   ai: {
     enabled: process.env.AI_ENABLED !== 'false',
     aiServiceUrl: process.env.AI_SERVICE_URL || 'http://localhost:8001',

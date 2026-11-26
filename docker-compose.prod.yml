@@ -1,0 +1,28 @@
+# Docker Compose Override cho môi trường Production
+# Khởi chạy: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+services:
+  mysql:
+    ports: !override []
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required in production}
+      MYSQL_DATABASE: ${DB_NAME:-english_learning}
+      MYSQL_USER: ${DB_USER:-englearn_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required in production}
+
+  server:
+    ports: !override []
+    environment:
+      NODE_ENV: production
+      SEED_DEMO: "false"
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required in production}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required in production}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?JWT_REFRESH_SECRET is required in production}
+      CLIENT_URL: ${CLIENT_URL:?CLIENT_URL is required in production}
+
+  client:
+    ports: !override
+      - "80:80"
+      - "443:443"
+    # Mount chứng chỉ TLS/SSL (Let's Encrypt hoặc Origin Cert) khi triển khai HTTPS
+    # volumes:
+    #   - ./certs:/etc/nginx/certs:ro

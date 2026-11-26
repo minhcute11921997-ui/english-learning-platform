@@ -35,4 +35,38 @@ router.post('/refresh', authController.refreshToken);
 router.post('/logout', authController.logout);
 router.get('/me', authenticate, authController.getMe);
 
+router.post(
+  '/forgot-password',
+  authLimiter,
+  [body('email').isEmail().withMessage('Email không hợp lệ'), validate],
+  authController.forgotPassword
+);
+
+router.post(
+  '/reset-password',
+  authLimiter,
+  [
+    body('token').notEmpty().withMessage('Thiếu mã đặt lại mật khẩu'),
+    body('newPassword').isLength({ min: 6 }).withMessage('Mật khẩu mới tối thiểu 6 ký tự'),
+    validate
+  ],
+  authController.resetPassword
+);
+
+router.post(
+  '/verify-email',
+  authLimiter,
+  [body('token').notEmpty().withMessage('Thiếu mã xác minh email'), validate],
+  authController.verifyEmail
+);
+
+router.post('/resend-verification', authenticate, authLimiter, authController.resendVerification);
+
+router.post(
+  '/google',
+  authLimiter,
+  [body('credential').notEmpty().withMessage('Thiếu mã xác thực Google'), validate],
+  authController.googleLogin
+);
+
 module.exports = router;

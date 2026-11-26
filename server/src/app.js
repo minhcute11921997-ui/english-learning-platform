@@ -10,6 +10,7 @@ const config = require('./config/app');
 const errorHandler = require('./middleware/errorHandler');
 const AppError = require('./utils/AppError');
 const { apiLimiter } = require('./middleware/rateLimiter');
+const { logger, requestLogger } = require('./utils/logger');
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(cookieParser());
 
 // === Logging ===
+app.use(requestLogger);
 if (config.env === 'development') {
   app.use(morgan('dev'));
 }
@@ -57,13 +59,48 @@ if (config.env === 'development') {
 app.use('/uploads', express.static(path.join(__dirname, '..', config.upload.dir)));
 
 // === Health check ===
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    message: 'Server đang hoạt động',
-    timestamp: new Date().toISOString(),
-    environment: config.env
-  });
+async function buildHealthReport() {
+  const { sequelize } = require('./models');
+  const mem = process.memoryUsage();
+  let dbStatus = 'up';
+  let dbError = null;
+
+  try {
+    await sequelize.authenticate();
+  } catch (err) {
+    dbStatus = 'down';
+    dbError = err.message;
+  }
+
+  return {
+    healthy: dbStatus === 'up',
+    payload: {
+      status: dbStatus === 'up' ? 'success' : 'error',
+      message: dbStatus === 'up' ? 'Server đang hoạt động' : 'Database không phản hồi',
+      timestamp: new Date().toISOString(),
+      environment: config.env,
+      uptimeSeconds: Math.round(process.uptime()),
+      memoryMb: {
+        rss: Math.round(mem.rss / 1024 / 1024),
+        heapUsed: Math.round(mem.heapUsed / 1024 / 1024)
+      },
+      checks: {
+        database: dbStatus,
+        ...(dbError && config.env !== 'production' ? { dbError } : {}),
+        aiEnabled: Boolean(config.ai?.enabled)
+      }
+    }
+  };
+}
+
+app.get('/api/health', async (req, res) => {
+  const report = await buildHealthReport();
+  return res.status(report.healthy ? 200 : 503).json(report.payload);
+});
+
+app.get('/api/health/ready', async (req, res) => {
+  const report = await buildHealthReport();
+  return res.status(report.healthy ? 200 : 503).json(report.payload);
 });
 
 // === API Routes ===
@@ -94,7 +131,7 @@ if (process.env.NODE_ENV !== 'test') {
 
   // Bắt các Promise Rejection chưa xử lý (Unhandled Rejection)
   process.on('unhandledRejection', (err) => {
-    console.error('💥 UNHANDLED REJECTION! Lỗi chưa xử lý:', err);
+    logger.error('UNHANDLED REJECTION', { error: err?.message, stack: err?.stack });
     server.close(() => {
       process.exit(1);
     });
@@ -102,7 +139,7 @@ if (process.env.NODE_ENV !== 'test') {
 
   // Bắt các ngoại lệ bất ngờ (Uncaught Exception)
   process.on('uncaughtException', (err) => {
-    console.error('💥 UNCAUGHT EXCEPTION! Ngoại lệ chưa bắt:', err);
+    logger.error('UNCAUGHT EXCEPTION', { error: err?.message, stack: err?.stack });
     process.exit(1);
   });
 

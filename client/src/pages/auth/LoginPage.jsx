@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import useAuthStore from '../../stores/authStore';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import GoogleSignInButton from '../../components/common/GoogleSignInButton';
 
 /**
  * Trang đăng nhập
@@ -75,16 +76,31 @@ export default function LoginPage() {
           error={errors.password}
         />
 
+        <div className="flex justify-end">
+          <Link to="/forgot-password" className="text-xs text-blue-600 hover:underline font-medium">
+            Quên mật khẩu?
+          </Link>
+        </div>
+
         <Button type="submit" isLoading={isLoading} className="w-full btn-primary py-2.5 rounded-xl">
           Đăng nhập
         </Button>
       </form>
+
+      <GoogleSignInButton redirectTo={from} />
 
       <p className="mt-6 text-sm text-slate-600">
         Chưa có tài khoản?{' '}
         <Link to="/register" className="text-blue-600 hover:underline font-bold">
           Đăng ký ngay
         </Link>
+      </p>
+
+      <p className="mt-4 text-xs text-slate-500">
+        Khi tiếp tục, bạn đồng ý với{' '}
+        <Link to="/terms" className="underline hover:text-slate-700">Điều khoản sử dụng</Link>
+        {' '}và{' '}
+        <Link to="/privacy" className="underline hover:text-slate-700">Chính sách bảo mật</Link>.
       </p>
     </div>
   );

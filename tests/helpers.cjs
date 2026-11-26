@@ -14,14 +14,24 @@ function load(file, mocks = {}, globals = {}) {
   return module.exports;
 }
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-function response() { return { statusCode: 200, status(n) {this.statusCode=n;return this;}, json(body) {this.body=body;return body;} }; }
+function response() {
+  return {
+    statusCode: 200,
+    cookies: {},
+    status(n) { this.statusCode = n; return this; },
+    json(body) { this.body = body; return body; },
+    cookie(k, v, o) { this.cookies[k] = { value: v, options: o }; return this; },
+    clearCookie(k) { delete this.cookies[k]; return this; }
+  };
+}
 const baseMocks = { '../utils/catchAsync': fn => fn, sequelize: {Op} };
 function database() {
   let state = {
     User: [{id:1, username:'admin', email:'admin@test.local', role:'admin', is_active:true}],
     Vocabulary: [1,2,3,4].map(id => ({id,topic_id:1,word:'word'+id,meaning_vi:'meaning'+id,is_approved:true, example_sentence:'An example word'+id})),
     Topic: [{id:1,name:'Art',name_vi:'Art'}], UserVocabProgress: [], ReviewSchedule: [],
-    ReviewEvent: [], ExerciseAttempt: [], UserVocabList:[{id:1,user_id:1}],UserVocabListItem:[],VocabExample:[]
+    ReviewEvent: [], ExerciseAttempt: [], UserVocabList:[{id:1,user_id:1}],UserVocabListItem:[],VocabExample:[],
+    RefreshToken: [], AdminAuditLog: [], AiFeedback: []
   };
   let queue = Promise.resolve(), failures = {};
   const models = {};

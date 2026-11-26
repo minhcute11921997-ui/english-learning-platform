@@ -7,7 +7,9 @@ export const userApi = {
   uploadAvatar: (formData) =>
     api.post('/users/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    }),
+  exportData: () => api.get('/users/export-data'),
+  deleteAccount: (password) => api.delete('/users/account', { data: { password } })
 };
 
 export const topicApi = {
@@ -42,7 +44,8 @@ export const adminApi = {
   toggleStatus: (id) => api.put(`/admin/users/${id}/status`),
   createVocab: (data) => api.post('/admin/vocabularies', data),
   updateVocab: (id, data) => api.put(`/admin/vocabularies/${id}`, data),
-  deleteVocab: (id) => api.delete(`/admin/vocabularies/${id}`)
+  deleteVocab: (id) => api.delete(`/admin/vocabularies/${id}`),
+  getAuditLogs: (params) => api.get('/admin/audit-logs', { params })
 };
 
 export const statsApi = {

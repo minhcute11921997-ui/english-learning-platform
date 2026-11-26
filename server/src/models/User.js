@@ -53,6 +53,36 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
       comment: 'Trạng thái tài khoản (true = hoạt động)'
+    },
+    email_verified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      comment: 'Email đã được xác minh hay chưa'
+    },
+    google_id: {
+      type: DataTypes.STRING(128),
+      allowNull: true,
+      unique: 'google_id'
+    },
+    email_verification_token: {
+      type: DataTypes.STRING(128),
+      allowNull: true
+    },
+    password_reset_token: {
+      type: DataTypes.STRING(128),
+      allowNull: true
+    },
+    password_reset_expires: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    failed_login_attempts: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    locked_until: {
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
     tableName: 'users',
@@ -79,11 +109,14 @@ module.exports = (sequelize) => {
   };
 
   /**
-   * Ẩn password khi trả về JSON
+   * Ẩn password và các token bảo mật khi trả về JSON
    */
   User.prototype.toJSON = function() {
     const values = { ...this.get() };
     delete values.password_hash;
+    delete values.email_verification_token;
+    delete values.password_reset_token;
+    delete values.password_reset_expires;
     return values;
   };
 

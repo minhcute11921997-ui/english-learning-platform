@@ -9,6 +9,10 @@ import LoadingSpinner from './components/ui/LoadingSpinner';
 // Auth Pages
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import VerifyEmailPage from './pages/auth/VerifyEmailPage';
+import LegalPage from './pages/legal/LegalPage';
 
 // Main & Feature Pages (Route-based code splitting)
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
@@ -34,7 +38,10 @@ const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       { path: '/login', element: <LoginPage /> },
-      { path: '/register', element: <RegisterPage /> }
+      { path: '/register', element: <RegisterPage /> },
+      { path: '/forgot-password', element: <ForgotPasswordPage /> },
+      { path: '/reset-password', element: <ResetPasswordPage /> },
+      { path: '/verify-email', element: <VerifyEmailPage /> }
     ]
   },
   // Protected routes for authenticated users
@@ -73,6 +80,9 @@ const router = createBrowserRouter([
       }
     ]
   },
+  // Public legal pages
+  { path: '/terms', element: <LegalPage mode="terms" /> },
+  { path: '/privacy', element: <LegalPage mode="privacy" /> },
   // Default redirect
   {
     path: '/',

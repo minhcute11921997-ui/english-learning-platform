@@ -431,7 +431,8 @@ def train_oof_gbdt_stacker(
     word_facet_idx: np.ndarray,
 ) -> dict[str, np.ndarray] | None:
     """Train 3-Fold Out-of-Fold GBDT Decision Stacker strictly inside train split."""
-    in_mask = y_tr_base < 60
+    n_art = int(text_embs.shape[0])
+    in_mask = y_tr_base < n_art
     X_in = X_tr_base[in_mask]
     y_in = y_tr_base[in_mask]
     D_in = X_dino_tr_base[in_mask] if X_dino_tr_base is not None else None
@@ -440,27 +441,27 @@ def train_oof_gbdt_stacker(
         return None
 
     n_in = len(X_in)
-    oof_sig = np.zeros((n_in, 60), dtype=np.float32)
-    oof_dino = np.zeros((n_in, 60), dtype=np.float32) if D_in is not None else None
+    oof_sig = np.zeros((n_in, n_art), dtype=np.float32)
+    oof_dino = np.zeros((n_in, n_art), dtype=np.float32) if D_in is not None else None
     oof_gate = np.zeros((n_in, len(facet_names)), dtype=np.float32)
-    oof_intra = np.zeros((n_in, 60), dtype=np.float32)
+    oof_intra = np.zeros((n_in, n_art), dtype=np.float32)
 
     skf = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
     for f_tr, f_va in skf.split(X_in, y_in):
         ones_w = np.ones((len(f_tr),), dtype=np.float32)
-        s_coef, s_int = fit_global_lr(X_in[f_tr], y_in[f_tr], ones_w, C=10.0, num_classes=60)
+        s_coef, s_int = fit_global_lr(X_in[f_tr], y_in[f_tr], ones_w, C=10.0, num_classes=n_art)
         sig_v = X_in[f_va] @ s_coef.T + s_int
         oof_sig[f_va] = sig_v
 
         sg_c, sg_i, sf_c, sf_i = fit_facet_gates_and_heads(
-            X_in[f_tr], y_in[f_tr], ones_w, None, None, facet_names, facets_data, class_to_idx
+            X_in[f_tr], y_in[f_tr], ones_w, None, None, facet_names, facets_data, class_to_idx, num_art=n_art
         )
         if D_in is not None:
-            d_coef, d_int = fit_global_lr(D_in[f_tr], y_in[f_tr], ones_w, C=3.0, num_classes=60)
+            d_coef, d_int = fit_global_lr(D_in[f_tr], y_in[f_tr], ones_w, C=3.0, num_classes=n_art)
             dino_v = D_in[f_va] @ d_coef.T + d_int
             oof_dino[f_va] = dino_v
             dg_c, dg_i, df_c, df_i = fit_facet_gates_and_heads(
-                D_in[f_tr], y_in[f_tr], ones_w, None, None, facet_names, facets_data, class_to_idx
+                D_in[f_tr], y_in[f_tr], ones_w, None, None, facet_names, facets_data, class_to_idx, num_art=n_art
             )
             base_v = 0.25 * (X_in[f_va] @ text_embs.T) * 75.0 + 1.2 * sig_v + 0.6 * dino_v
             g_v, i_v = compute_hybrid_gate_and_intra(
@@ -529,7 +530,8 @@ def main():
     labels = [str(x) for x in cache["labels"]]
     is_ood = cache["is_ood"]
     splits = np.array([str(x) for x in cache["splits"]])
-    y = np.array([60 if ood else class_to_idx[lbl] for lbl, ood in zip(labels, is_ood)], dtype=np.int64)
+    n_art = len(words)
+    y = np.array([n_art if ood else class_to_idx[lbl] for lbl, ood in zip(labels, is_ood)], dtype=np.int64)
 
     tr_mask = splits == "train"
     va_mask = splits == "val"
@@ -545,7 +547,7 @@ def main():
         )
     else:
         X_train = np.concatenate([embs[tr_mask], img_embs_db], axis=0).astype(np.float32)
-        y_train = np.concatenate([y[tr_mask], np.arange(60, dtype=np.int64)], axis=0)
+        y_train = np.concatenate([y[tr_mask], np.arange(n_art, dtype=np.int64)], axis=0)
         sample_weights = np.ones((len(X_train),), dtype=np.float32)
 
     has_dino = "dino_embeddings" in cache and "dino_train_aug_embs" in cache
@@ -578,8 +580,8 @@ def main():
 
     X_val, y_val = embs[va_mask], y[va_mask]
     X_tr_base, y_tr_base = embs[tr_mask], y[tr_mask]
-    in_val = y_val < 60
-    ood_val = y_val == 60
+    in_val = y_val < n_art
+    ood_val = y_val == n_art
 
     print(
         f"Training probe on {len(X_train)} train vectors (dino={has_dino}, feedback={fb_count}, val={len(X_val)}, test={np.sum(te_mask)})...",
@@ -594,7 +596,7 @@ def main():
         for C in [0.25, 1.0, 3.0, 10.0, 30.0]:
             fold_accs = []
             for f_tr, f_va in skf.split(X_tr_base, y_tr_base):
-                c_coef, c_int = fit_global_lr(X_tr_base[f_tr], y_tr_base[f_tr], np.ones(len(f_tr)), C)
+                c_coef, c_int = fit_global_lr(X_tr_base[f_tr], y_tr_base[f_tr], np.ones(len(f_tr)), C, num_classes=n_art + 1)
                 preds = np.argmax(X_tr_base[f_va] @ c_coef.T + c_int, axis=1)
                 fold_accs.append(float(np.mean(preds == y_tr_base[f_va])))
             cv_scores[C] = float(np.mean(fold_accs))
@@ -605,24 +607,24 @@ def main():
     word_to_facet_idx = {w: f_i for f_i, fname in enumerate(facet_names) for w in facets_data[fname]["words"]}
     word_facet_idx = np.array([word_to_facet_idx.get(w, 0) for w in words], dtype=np.int64)
 
-    in_tr = y_train < 60
+    in_tr = y_train < n_art
     gate_coef, gate_intercept, facet_coef, facet_intercept = fit_facet_gates_and_heads(
-        X_train[in_tr], y_train[in_tr], sample_weights[in_tr], X_val, y_val, facet_names, facets_data, class_to_idx
+        X_train[in_tr], y_train[in_tr], sample_weights[in_tr], X_val, y_val, facet_names, facets_data, class_to_idx, num_art=n_art
     )
 
     dino_coef = dino_intercept = None
     dino_gate_coef = dino_gate_intercept = dino_facet_coef = dino_facet_intercept = None
     best_dino_C = None
     if has_dino:
-        in_d_tr = y_dino_train < 60
+        in_d_tr = y_dino_train < n_art
         dino_gate_coef, dino_gate_intercept, dino_facet_coef, dino_facet_intercept = fit_facet_gates_and_heads(
             D_train[in_d_tr], y_dino_train[in_d_tr], w_dino_train[in_d_tr],
-            D_val, y_val, facet_names, facets_data, class_to_idx,
+            D_val, y_val, facet_names, facets_data, class_to_idx, num_art=n_art
         )
         best_dino_acc = -1.0
         for dc in [0.5, 1.0, 3.0, 10.0]:
-            d_c, d_i = fit_global_lr(D_train, y_dino_train, w_dino_train, dc)
-            d_val_preds = np.argmax((D_val[in_val] @ d_c.T + d_i)[:, :60], axis=1)
+            d_c, d_i = fit_global_lr(D_train, y_dino_train, w_dino_train, dc, num_classes=n_art + 1)
+            d_val_preds = np.argmax((D_val[in_val] @ d_c.T + d_i)[:, :n_art], axis=1)
             d_acc = float(np.mean(d_val_preds == y_val[in_val]))
             if d_acc > best_dino_acc:
                 best_dino_acc = d_acc
@@ -656,13 +658,13 @@ def main():
             best_gate_th = gth
 
     def score_val(val_logits: np.ndarray) -> tuple[float, float, float, float, float]:
-        art_preds = np.argmax(val_logits[in_val, :60], axis=1)
+        art_preds = np.argmax(val_logits[in_val, :n_art], axis=1)
         top1 = float(np.mean(art_preds == y_val[in_val]))
-        top3_idx = np.argsort(-val_logits[in_val, :60], axis=1)[:, :3]
+        top3_idx = np.argsort(-val_logits[in_val, :n_art], axis=1)[:, :3]
         top3 = float(np.mean([y_val[in_val][i] in top3_idx[i] for i in range(np.sum(in_val))]))
         probs_val = softmax(val_logits, axis=1)
-        ood_rej = float(np.mean(probs_val[ood_val, 60] >= 0.45)) if np.any(ood_val) else 1.0
-        false_rej = float(np.mean(probs_val[in_val, 60] >= 0.45))
+        ood_rej = float(np.mean(probs_val[ood_val, n_art] >= 0.45)) if np.any(ood_val) else 1.0
+        false_rej = float(np.mean(probs_val[in_val, n_art] >= 0.45))
         sc = round(top1 * 1.5 + top3 * 0.8 + ood_rej * 1.0 - false_rej * 1.5, 4)
         return sc, top1, top3, ood_rej, false_rej
 
@@ -670,7 +672,7 @@ def main():
     best_cfg = None
     best_clf = None
     for C in [0.25, 0.5, 1.0, 3.0, 10.0, 30.0]:
-        coef, intercept = fit_global_lr(X_train, y_train, sample_weights, C)
+        coef, intercept = fit_global_lr(X_train, y_train, sample_weights, C, num_classes=n_art + 1)
         for alpha_zs in [0.25, 0.35, 0.50, 0.65]:
             for beta_probe in [0.8, 1.2, 1.5]:
                 for gamma_facet in [0.0, 0.20, 0.40, 0.65]:
@@ -765,8 +767,8 @@ def main():
     best_ood = None
     for p_th in [0.35, 0.45, 0.55, 0.65]:
         for m_th in [-0.04, -0.03, -0.02, -0.01, 0.0]:
-            is_pred_ood_in = (cal_probs_val[in_val, 60] >= p_th) | (val_ood_margin[in_val] < m_th)
-            is_pred_ood_ood = (cal_probs_val[ood_val, 60] >= p_th) | (val_ood_margin[ood_val] < m_th)
+            is_pred_ood_in = (cal_probs_val[in_val, n_art] >= p_th) | (val_ood_margin[in_val] < m_th)
+            is_pred_ood_ood = (cal_probs_val[ood_val, n_art] >= p_th) | (val_ood_margin[ood_val] < m_th)
             tpr = float(np.mean(is_pred_ood_ood)) if np.any(ood_val) else 1.0
             fpr = float(np.mean(is_pred_ood_in))
             obj = tpr * 2.0 - fpr * 5.0
@@ -779,7 +781,7 @@ def main():
                     "fpr": round(fpr, 4),
                 }
 
-    art_probs_val = softmax(val_logits[in_val, :60] / cal_temp, axis=1)
+    art_probs_val = softmax(val_logits[in_val, :n_art] / cal_temp, axis=1)
     true_probs = art_probs_val[np.arange(np.sum(in_val)), y_val[in_val]]
     nonconf = 1.0 - true_probs
     n_in = len(nonconf)

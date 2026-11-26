@@ -29,10 +29,10 @@ Thumbs.db
 coverage/
 server/coverage/
 *.lcov
-server/tests/
-ai-service/tests/
-ai-service/eval/
 tools/test-*.js
+
+# Backups
+backups/
 
 # Agent configs
 .agents/

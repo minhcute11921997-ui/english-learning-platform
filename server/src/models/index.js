@@ -32,6 +32,8 @@ const UserVocabListItem = require('./UserVocabListItem')(sequelize);
 const AiFeedback = require('./AiFeedback')(sequelize);
 const ExerciseAttempt = require('./ExerciseAttempt')(sequelize);
 const ReviewEvent = require('./ReviewEvent')(sequelize);
+const RefreshToken = require('./RefreshToken')(sequelize);
+const AdminAuditLog = require('./AdminAuditLog')(sequelize);
 
 // ===== ASSOCIATIONS =====
 
@@ -40,6 +42,10 @@ User.hasMany(UserVocabProgress, { foreignKey: 'user_id', as: 'vocabProgress' });
 User.hasMany(ReviewSchedule, { foreignKey: 'user_id', as: 'reviewSchedules' });
 User.hasMany(UserVocabList, { foreignKey: 'user_id', as: 'vocabLists' });
 User.hasMany(AiFeedback, { foreignKey: 'user_id', as: 'aiFeedbacks' });
+User.hasMany(RefreshToken, { foreignKey: 'user_id', as: 'refreshTokens' });
+RefreshToken.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(AdminAuditLog, { foreignKey: 'admin_id', as: 'auditLogs' });
+AdminAuditLog.belongsTo(User, { foreignKey: 'admin_id', as: 'admin' });
 AiFeedback.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 // Topic associations
@@ -98,7 +104,9 @@ const db = {
   UserVocabListItem,
   AiFeedback,
   ExerciseAttempt,
-  ReviewEvent
+  ReviewEvent,
+  RefreshToken,
+  AdminAuditLog
 };
 
 module.exports = db;
