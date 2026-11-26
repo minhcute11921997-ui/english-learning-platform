@@ -403,13 +403,10 @@ function ImageLookup({ historyKey }) {
             const result = msg.result;
             const primaryMatch = result?.matches?.[0];
             const vocab = primaryMatch?.vocabulary;
-            const primaryFacet =
-              result?.facets?.find((f) => f.word === primaryMatch?.word) ||
-              result?.facets?.[0];
-            const categoryLabel =
-              primaryFacet?.facetLabelVi ||
-              vocab?.topic?.name_vi ||
-              'Thể loại mỹ thuật';
+            const topic = vocab?.topic;
+            const topicLabel =
+              topic?.name_vi ||
+              (Number(vocab?.topic_id) === 2 ? 'Ngành nghề mỹ nghệ' : 'Các loại tranh');
 
             return (
               <div key={msg.id} className="flex justify-start" ref={index === messages.length - 1 ? latestResultRef : null}>
@@ -423,7 +420,19 @@ function ImageLookup({ historyKey }) {
                     <>
                       <div className="space-y-2">
                         <div className="text-xs font-semibold text-blue-700">
-                          {categoryLabel}
+                          Chủ đề:{' '}
+                          {topic?.id ? (
+                            <Link
+                              to={`/topics/${topic.id}`}
+                              className="hover:underline inline-flex items-center gap-1"
+                            >
+                              {topicLabel}
+                              {topic.name ? ` (${topic.name})` : ''}
+                              <HiOutlineArrowTopRightOnSquare className="w-3.5 h-3.5" />
+                            </Link>
+                          ) : (
+                            <span>{topicLabel}</span>
+                          )}
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2">
@@ -454,19 +463,6 @@ function ImageLookup({ historyKey }) {
                         <div className="text-base font-bold text-blue-700">
                           {vocab.meaning_vi}
                         </div>
-
-                        {vocab.topic && (
-                          <div className="text-xs text-slate-500">
-                            Chủ đề:{' '}
-                            <Link
-                              to={`/topics/${vocab.topic.id}`}
-                              className="font-semibold text-slate-700 hover:text-blue-600 inline-flex items-center gap-1"
-                            >
-                              {vocab.topic.name_vi}
-                              <HiOutlineArrowTopRightOnSquare className="w-3.5 h-3.5" />
-                            </Link>
-                          </div>
-                        )}
                       </div>
 
                       <div className="flex flex-wrap gap-2 pt-1">
